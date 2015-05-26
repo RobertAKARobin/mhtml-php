@@ -68,10 +68,8 @@ var Tags = function(){
 
   var els = document.querySelectorAll("#tags li");
 
-  var foo = [];
-
   for(var x = els.length - 1; x >= 0; x--){
-    foo.push(new Draggable(els[x]));
+    new Draggable(els[x]);
   }
 
 }
