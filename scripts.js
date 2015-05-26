@@ -4,9 +4,7 @@ var Draggable = function(el){
   this.el.style.left = "0px";
   this.el.style.top = "0px";
   this.origin = {};
-
   this.listeners.drag = new Listener(this.el, ["mousedown", "touchstart"], this.drag, this);
-
 }
 Draggable.prototype = {
   listeners: {},
@@ -35,7 +33,6 @@ var Listener = function(el, events, cb, parent){
   }else{
     this.events = events;
   }
-
   this.callback = function(evt){
     if(!evt.clientX){
       evt = evt.touches[0];
