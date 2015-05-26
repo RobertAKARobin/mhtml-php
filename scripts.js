@@ -4,55 +4,68 @@ var Draggable = function(el){
   this.el.style.left = "0px";
   this.el.style.top = "0px";
   this.origin = {};
-  this.events = {};
 
-  function listener(el, events, callback, start){
-    if(typeof events === "string") events = new Array(events);
-    for(var x = events.length - 1; x >= 0; x--){
-      if(start){
-        if(el.attachEvent){
-          el.attachEvent("on" + events[x], callback);
-        }else{
-          el.addEventListener(events[x], callback);
-        }
+  this.listeners.drag = new Listener(this.el, ["mousedown", "touchstart"], this.drag, this);
+
+}
+Draggable.prototype = {
+  listeners: {},
+  drag: function(evt){
+    this.origin.left = parseInt(this.el.style.left) - evt.clientX;
+    this.origin.top = parseInt(this.el.style.top) - evt.clientY;
+    this.listeners.move = new Listener(document, ["mousemove", "touchmove"], this.move, this);
+    this.listeners.drop = new Listener(document, ["mouseup", "touchend"], this.drop, this);
+  },
+  move: function(evt){
+    this.el.style.left = this.origin.left + evt.clientX + "px";
+    this.el.style.top = this.origin.top + evt.clientY + "px";
+  },
+  drop: function(){
+    this.listeners.move.stop();
+    this.listeners.drop.stop();
+  }
+}
+
+var Listener = function(el, events, cb, parent){
+  var self = this;
+  this.el = el;
+  this.parent = parent;
+  if(typeof events === "string"){
+    this.events = new Array(events);
+  }else{
+    this.events = events;
+  }
+
+  this.callback = function(evt){
+    if(!evt.clientX){
+      evt = evt.touches[0];
+    }
+    cb.call(parent, evt);
+  }
+  this.start();
+}
+Listener.prototype = {
+  events: [],
+  start: function(){
+    for(var x = this.events.length - 1; x >= 0; x--){
+      if(this.el.attachEvent){
+        this.el.attachEvent("on" + this.events[x], this.callback);
       }else{
-        if(el.detachEvent){
-          el.detachEvent("on" + events[x], callback);
-        }else{
-          el.removeEventListener(events[x], callback);
-        }
+        this.el.addEventListener(this.events[x], this.callback);
+      }
+    }
+  },
+  stop: function(){
+    for(var x = this.events.length - 1; x >= 0; x--){
+      if(this.el.detachEvent){
+        this.el.detachEvent("on" + this.events[x], this.callback);
+      }else{
+        this.el.removeEventListener(this.events[x], this.callback);
       }
     }
   }
-
-  function drag(evt){
-    evt.preventDefault();
-    if(!evt.clientX){
-      evt = evt.touches[0];
-    }
-    self.origin.left = parseInt(self.el.style.left) - evt.clientX;
-    self.origin.top = parseInt(self.el.style.top) - evt.clientY;
-    listener(document, ["mousemove", "touchmove"], move, true);
-    listener(document, ["mouseup", "touchend"], drop, true);
-  }
-
-  function move(evt){
-    evt.preventDefault();
-    if(!evt.clientX){
-      evt = evt.touches[0];
-    }
-    self.el.style.left = self.origin.left + evt.clientX + "px";
-    self.el.style.top = self.origin.top + evt.clientY + "px";
-  }
-
-  function drop(){
-    listener(document, ["mousemove", "touchmove"], move, false);
-    listener(document, ["mouseup", "touchend"], drop, false);
-  }
-
-  listener(this.el, ["mousedown", "touchstart"], drag, true);
-
 }
+
 
 var Tags = function(){
 
