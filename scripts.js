@@ -26,6 +26,7 @@ var Draggable = function(el){
   }
 
   function drag(evt){
+    evt.preventDefault();
     if(!evt.clientX){
       evt = evt.touches[0];
     }
@@ -36,6 +37,7 @@ var Draggable = function(el){
   }
 
   function move(evt){
+    evt.preventDefault();
     if(!evt.clientX){
       evt = evt.touches[0];
     }
