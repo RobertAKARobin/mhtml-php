@@ -1,79 +1,89 @@
+function forEach(collection, callback){
+  for(var x = collection.length - 1; x >= 0; x--){
+    callback.call(this, collection[x]);
+  }
+}
+
 var Draggable = function(el){
-  var instance = this;
   this.el = el;
-  this.origin = {};
   this.el.style.left = "0px";
   this.el.style.top = "0px";
+  this.origin = {};
 
-  this.callback = {
-    ie: {
-      drag: function(evt){
-        instance.origin.left = parseInt(instance.el.style.left) - evt.clientX;
-        instance.origin.top = parseInt(instance.el.style.top) - evt.clientY;
-        document.attachEvent("onmousemove", instance.callback.ie.move);
-        document.attachEvent("onmouseup", instance.callback.ie.drop);
-      },
-      move: function(evt){
-        instance.el.style.left = instance.origin.left + evt.clientX + "px";
-        instance.el.style.top = instance.origin.top + evt.clientY + "px";
-      },
-      drop: function(){
-        document.detachEvent("onmousemove", instance.callback.ie.move);
-        document.detachEvent("onmouseup", instance.callback.ie.drop);
-      }
-    },
-    touch: {
-      drag: function(evt){
-        evt = evt.touches[0];
-        instance.origin.left = parseInt(instance.el.style.left) - evt.clientX;
-        instance.origin.top = parseInt(instance.el.style.top) - evt.clientY;
-        document.addEventListener("touchmove", instance.callback.touch.move);
-        document.addEventListener("touchend", instance.callback.touch.drop);
-      },
-      move: function(evt){
-        evt = evt.touches[0];
-        instance.el.style.left = instance.origin.left + evt.clientX + "px";
-        instance.el.style.top = instance.origin.top + evt.clientY + "px";
-      },
-      drop: function(){
-        document.removeEventListener("touchmove", instance.callback.touch.move);
-        document.removeEventListener("touchend", instance.callback.touch.drop);
-      }
-    },
-    drag: function(evt){
-      instance.origin.left = parseInt(instance.el.style.left) - evt.clientX;
-      instance.origin.top = parseInt(instance.el.style.top) - evt.clientY;
-      document.addEventListener("mousemove", instance.callback.move);
-      document.addEventListener("mouseup", instance.callback.drop);
-    },
-    move: function(evt){
-      instance.el.style.left = instance.origin.left + evt.clientX + "px";
-      instance.el.style.top = instance.origin.top + evt.clientY + "px";
-    },
-    drop: function(){
-      document.removeEventListener("mousemove", instance.callback.move);
-      document.removeEventListener("mouseup", instance.callback.drop);
-    }
+  this.handle = {
+    drag: this.drag.bind(this),
+    move: this.move.bind(this)
   }
 
-  if(this.ie8){
-    this.el.attachEvent("onmousedown", instance.callback.ie.drag);
-  }else if(this.touch){
-    this.el.addEventListener("touchstart", instance.callback.touch.drag);
-  }else{
-    this.el.addEventListener("mousedown", instance.callback.drag);
+  this.events = {
+    start: new Listener(this.el, ["mousedown", "touchstart"], this.handle.drag),
+    move: {},
+    end: {}
   }
 }
-
 Draggable.prototype = {
-  ie8: window.attachEvent ? true : false,
-  touch: "ontouchstart" in window ? true : false
-}
-
-window.onload = function(){
-  var tags = document.querySelectorAll("#tags li");
-  var listeners = [];
-  for(var x = tags.length - 1; x >= 0; x--){
-    listeners.push(new Draggable(tags[x]));
+  drag: function(evt){
+    this.origin.left = parseInt(this.el.style.left) - evt.clientX;
+    this.origin.top = parseInt(this.el.style.top) - evt.clientY;
+    this.events.move = new Listener(window, ["mousemove", "touchmove"], this.handle.move);
+    this.events.end = new Listener(window, ["mouseup", "touchend"], this.drop.bind(this));
+  },
+  move: function(evt){
+    this.el.style.left = this.origin.left + evt.clientX + "px";
+    this.el.style.top = this.origin.top + evt.clientY + "px";
+  },
+  drop: function(){
+    this.events.move.stopListening();
   }
 }
+
+var Listener = function(el, triggers, callback){
+  this.el = el;
+  this.triggers = [];
+  this.callback = function(evt){
+    evt.preventDefault();
+    if(evt instanceof TouchEvent){
+      evt = evt.touches[0];
+    }
+    callback(evt);
+  }
+
+  if(typeof triggers === "string"){
+    this.triggers.push(triggers);
+  }else{
+    this.triggers = triggers;
+  }
+  forEach.call(this, this.triggers, function(trigger){
+    this.listenFor(trigger, this.callback);
+  });
+}
+Listener.prototype = {
+  listenFor: function(trigger){
+    if(this.el.attachEvent){
+      this.el.attachEvent(trigger, this.callback); 
+    }else{
+      this.el.addEventListener(trigger, this.callback);
+    }
+  },
+  stopListening: function(){
+    forEach.call(this, this.triggers, function(trigger){
+      if(this.el.detachEvent){
+        this.el.detachEvent(trigger, this.callback);
+      }else{
+        this.el.removeEventListener(trigger, this.callback);
+      }
+    });
+  }
+}
+
+var Tags = function(){
+
+  var els = document.querySelectorAll("#tags li");
+
+  for(var x = els.length - 1; x >= 0; x--){
+    new Draggable(els[x]);
+  }
+
+}
+
+window.onload = Tags;
