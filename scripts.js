@@ -27,8 +27,8 @@ var Draggable = function(el){
         evt = evt.touches[0];
         instance.origin.left = parseInt(instance.el.style.left) - evt.clientX;
         instance.origin.top = parseInt(instance.el.style.top) - evt.clientY;
-        document.addEventListener("touchmove", instance.callback.touch.move);
-        document.addEventListener("touchend", instance.callback.touch.drop);
+        window.addEventListener("touchmove", instance.callback.touch.move);
+        window.addEventListener("touchend", instance.callback.touch.drop);
       },
       move: function(evt){
         evt.preventDefault();
@@ -37,8 +37,8 @@ var Draggable = function(el){
         instance.el.style.top = instance.origin.top + evt.clientY + "px";
       },
       drop: function(){
-        document.removeEventListener("touchmove", instance.callback.touch.move);
-        document.removeEventListener("touchend", instance.callback.touch.drop);
+        window.removeEventListener("touchmove", instance.callback.touch.move);
+        window.removeEventListener("touchend", instance.callback.touch.drop);
       }
     },
     drag: function(evt){
