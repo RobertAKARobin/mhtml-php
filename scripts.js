@@ -31,6 +31,7 @@ var Draggable = function(el){
         document.addEventListener("touchend", instance.callback.touch.drop);
       },
       move: function(evt){
+        evt.preventDefault();
         evt = evt.touches[0];
         instance.el.style.left = instance.origin.left + evt.clientX + "px";
         instance.el.style.top = instance.origin.top + evt.clientY + "px";
@@ -47,6 +48,7 @@ var Draggable = function(el){
       document.addEventListener("mouseup", instance.callback.drop);
     },
     move: function(evt){
+      evt.preventDefault();
       instance.el.style.left = instance.origin.left + evt.clientX + "px";
       instance.el.style.top = instance.origin.top + evt.clientY + "px";
     },
