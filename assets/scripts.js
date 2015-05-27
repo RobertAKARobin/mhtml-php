@@ -73,7 +73,7 @@ Draggable.prototype = {
 }
 
 window.onload = function(){
-  var tags = document.querySelectorAll("#tags li");
+  var tags = document.querySelectorAll(".tags>*");
   var listeners = [];
   for(var x = tags.length - 1; x >= 0; x--){
     listeners.push(new Draggable(tags[x]));
