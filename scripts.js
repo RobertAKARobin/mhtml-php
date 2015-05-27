@@ -44,8 +44,8 @@ var Draggable = function(el){
     drag: function(evt){
       instance.origin.left = parseInt(instance.el.style.left) - evt.clientX;
       instance.origin.top = parseInt(instance.el.style.top) - evt.clientY;
-      document.addEventListener("mousemove", instance.callback.move);
-      document.addEventListener("mouseup", instance.callback.drop);
+      window.addEventListener("mousemove", instance.callback.move);
+      window.addEventListener("mouseup", instance.callback.drop);
     },
     move: function(evt){
       evt.preventDefault();
@@ -53,8 +53,8 @@ var Draggable = function(el){
       instance.el.style.top = instance.origin.top + evt.clientY + "px";
     },
     drop: function(){
-      document.removeEventListener("mousemove", instance.callback.move);
-      document.removeEventListener("mouseup", instance.callback.drop);
+      window.removeEventListener("mousemove", instance.callback.move);
+      window.removeEventListener("mouseup", instance.callback.drop);
     }
   }
 
