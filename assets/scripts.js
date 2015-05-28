@@ -6,70 +6,52 @@ var Draggable = function(el){
   this.el.style.top = "0px";
 
   this.callback = {
-    ie: {
-      drag: function(evt){
-        instance.origin.left = parseInt(instance.el.style.left) - evt.clientX;
-        instance.origin.top = parseInt(instance.el.style.top) - evt.clientY;
-        document.attachEvent("onmousemove", instance.callback.ie.move);
-        document.attachEvent("onmouseup", instance.callback.ie.drop);
-      },
-      move: function(evt){
-        instance.el.style.left = instance.origin.left + evt.clientX + "px";
-        instance.el.style.top = instance.origin.top + evt.clientY + "px";
-      },
-      drop: function(){
-        document.detachEvent("onmousemove", instance.callback.ie.move);
-        document.detachEvent("onmouseup", instance.callback.ie.drop);
-      }
-    },
-    touch: {
-      drag: function(evt){
-        evt = evt.touches[0];
-        instance.origin.left = parseInt(instance.el.style.left) - evt.clientX;
-        instance.origin.top = parseInt(instance.el.style.top) - evt.clientY;
-        window.addEventListener("touchmove", instance.callback.touch.move);
-        window.addEventListener("touchend", instance.callback.touch.drop);
-      },
-      move: function(evt){
-        evt.preventDefault();
-        evt = evt.touches[0];
-        instance.el.style.left = instance.origin.left + evt.clientX + "px";
-        instance.el.style.top = instance.origin.top + evt.clientY + "px";
-      },
-      drop: function(){
-        window.removeEventListener("touchmove", instance.callback.touch.move);
-        window.removeEventListener("touchend", instance.callback.touch.drop);
-      }
-    },
     drag: function(evt){
+      if(!instance.ie8) evt.preventDefault();
+      if(instance.touch) evt = evt.touches[0];
       instance.origin.left = parseInt(instance.el.style.left) - evt.clientX;
       instance.origin.top = parseInt(instance.el.style.top) - evt.clientY;
-      window.addEventListener("mousemove", instance.callback.move);
-      window.addEventListener("mouseup", instance.callback.drop);
+      instance.start(window, "move", instance.callback.move);
+      instance.start(window, instance.touch ? "end" : "up", instance.callback.drop);
     },
     move: function(evt){
-      evt.preventDefault();
+      if(!instance.ie8) evt.preventDefault();
+      if(instance.touch) evt = evt.touches[0];
       instance.el.style.left = instance.origin.left + evt.clientX + "px";
       instance.el.style.top = instance.origin.top + evt.clientY + "px";
     },
     drop: function(){
-      window.removeEventListener("mousemove", instance.callback.move);
-      window.removeEventListener("mouseup", instance.callback.drop);
+      instance.stop(window, "move", instance.callback.move);
+      instance.stop(window, instance.touch ? "end" : "up", instance.callback.drop);
     }
   }
 
-  if(this.ie8){
-    this.el.attachEvent("onmousedown", instance.callback.ie.drag);
-  }else if(this.touch){
-    this.el.addEventListener("touchstart", instance.callback.touch.drag);
-  }else{
-    this.el.addEventListener("mousedown", instance.callback.drag);
-  }
+  instance.start(instance.el, instance.touch ? "start" : "down", instance.callback.drag);
 }
 
 Draggable.prototype = {
   ie8: window.attachEvent ? true : false,
-  touch: "ontouchstart" in window ? true : false
+  touch: "ontouchstart" in window ? true : false,
+  start: function(el, event, callback){
+    if(this.ie8){
+      if(el == window) el = document;
+      el.attachEvent("onmouse" + event, callback);
+    }else if(this.touch){
+      el.addEventListener("touch" + event, callback);
+    }else{
+      el.addEventListener("mouse" + event, callback);
+    }
+  },
+  stop: function(el, event, callback){
+    if(this.ie8){
+      if(el == window) el = document;
+      el.detachEvent("onmouse" + event, callback);
+    }else if(this.touch){
+      el.removeEventListener("touch" + event, callback);
+    }else{
+      el.removeEventListener("mouse" + event, callback);
+    }
+  }
 }
 
 window.onload = function(){
