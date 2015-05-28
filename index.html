@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MagneticHTML</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="assets/scripts.js"></script>
     <link rel="stylesheet" href="assets/style.css" />
   </head>
@@ -103,7 +104,7 @@
           <div class="tags">
           <span>&nbsp;&lt;h2&gt;&nbsp;</span>
           <span>&nbsp;&lt;/h2&gt;&nbsp;</span>
-          <span>&nbsp;&lt;style&gt;<span class="c">*{&nbsp;font-family:'Comic&nbsp;Sans';</span class="c">&nbsp;</span>
+          <span>&nbsp;&lt;style&gt;<span class="c">*{&nbsp;font-family:'Comic&nbsp;Sans';</span>&nbsp;</span>
           <span>&nbsp;&lt;ol&gt;&nbsp;</span>
           <span>&nbsp;&lt;/ol&gt;&nbsp;</span>
           </div>
@@ -190,9 +191,11 @@
       <section>
         <h2 class="tags"><span class="w">Contact</span></h2>
         <p>I usually respond within 3 hours. If you've been waiting more than 24 hours, don't hesitate to contact me again &mdash; you're important!</p>
-        <form method="get">
+        <form method="post" action="http://robertakarobin.com/mail/mail.php" target="_blank">
           <textarea name="content" placeholder="Say hello!"></textarea>
+          <input type="hidden" name="emailMe" value="robin@magnetichtml.com" />
           <input type="text" placeholder="hello@email.com" />
+          <div class="g-recaptcha" data-theme="light" data-sitekey="6LfQiAcTAAAAAGLPo6q0xMh1S42WUp4H1fd9cJQT"></div>
           <button type="submit">Send to robin@magnetichtml.com</button>
         </form>
       </section>

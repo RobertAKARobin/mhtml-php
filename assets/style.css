@@ -208,10 +208,28 @@ em
 }
 form
 {
+  display:block;
+  margin:0 auto;
+  width:300px;
   border-radius:5px;
-  background-color:#ccc;
-  overflow:hidden;
+  background-color:#f9f9f9;
   box-shadow:0px 0px 5px 0px #ddc;
+}
+form>*
+{
+  border-bottom:1px solid #eee;
+}
+.g-recaptcha
+{
+  width:300px;
+  height:70px;
+  overflow:hidden;
+}
+.g-recaptcha iframe
+{
+  position:relative;
+  top:-5px;
+  left:-1px;
 }
 textarea
 {
@@ -223,14 +241,13 @@ button, textarea, input[type=text]
   padding:.3em;
   width:100%;
   display:block;
-  border-bottom:1px solid #ddc;
 }
 textarea:focus,
 button:hover,
 input:focus
 {
   outline:0;
-  background-color:#ddd;
+  background-color:#eee;
 }
 button
 {
