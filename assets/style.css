@@ -74,17 +74,14 @@ h3
 }
 body
 {
-  padding-top:50px;
+  padding-bottom:4em;
 }
-section, header
+body>div
 {
   padding:5px 10px 30px 10px;
-}
-section
-{
   position:relative;
 }
-section:before
+body>div:not(:first-child):before
 {
   content:"";
   position:relative;
@@ -169,18 +166,12 @@ section:before
 
 #intro
 {
-  padding-bottom:2em;
+  padding:100px 0;
 }
 h3, p, ul
 {
   margin:1em auto;
   padding:1em;
-}
-header ul
-{
-  width:240px;
-  list-style:none;
-  text-align:center;
 }
 p
 {

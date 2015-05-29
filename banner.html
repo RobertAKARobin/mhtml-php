@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Magnetic HTML Banner</title>
+    <link rel="stylesheet" href="assets/style.css" />
+    <style>
+      *
+      {
+        -webkit-backface-visibility: hidden;
+      }
+      body,
+      body:before
+      {
+        display:block;
+        width:1024px;
+        height:768px;
+        max-width:none;
+        max-height:none;
+        margin:0;
+        padding:0;
+      }
+      body:before
+      {
+      }
+      main
+      {
+        position:relative;
+        padding-top:200px;
+      }
+      .tags
+      {
+        text-align:left;
+        position:relative;
+      }
+      #main
+      {
+        opacity:1;
+      }
+      .tags>*
+      {
+        font-size:54px;
+        line-height:1.3em;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <main>
+      <ul class="tags">
+        <li style="left:100px; top:-100px; transform:rotateZ(-3deg);">&lt;strong&gt;</li>
+        <li style="left:400px; top:-100px;transform:rotateZ(20deg);">&lt;div&gt;</li>
+      </ul>
+      <ul class="tags" id="main" style="left:70px;top:20px;transform:rotateZ(350deg);">
+        <li>&lt;h1&gt;</li>
+        <li class="w">Magnetic</li>
+        <li class="w">HTML</li>
+        <li>&lt;/h1&gt;</li>
+      </ul>
+      <ul class="tags" style="top:200px; left:100px;">
+        <li class="c" style="transform:rotateZ(-10deg);">&amp;amp;</li>
+        <li style="left:400px; transform:rotateZ(5deg);">&lt;/em&gt;</li>
+      </ul>
+    </main>
+
+  </body>
+</html>
