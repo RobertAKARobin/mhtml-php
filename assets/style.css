@@ -18,6 +18,10 @@
   text-decoration:inherit;
   box-sizing:border-box;
 } 
+*:focus
+{
+  outline: 0;
+}
 html
 {
   height:100%;
@@ -224,24 +228,57 @@ form>*
 }
 textarea
 {
-  height:3em;
+  height:3.6em;
 }
-button, textarea, input[type=text]
+input[type=checkbox]
+{
+  position:absolute;
+  display:block;
+  opacity:0.01;
+  left:0;
+  top:0;
+  overflow:hidden;
+  width:1px;
+  height:1px;
+}
+button, textarea, input[type=text], label
 {
   resize:none;
   padding:.3em;
+  line-height:1.8em;
   width:100%;
   display:block;
+  text-shadow:none;
 }
 textarea:focus,
 button:hover,
-input:focus
+input:focus,
+input+label:hover
 {
   outline:0;
   background-color:#eee;
 }
-button
+input+label
 {
+  color:#666;
+}
+input:checked+label
+{
+  color:black;
+  background-color:#eee;
+}
+input+label:after
+{
+  content:"?";
+}
+input:checked+label:after
+{
+  content:"!";
+}
+button,
+input+label
+{
+  text-align:center;
   cursor:pointer;
 }
 ::-webkit-input-placeholder
