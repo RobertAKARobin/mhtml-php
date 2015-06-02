@@ -124,6 +124,11 @@ body>div:not(:first-child):before
   cursor:move;
   z-index:100;
 }
+.tags>*:hover
+{
+  background-color:#fff;
+  border-color:#fff #bbb #bbb #fff;
+}
 .tags .w
 {
   color:black;
