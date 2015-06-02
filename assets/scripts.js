@@ -55,6 +55,10 @@ Draggable.prototype = {
 }
 
 window.onload = function(){
+  if(location.hash !== "#toggle"){
+    document.getElementById("selfpro").style.display = "block";
+  }
+
   var tags = document.querySelectorAll(".tags>*");
   var listeners = [];
   for(var x = tags.length - 1; x >= 0; x--){
