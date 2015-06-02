@@ -121,7 +121,7 @@ body>div:not(:first-child):before
   border-color:#fff #ddc #ddc #fff;
   background-color:#fcfcfc;
   box-shadow:0px 0px 5px 0px #ddc;
-  cursor:default;
+  cursor:move;
   z-index:100;
 }
 .tags .w
