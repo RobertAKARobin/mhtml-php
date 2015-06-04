@@ -2,19 +2,19 @@
 
 function tag($text){
   $text = htmlentities($text);
-  if(preg_match("/^\&amp;/", $text)){
+  if(preg_match("/^(\&amp;|&lt;!D)/", $text)){
     $tag = "<span class='c'>";
   }else if(preg_match("/^\&lt;[\/a-zA-Z0-9]*\&gt;$/", $text)){
     $tag = "<span>";
   }else if(preg_match("/(^-|^\&lt;!|^,*w)/", $text)){
-    $tag = "<span class='l'>";
+    $tag = "<span class='b'>";
   }else{
     $tag = "<span class='c'>";
     $text = preg_replace_callback("/(^&lt;[a-z]+|\/?&gt;$)/", function($match){
-      return "<span class='w'>" . $match[0]. "</span>";
+      return "<span class='t'>" . $match[0]. "</span>";
     }, $text);
     $text = preg_replace_callback("/\#/", function($match){
-      return "<span class='l'>" . $match[0] . "</span>";
+      return "<span class='b'>" . $match[0] . "</span>";
     }, $text);
   }
   $text = preg_replace("/,/", "&nbsp;", $text);
@@ -101,15 +101,16 @@ div>span
 display:inline-block;
 outline:1px solid #ddd;
 }
-.w
+span,
+.t
 {
-color:black;
+color:purple;
 }
 .c
 {
-color:red;
+color:gold;
 }
-.l
+.b
 {
 color:blue;
 }

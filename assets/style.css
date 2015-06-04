@@ -103,10 +103,15 @@ body>div:not(:first-child):before
 .tag
 {
   font-size:0;
-  color:#881280;
   text-align:center;
   text-shadow:none;
   width:100%;
+}
+.tags,
+.tag,
+.t
+{
+  color:#881280;
 }
 .tags>*
 {
