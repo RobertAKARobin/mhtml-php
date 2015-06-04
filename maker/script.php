@@ -1,16 +1,24 @@
 <?php
 
-function tag($text, $class = ""){
-  if(empty($class)){
-    $output = "<span>";
+function tag($text){
+  $text = htmlentities($text);
+  if(preg_match("/^\&amp;/", $text)){
+    $tag = "<span class='c'>";
+  }else if(preg_match("/^\&lt;[\/a-zA-Z0-9]*\&gt;$/", $text)){
+    $tag = "<span>";
+  }else if(preg_match("/(^-|^\&lt;!|^,*w)/", $text)){
+    $tag = "<span class='l'>";
   }else{
-    $output = "<span class=\"$class\">";
-  }
-  if(preg_match("/^[\/a-zA-Z0-9]*$/", $text)){
-    $text = "&lt;" . htmlentities($text) . "&gt;";
+    $tag = "<span class='c'>";
+    $text = preg_replace_callback("/(^&lt;[a-z]+|\/?&gt;$)/", function($match){
+      return "<span class='w'>" . $match[0]. "</span>";
+    }, $text);
+    $text = preg_replace_callback("/\#/", function($match){
+      return "<span class='l'>" . $match[0] . "</span>";
+    }, $text);
   }
   $text = preg_replace("/,/", "&nbsp;", $text);
-  return $output . "&nbsp;" . $text . "&nbsp;" . "</span>" . PHP_EOL;
+  return $tag . "&nbsp;" . $text . "&nbsp;" . "</span>" . PHP_EOL;
 }
 
 /*
@@ -60,12 +68,13 @@ $tags = <<<TXT
 <a href="#">  </a>  <input/>  &copy;  <dd>  </dd>
 TXT;
 
+$output = "";
 $tags = preg_split("/\n/", $tags);
 foreach($tags as $row){
   $row = preg_split("/\s\s/", $row);
   $line = "";
   foreach($row as $tag){
-    $line .= tag(htmlentities($tag));
+    $line .= tag($tag);
   }
   $output .= "<div class=\"tags\">" . PHP_EOL . $line . "</div>" . PHP_EOL;
 }
@@ -83,11 +92,18 @@ font-size:0;
 }
 span
 {
-display:inline-block;
 font-size:14px;
 line-height:24px;
 white-space:pre;
+}
+div>span
+{
+display:inline-block;
 outline:1px solid #ddd;
+}
+.w
+{
+color:black;
 }
 .c
 {
