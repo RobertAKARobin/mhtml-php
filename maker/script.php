@@ -1,3 +1,99 @@
+<?php
+
+function tag($text, $class = ""){
+  if(empty($class)){
+    $output = "<span>";
+  }else{
+    $output = "<span class=\"$class\">";
+  }
+  if(preg_match("/^[\/a-zA-Z0-9]*$/", $text)){
+    $text = "&lt;" . htmlentities($text) . "&gt;";
+  }
+  $text = preg_replace("/,/", "&nbsp;", $text);
+  return $output . "&nbsp;" . $text . "&nbsp;" . "</span>" . PHP_EOL;
+}
+
+/*
+$tags = [
+"h1 h2 h2 h3 h3 ol ul li li li 
+];
+
+$transposed = [];
+for($colNum = 0; $colNum < count($tags); $colNum++){
+  $row = preg_split("/\s/", $tags[$colNum]);
+  for($rowNum = 0; $rowNum < count($row); $rowNum++){
+    $transposed[$rowNum][$colNum] = $row[$rowNum];
+  }
+}
+
+$output = "";
+for($rowNum = 0; $rowNum < count($transposed); $rowNum++){
+  $output .= "<div class='tags'>" . PHP_EOL;
+  for($colNum = 0; $colNum < count($transposed[$rowNum]); $colNum++){
+    $output .= tag($transposed[$rowNum][$colNum]) . PHP_EOL;
+  }
+  $output .= "</div>" . PHP_EOL;
+}
+ */
+
+$tags = <<<TXT
+<p>  </p>  <!DOCTYPE html>  &hellip;
+<p>  </p>  <canvas>  </canvas>  &lt;
+<p>  </p>  <script>  </script>  &gt;
+<s>  </s>  <html>  </html>  &tradem;
+<em>  </em>  <textarea>  </textarea>
+<pre>  </pre>  <section>  </section>
+<div>  </div>  <section>  </section>
+<div>  </div>  <q>  </q>  <!--  --->
+<head>  </head>  <figure>  </figure>
+<body>  </body>  <header>  </header>
+<main>  </main>  <footer>  </footer>
+<span>  </span>  <strong>  </strong>
+<form>  </form>  <button>  </button>
+<small>  </small>  <br/>  &le;  &ge;
+<table>  </table>  <style>  </style>
+<title>  </title>  <aside>  </aside>
+<img alt="  " src="#"/>  &ne;  &shy;
+<blockquote>  </blockquote>  &mdash;
+<a href="#">  </a>  <input/>  &copy;
+<h1>  </h1>
+<h2>  </h2>
+<h2>  </h2>
+<h3>  </h3>
+<h3>  </h3>
+<ol>  </ol>
+<ul>  </ul>
+<li>  </li>
+<li>  </li>
+<li>  </li>
+<dl>  </dl>
+<dt>  </dt>
+<dt>  </dt>
+<dd>  </dd>
+<dd>  </dd>
+<tr>  </tr>
+<th>  </th>
+<td>  </td>
+<td>  </td>
+<td>  </td>
+<tr>  </tr>
+<th>  </th>
+<td>  </td>
+<td>  </td>
+<td>  </td>
+TXT;
+
+$tags = preg_split("/\n/", $tags);
+foreach($tags as $row){
+  $row = preg_split("/\s\s/", $row);
+  $line = "";
+  foreach($row as $tag){
+    $line .= tag(htmlentities($tag));
+  }
+  $output .= "<div class=\"tags\">" . PHP_EOL . $line . "</div>" . PHP_EOL;
+}
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,142 +101,32 @@
 <style>
 *
 {
-font-family:monospace;
+font-family:"Andale Mono";
 font-size:0;
 }
 span
 {
+display:inline-block;
 font-size:14px;
+line-height:24px;
+white-space:pre;
+outline:1px solid #ddd;
 }
 .c
 {
 color:red;
 }
+.l
+{
+color:blue;
+}
+span:hover
+{
+background-color:#fcc;
+}
 </style>
 </head>
 <body>
-<?php
-
-$tags = [
-  [
-    "<!DOCTYPE html>",
-    "html",
-    "head",
-    "&lt;",
-    "&gt;"
-  ],
-  [
-    "title",
-    "body",
-    "header",
-    "&ne;"
-  ],
-  [
-    "main",
-    "footer",
-    "<img alt='",
-    "' src='#'/>"
-  ],
-  [
-    "section",
-    "section",
-    "span"
-  ],
-  [
-    "h1",
-    "   mailto:robin@magneticHTML.com   ",
-    "h3"
-  ],
-  [
-    "h2",
-    "<script>alert('Welcome!');</script>",
-    "h3"
-  ],
-  [
-    "h2",
-    "<style>*{ font-family:'Comic Sans';",
-    "ol"
-  ],
-  [
-    "dl",
-    "position:fixed!important; }</style>",
-    "ul",
-  ],
-  [
-    "dt",
-    "<? echo(T_PAAMAYIM_NEKUDOTAYIM); ?>",
-    "li",
-  ],
-  [
-    "dt",
-    "&tradem;",
-    "&mdash;",
-    "&shy;",
-    "<!--",
-    "-->",
-    "li"
-  ],
-  [
-    "dd",
-    "div",
-    "div",
-    "<br/>",
-    "li"
-  ],
-  [
-    "dd",
-    "blockquote",
-    "q",
-    "&hellip;"
-  ],
-  [
-    "p",
-    "marquee",
-    "strong",
-    "&copy;"
-  ],
-  [
-    "p",
-    "blink",
-    "pre",
-    "&amp;",
-    "s"
-  ],
-  [
-    "p",
-    "aside",
-    "<a href='#'>",
-    "</a>",
-    "em"
-  ]
-];
-
-$output = "";
-
-function tag($text, $class = ""){
-  $output = "<span>";
-  if(!empty($class)){
-    $output = "<span class=\"$class\">";
-  }
-  $text = preg_replace("/ /", "&nbsp;", $text);
-  return "$output&nbsp;" . $text . "&nbsp;</span>" . PHP_EOL;
-}
-
-foreach($tags as $row){
-  $output .= "<div class=\"tags\">" . PHP_EOL;
-  foreach($row as $tag){
-    if(preg_match("/^[a-zA-Z0-9]*$/", $tag)){
-      $output .= tag("&lt;" . $tag . "&gt;");
-      $output .= tag("&lt;/" . $tag . "&gt;");
-    }else{
-      $output .= tag(htmlentities($tag), "c");
-    }
-  }
-  $output .= "</div>" . PHP_EOL;
-}
-
-echo $output;
-
-?>
+<?php echo $output; ?>
 </body>
 </html>
