@@ -37,50 +37,27 @@ for($rowNum = 0; $rowNum < count($transposed); $rowNum++){
  */
 
 $tags = <<<TXT
-<p>  </p>  <!DOCTYPE html>  &hellip;
-<p>  </p>  <canvas>  </canvas>  &lt;
-<p>  </p>  <script>  </script>  &gt;
-<s>  </s>  <html>  </html>  &tradem;
-<em>  </em>  <textarea>  </textarea>
-<pre>  </pre>  <section>  </section>
-<div>  </div>  <section>  </section>
-<div>  </div>  <q>  </q>  <!--  --->
-<head>  </head>  <figure>  </figure>
-<body>  </body>  <header>  </header>
-<main>  </main>  <footer>  </footer>
-<span>  </span>  <strong>  </strong>
-<form>  </form>  <button>  </button>
-<small>  </small>  <br/>  &le;  &ge;
-<table>  </table>  <style>  </style>
-<title>  </title>  <aside>  </aside>
-<img alt="  " src="#"/>  &ne;  &shy;
-<blockquote>  </blockquote>  &mdash;
-<a href="#">  </a>  <input/>  &copy;
-<h1>  </h1>
-<h2>  </h2>
-<h2>  </h2>
-<h3>  </h3>
-<h3>  </h3>
-<ol>  </ol>
-<ul>  </ul>
-<li>  </li>
-<li>  </li>
-<li>  </li>
-<dl>  </dl>
-<dt>  </dt>
-<dt>  </dt>
-<dd>  </dd>
-<dd>  </dd>
-<tr>  </tr>
-<th>  </th>
-<td>  </td>
-<td>  </td>
-<td>  </td>
-<tr>  </tr>
-<th>  </th>
-<td>  </td>
-<td>  </td>
-<td>  </td>
+<h1>  </h1>  ,www.magneticHTML.com,,  <h2>  </h2>
+<h2>  </h2>  ,,,,,,,,,,  ,,,,,,,,,,,  <h3>  </h3>
+<p>  </p>  <!DOCTYPE,html>  &hellip;  <tr>  </tr>
+<p>  </p>  <canvas>  </canvas>  &lt;  <tr>  </tr>
+<p>  </p>  <script>  </script>  &gt;  <th>  </th>
+<s>  </s>  <html>  </html>  &tradem;  <th>  </th>
+<em>  </em>  &ldquo;  &rdquo;  <br/>  <td>  </td>
+<pre>  </pre>  <section>  </section>  <td>  </td>
+<div>  </div>  <section>  </section>  <td>  </td>
+<div>  </div>  <q>  </q>  <!--  --->  <td>  </td>
+<head>  </head>  &nbsp;  &amp;  &pm;  <ol>  </ol>
+<body>  </body>  <header>  </header>  <ul>  </ul>
+<main>  </main>  <footer>  </footer>  <li>  </li>
+<span>  </span>  <strong>  </strong>  <li>  </li>
+<form>  </form>  <button>  </button>  <li>  </li>
+<table>  </table>  <style>  </style>  <dl>  </dl>
+<title>  </title>  <aside>  </aside>  <dt>  </dt>
+<img alt="  " src="#"/>  &ne;  &shy;  <dt>  </dt>
+<textarea>  </textarea>  <h3>  </h3>  <dd>  </dd>
+<blockquote>  </blockquote>  &mdash;  <dd>  </dd>
+<a href="#">  </a>  <input/>  &copy;  <dd>  </dd>
 TXT;
 
 $tags = preg_split("/\n/", $tags);
