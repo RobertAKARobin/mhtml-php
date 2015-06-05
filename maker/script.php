@@ -46,28 +46,51 @@ for($rowNum = 0; $rowNum < count($transposed); $rowNum++){
 
 $tags = <<<TXT
 <h1>  </h1>  ,www.magneticHTML.com,,  <h2>  </h2>
-<h2>  </h2>  ,,,,,,,,,,  ,,,,,,,,,,,  <h3>  </h3>
-<p>  </p>  <!DOCTYPE,html>  &hellip;  <tr>  </tr>
-<p>  </p>  <canvas>  </canvas>  &lt;  <tr>  </tr>
-<p>  </p>  <script>  </script>  &gt;  <th>  </th>
-<s>  </s>  <html>  </html>  &tradem;  <th>  </th>
-<em>  </em>  &ldquo;  &rdquo;  <br/>  <td>  </td>
-<pre>  </pre>  <section>  </section>  <td>  </td>
-<div>  </div>  <section>  </section>  <td>  </td>
-<div>  </div>  <q>  </q>  <!--  --->  <td>  </td>
-<head>  </head>  &nbsp;  &amp;  &pm;  <ol>  </ol>
-<body>  </body>  <header>  </header>  <ul>  </ul>
-<main>  </main>  <footer>  </footer>  <li>  </li>
-<span>  </span>  <strong>  </strong>  <li>  </li>
-<form>  </form>  <button>  </button>  <li>  </li>
-<table>  </table>  <style>  </style>  <dl>  </dl>
-<title>  </title>  <aside>  </aside>  <dt>  </dt>
-<img alt="  " src="#"/>  &ne;  &shy;  <dt>  </dt>
-<textarea>  </textarea>  <h3>  </h3>  <dd>  </dd>
-<blockquote>  </blockquote>  &mdash;  <dd>  </dd>
-<a href="#">  </a>  <input/>  &copy;  <dd>  </dd>
+<h2>  </h2>  <img alt="  " src="#"/>  <h3>  </h3>
+<h3>  </h3>  <img alt="  " src="#"/>  <tr>  </tr>
+<em>  </em>  <textarea>  </textarea>  <tr>  </tr>
+&ne;  &shy;  <br/>  &ldquo;  &rdquo;  <th>  </th>
+<blockquote>  </blockquote>  &mdash;  <th>  </th>
+<a href="#">  </a>  &tradem;  &copy;  <td>  </td>
+<section>  </section>  <div>  </div>  <td>  </td>
+<section>  </section>  <pre>  </pre>  <td>  </td>
+<p>  </p>  &lt;  &pm;  &amp;  &nbsp;  <td>  </td>
+<p>  </p>  <!--  --->  <div>  </div>  <ol>  </ol>
+<p>  </p>  <!DOCTYPE,html>  &hellip;  <ul>  </ul>
+<q>  </q>  &gt;  </s>  <s>  <input/>  <li>  </li>
+<table>  </table>  <style>  </style>  <li>  </li>
+<title>  </title>  <aside>  </aside>  <li>  </li>
+<html>  </html>  <header>  </header>  <dl>  </dl>
+<head>  </head>  <footer>  </footer>  <dt>  </dt>
+<body>  </body>  <canvas>  </canvas>  <dt>  </dt>
+<main>  </main>  <script>  </script>  <dd>  </dd>
+<span>  </span>  <strong>  </strong>  <dd>  </dd>
+<form>  </form>  <button>  </button>  <dd>  </dd>
 TXT;
 
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ */
 $output = "";
 $tags = preg_split("/\n/", $tags);
 foreach($tags as $row){
@@ -90,11 +113,16 @@ foreach($tags as $row){
 font-family:"Andale Mono";
 font-size:0;
 }
+html
+{
+background-color:#999;
+}
 span
 {
 font-size:14px;
 line-height:24px;
 white-space:pre;
+background-color:#fcfcfc;
 }
 div>span
 {
@@ -104,15 +132,15 @@ outline:1px solid #ddd;
 span,
 .t
 {
-color:purple;
+color:#881280;
 }
 .c
 {
-color:gold;
+color:#994500;
 }
 .b
 {
-color:blue;
+color:#1a1aa6;
 }
 span:hover
 {
