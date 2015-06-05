@@ -56,8 +56,8 @@ $tags = <<<TXT
 <section>  </section>  <pre>  </pre>  <td>  </td>
 <p>  </p>  &lt;  &pm;  &amp;  &nbsp;  <td>  </td>
 <p>  </p>  <!--  --->  <div>  </div>  <ol>  </ol>
-<p>  </p>  <!DOCTYPE,html>  &hellip;  <ul>  </ul>
 <q>  </q>  &gt;  </s>  <s>  <input/>  <li>  </li>
+<p>  </p>  <!DOCTYPE,html>  &hellip;  <ul>  </ul>
 <table>  </table>  <style>  </style>  <li>  </li>
 <title>  </title>  <aside>  </aside>  <li>  </li>
 <html>  </html>  <header>  </header>  <dl>  </dl>
