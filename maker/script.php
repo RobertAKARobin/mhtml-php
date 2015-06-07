@@ -21,29 +21,6 @@ function tag($text){
   return $tag . "&nbsp;" . $text . "&nbsp;" . "</span>" . PHP_EOL;
 }
 
-/*
-$tags = [
-"h1 h2 h2 h3 h3 ol ul li li li 
-];
-
-$transposed = [];
-for($colNum = 0; $colNum < count($tags); $colNum++){
-  $row = preg_split("/\s/", $tags[$colNum]);
-  for($rowNum = 0; $rowNum < count($row); $rowNum++){
-    $transposed[$rowNum][$colNum] = $row[$rowNum];
-  }
-}
-
-$output = "";
-for($rowNum = 0; $rowNum < count($transposed); $rowNum++){
-  $output .= "<div class='tags'>" . PHP_EOL;
-  for($colNum = 0; $colNum < count($transposed[$rowNum]); $colNum++){
-    $output .= tag($transposed[$rowNum][$colNum]) . PHP_EOL;
-  }
-  $output .= "</div>" . PHP_EOL;
-}
- */
-
 $tags = <<<TXT
 <h1>  </h1>  ,www.magneticHTML.com,,  <h2>  </h2>
 <h2>  </h2>  <img alt="  " src="#"/>  <h3>  </h3>
@@ -68,29 +45,6 @@ $tags = <<<TXT
 <form>  </form>  <button>  </button>  <dd>  </dd>
 TXT;
 
-/*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- */
 $output = "";
 $tags = preg_split("/\n/", $tags);
 foreach($tags as $row){
