@@ -22,27 +22,32 @@ function tag($text){
 }
 
 $tags = <<<TXT
-<h1>  </h1>  ,www.magneticHTML.com,,  <h2>  </h2>
-<h2>  </h2>  <img alt="  " src="#"/>  <h3>  </h3>
-<h3>  </h3>  <img alt="  " src="#"/>  <tr>  </tr>
-<em>  </em>  <textarea>  </textarea>  <tr>  </tr>
-&ne;  &shy;  <br/>  &ldquo;  &rdquo;  <th>  </th>
-<blockquote>  </blockquote>  &mdash;  <th>  </th>
-<a href="#">  </a>  &tradem;  &copy;  <td>  </td>
-<section>  </section>  <div>  </div>  <td>  </td>
-<section>  </section>  <pre>  </pre>  <td>  </td>
-<p>  </p>  &lt;  &pm;  &amp;  &nbsp;  <td>  </td>
-<p>  </p>  <!--  --->  <div>  </div>  <ol>  </ol>
-<q>  </q>  &gt;  </s>  <s>  <input/>  <li>  </li>
-<p>  </p>  <!DOCTYPE,html>  &hellip;  <ul>  </ul>
-<table>  </table>  <style>  </style>  <li>  </li>
-<title>  </title>  <aside>  </aside>  <li>  </li>
-<html>  </html>  <header>  </header>  <dl>  </dl>
-<head>  </head>  <footer>  </footer>  <dt>  </dt>
-<body>  </body>  <canvas>  </canvas>  <dt>  </dt>
-<main>  </main>  <script>  </script>  <dd>  </dd>
-<span>  </span>  <strong>  </strong>  <dd>  </dd>
-<form>  </form>  <button>  </button>  <dd>  </dd>
+www.magneticHTML.com  <header>  </header>
+<!-Made in the USA->  <footer>  </footer>
+alert("Small parts")  <script>  </script>
+<h1>  </h1>  &ldquo;  <canvas>  </canvas>
+<h2>  </h2>  &rdquo;  <strong>  </strong>
+<h2>  </h2>  &mdash;  <button>  </button>
+<h3>  </h3>  </html>  <html>  <tr>  </tr>
+<h3>  </h3>  </head>  <head>  <tr>  </tr>
+<h4>  </h4>  </body>  <body>  <th>  </th>
+<ol>  </ol>  </main>  <main>  <th>  </th>
+<ul>  </ul>  </span>  <span>  <td>  </td>
+<li>  </li>  </form>  <form>  <td>  </td>
+<li>  </li>  </code>  <code>  <td>  </td>
+<li>  </li>  <!DOCTYPE html>  <td>  </td>
+<dl>  </dl>  <div>  </div>  <div>  </div>
+<dt>  </dt>  <pre>  </pre>  &shy;  &nbsp;
+<dt>  </dt>  <dfn>  </dfn>  &amp;  &copy;
+<dd>  </dd>  <p>  </p>  <title>  </title>
+<dd>  </dd>  <p>  </p>  <style>  </style>
+<dd>  </dd>  <p>  </p>  <table>  </table>
+<em>  </em>  <q>  </q>  <aside>  </aside>
+<tr>  </tr>  <s>  </s>  <label>  </label>
+</section>  <section>  &hellip;  &tradem;
+</section>  <section>  <a href="#">  </a>
+<img alt="  " src="#"/>  &lt;  &gt;  &pm;
+<textarea>  </textarea>  <!--  --->  &ne;
 TXT;
 
 $output = "";
