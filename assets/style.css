@@ -206,6 +206,7 @@ a:hover
 .important
 {
   font-size:36px;
+  line-height:48px;
   text-align:center;
 }
 em
