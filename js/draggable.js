@@ -1,7 +1,7 @@
-function DraggableContainer(containerID, overlap){
+function DraggableContainer(element, overlap){
   var container = this;
   container.overlap = overlap || [0, 0];
-  container.element = document.getElementById(containerID);
+  container.element = element;
   container.children = [];
   container.topZIndex = container.element.style.zIndex || 0;
 
