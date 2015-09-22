@@ -1,66 +1,137 @@
-var Draggable = function(el){
+function DraggableContainer(containerID){
+  var container = this;
+  container.element = document.getElementById(containerID);
+  container.children = [];
+  container.topZIndex = container.element.style.zIndex || 0;
+
+  (function prepareChildren(){
+    var draggables = container.element.children,
+        l = draggables.length,
+        p;
+    for(p = 0; p < l; p++){
+      container.children.push(new Draggable(draggables[p], container));
+    }
+  }());
+
+  (function startChildren(){
+    var draggables = container.children,
+        l = draggables.length,
+        p;
+    for(p = 0; p < l; p++){
+      draggables[p].position();
+      draggables[p].listenForClick();
+    }
+  }());
+}
+
+function Draggable(element, container){
   var instance = this;
-  instance.el = el;
-  instance.origin = {};
-  instance.el.style.left = "0px";
-  instance.el.style.top = "0px";
-  instance.el.style.zIndex = "0";
+  instance.isDragging = false;
+  instance.isAbleToBeDragged = false;
 
-  this.callback = {
-    drag: function(evt){
-      if(!Draggable.browser.ie8) evt.preventDefault();
-      if(Draggable.browser.touch) evt = evt.touches[0];
-      if(parseInt(instance.el.style.zIndex) <= Draggable.prototype.maxZ){
-        instance.el.style.zIndex = ++Draggable.prototype.maxZ;
-      }
-      instance.origin.left = parseInt(instance.el.style.left) - evt.clientX;
-      instance.origin.top = parseInt(instance.el.style.top) - evt.clientY;
-      instance.start(window, "move", instance.callback.move);
-      instance.start(window, instance.touch ? "end" : "up", instance.callback.drop);
-    },
-    move: function(evt){
-      if(!Draggable.browser.ie8) evt.preventDefault();
-      if(Draggable.browser.touch) evt = evt.touches[0];
-      instance.el.style.left = instance.origin.left + evt.clientX + "px";
-      instance.el.style.top = instance.origin.top + evt.clientY + "px";
-    },
-    drop: function(){
-      instance.stop(window, "move", instance.callback.move);
-      instance.stop(window, instance.touch ? "end" : "up", instance.callback.drop);
-    }
+  instance.container = container;
+  instance.element = element;
+  instance.drag = instance.drag.bind(instance);
+  instance.drop = instance.drop.bind(instance);
+
+  instance.origin = {
+    left: instance.element.offsetLeft,
+    top: instance.element.offsetTop
   }
-
-  instance.start(instance.el, instance.touch ? "start" : "down", instance.callback.drag);
-}
-
-Draggable.browser = {
-  ie8: window.attachEvent ? true : false,
-  touch: "ontouchstart" in window ? true : false
+  instance.distanceRemaining = {}
+  instance.maxDistance = {}
+  instance.cursor = {}
 };
-
 Draggable.prototype = {
-  maxZ: 0,
-  makeAll: function(){
-
-  },
-  start: function(el, event, callback){
-    if(Draggable.browser.ie8){
-      if(el == window) el = document;
-      el.attachEvent("onmouse" + event, callback);
-    }else if(this.touch){
-      el.addEventListener("touch" + event, callback);
-    }else{
-      el.addEventListener("mouse" + event, callback);
+  position: function(){
+    var instance = this;
+    instance.element.style.position = "absolute";
+    instance.element.style.zIndex = instance.container.topZIndex;
+    instance.element.style.left = instance.origin.left + "px";
+    instance.element.style.top = instance.origin.top + "px";
+    instance.maxDistanceFrom = {
+      top: instance.element.offsetParent.offsetHeight - instance.element.offsetHeight,
+      left: instance.element.offsetParent.offsetWidth - instance.element.offsetWidth
     }
   },
-  stop: function(el, event, callback){
-    if(Draggable.browser.ie8){
-      if(el == window) el = document;
-      el.detachEvent("onmouse" + event, callback);
-    }else if(this.touch){
-      el.removeEventListener("touch" + event, callback);
-    }else{
-      el.removeEventListener("mouse" + event, callback);
+  listenForClick: function(){
+    var instance = this;
+    instance.element.addEventListener("mousedown", instance.startDragging.bind(instance));
+    instance.element.addEventListener("touchstart", instance.startDragging.bind(instance));
+    instance.isAbleToBeDragged = true;
+  },
+  startDragging: function(evt){
+    var instance = this;
+    var isTouchy = (evt.type == "touchstart");
+    if(instance.isDragging || !instance.isAbleToBeDragged) return;
+    else instance.isDragging = true;
+    instance.getOriginCoords();
+    instance.getDistanceRemaining();
+    instance.getCursorCoords(evt);
+    instance.setZIndex();
+    window.addEventListener(isTouchy ? "touchmove" : "mousemove", instance.drag);
+    window.addEventListener(isTouchy ? "touchend" : "mouseup", instance.drop);
+  },
+  drag: function(evt){
+    var instance = this;
+    if(evt.type == "touchstart") evt = evt.touches[0];
+    var cursorChangeY = evt.clientY - instance.cursor.top;
+    var cursorChangeX = evt.clientX - instance.cursor.left;
+    var isToo = {
+      top: cursorChangeY < instance.distanceRemaining.top,
+      right: cursorChangeX > instance.distanceRemaining.right,
+      bottom: cursorChangeY > instance.distanceRemaining.bottom,
+      left: cursorChangeX < instance.distanceRemaining.left
     }
-  }
-}
+    instance.element.style.top = (function(){
+      if(isToo.top) return 0;
+      if(isToo.bottom) return instance.maxDistanceFrom.top;
+      return instance.origin.top + cursorChangeY;
+    }()) + "px";
+    instance.element.style.left = (function(){
+      if(isToo.left) return 0;
+      if(isToo.right) return instance.maxDistanceFrom.left;
+      return instance.origin.left + cursorChangeX;
+    }()) + "px";
+  },
+  drop: function(evt){
+    var instance = this;
+    instance.isDragging = false;
+    window.removeEventListener("touchmove", instance.drag);
+    window.removeEventListener("touchend", instance.drop);
+    window.removeEventListener("mousemove", instance.drag);
+    window.removeEventListener("mouseup", instance.drop);
+  },
+  getOriginCoords: function(){
+    var instance = this;
+    instance.origin = {
+      top: parseInt(instance.element.style.top),
+      left: parseInt(instance.element.style.left)
+    }
+  },
+  getDistanceRemaining: function(){
+    var instance = this;
+    var el = instance.element;
+    var parent = instance.element.offsetParent;
+    instance.distanceRemaining = {
+      top: 0 - el.offsetTop,
+      right: parent.offsetWidth - (el.offsetWidth + el.offsetLeft),
+      bottom: parent.offsetHeight - (el.offsetHeight + el.offsetTop),
+      left: 0 - el.offsetLeft
+    }
+  },
+  getCursorCoords: function(evt){
+    var instance = this;
+    if(evt.type == "touchstart") evt = evt.touches[0];
+    instance.cursor = {
+      top: evt.clientY,
+      left: evt.clientX
+    }
+  },
+  setZIndex: function(){
+    var instance = this;
+    if(parseInt(instance.element.style.zIndex) <= instance.container.topZIndex){
+      instance.element.style.zIndex = ++instance.container.topZIndex;
+    }
+  },
+};

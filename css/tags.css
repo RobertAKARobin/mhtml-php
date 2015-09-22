@@ -1,37 +1,39 @@
-.tag{
+.tags>*{
   color:#881280;
   display:inline-block;
-  position:relative;
   white-space:nowrap;
-  font-size:14px;
+  font-size:12px;
   line-height:18px;
   vertical-align:top;
-  padding:.2em .5em;
+  padding:1px 2px;
   margin:0 2px 2px 0;
   border-width:1px;
   border-style:solid;
   border-color:#fff #ddc #ddc #fff;
   background-color:#fcfcfc;
-  box-shadow:0px 0px 5px 0px #332;
-  cursor:move;
+  box-shadow:0px 0px 5px 0px #554;
   z-index:100;
 }
-.tag:hover
+.draggable>*{
+  cursor:move;
+}
+.tags>:hover
 {
   background-color:#fff;
   border-color:#fff #bbb #bbb #fff;
 }
-.tag.w
+.tags>.w
 {
   color:black;
   font-family:"Georgia", serif;
   font-weight:normal;
   text-transform:lowercase;
 }
-.tag.c
+.tags>.c
 {
   color:#994500;
 }
-.tag.b
+.tags>.b
 {
   color:#1a1aa6;
+}

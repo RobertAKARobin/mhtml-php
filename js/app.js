@@ -1,35 +1,5 @@
-(function(){
-  angular.module('magnetic', [
-
-  ])
-  .directive('t', [
-    tagDirective
-  ])
-  .controller('tagController', [
-    '$http',
-    tagController
-  ])
-}());
-
-function tagDirective(){
-  return {
-    template: "<input class='tag' />",
-    replace: true,
-    link: link
-  }
-  function link(scope, element){
-    new Draggable(element[0]);
-    element.bind("click", function(){
-      this.focus();
-    });
-  }
-}
-
-function tagController($http){
-  var ctrl = this;
-  $http.get("./assets/tiles.txt").then(function(response){
-    ctrl.tags = response.data.trim().replace(/(\s\s|\n)/g, "*").split("*");
-  });
+window.onload = function(){
+  var tiles = new DraggableContainer("tiles");
 }
 
 /*
