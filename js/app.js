@@ -12,25 +12,12 @@ window.onload = function(){
   tilesDiv.addEventListener("tileSplit", function(){
     var tile = tilesDiv.children[tilesDiv.children.length - 1];
     var drag = dragContainer.newDraggable(tile);
-    drag.position();
     drag.listenForClick();
     drag.element.focus();
   });
 }
 
 /*
-window.onload = function(){
-  if(location.hash !== "#toggle"){
-    document.getElementById("selfpro").style.display = "block";
-  }
-
-  (function makeDraggables(){
-    var tags = document.querySelectorAll(".tags>*");
-    var listeners = [];
-    for(var x = tags.length - 1; x >= 0; x--){
-      listeners.push(new Draggable(tags[x]));
-    }
-  }());
 
   (function loadCaptcha(){
     var script = document.createElement("SCRIPT");
@@ -38,5 +25,5 @@ window.onload = function(){
     script.setAttribute("src", "https://www.google.com/recaptcha/api.js");
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
-}
+
 */

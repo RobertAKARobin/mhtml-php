@@ -44,28 +44,18 @@ function Draggable(element, container){
   // Otherwise can't removeEventListener
   instance.drag = instance.drag.bind(instance);
   instance.drop = instance.drop.bind(instance);
+  instance.distanceRemaining = {}
+  instance.cursor = {}
   instance.origin = {
     left: instance.element.offsetLeft,
     top: instance.element.offsetTop
   }
-  instance.distanceRemaining = {}
-  instance.maxDistance = {}
-  instance.cursor = {}
 };
 Draggable.prototype = {
   position: function(){
     var instance = this;
-    var overlap = instance.container.overlap;
-    instance.element.style.position = "absolute";
-    instance.element.style.zIndex = instance.container.topZIndex;
     instance.element.style.left = instance.origin.left + "px";
     instance.element.style.top = instance.origin.top + "px";
-    instance.maxDistanceTo = {
-      top: 0 - overlap[0],
-      right: instance.element.offsetParent.offsetWidth - instance.element.offsetWidth + overlap[1],
-      bottom: instance.element.offsetParent.offsetHeight - instance.element.offsetHeight + overlap[0],
-      left: 0 - overlap[1]
-    }
   },
   listenForClick: function(){
     var instance = this;
@@ -79,6 +69,7 @@ Draggable.prototype = {
     if(instance.isDragging || !instance.isAbleToBeDragged) return;
     else instance.isDragging = true;
     instance.getOriginCoords();
+    instance.getMaxDistance();
     instance.getDistanceRemaining();
     instance.getCursorCoords(evt);
     instance.setZIndex();
@@ -120,6 +111,16 @@ Draggable.prototype = {
     instance.origin = {
       top: parseInt(instance.element.style.top),
       left: parseInt(instance.element.style.left)
+    }
+  },
+  getMaxDistance: function(){
+    var instance = this;
+    var overlap = instance.container.overlap;
+    instance.maxDistanceTo = {
+      top: 0 - overlap[0],
+      right: instance.element.offsetParent.offsetWidth - instance.element.offsetWidth + overlap[1],
+      bottom: instance.element.offsetParent.offsetHeight - instance.element.offsetHeight + overlap[0],
+      left: 0 - overlap[1]
     }
   },
   getDistanceRemaining: function(){

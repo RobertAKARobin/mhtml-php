@@ -37,8 +37,7 @@ Tile.prototype = {
       tile.delete();
     }else if(evt.keyCode in Tile.spaceKeys){
       evt.preventDefault();
-      new Tile(true).appendTo(tile.element.parentElement);
-      tile.element.parentElement.dispatchEvent(Tile.events.split);
+      tile.split();
     }
   },
   appendTo: function(parent){
@@ -52,5 +51,25 @@ Tile.prototype = {
     && tile.element.parentElement.children.length > 1){
       tile.element.parentElement.removeChild(tile.element);
     }
+  },
+  placeRelativeTo: function(baseTile){
+    var tile = this;
+    var distanceRight = baseTile.offsetWidth - (baseTile.offsetWidth + baseTile.offsetLeft);
+    var distanceBottom = baseTile.offsetHeight - (baseTile.offsetHeight + baseTile.offsetTop);
+    if(distanceRight < tile.offsetWidth){
+      tile.element.style.left = distanceRight + "px";
+      tile.element.style.top = baseTile.offsetTop + "px";
+    }else{
+      tile.element.style.left = baseTile.offsetLeft + "px";
+      tile.element.style.top = distanceBottom + "px";
+    }
+  },
+  split: function(){
+    var oldTile = this;
+    var parent = oldTile.element.parentElement;
+    var newTile = new Tile(true);
+    newTile.appendTo(parent);
+    newTile.placeRelativeTo(oldTile.element);
+    parent.dispatchEvent(Tile.events.split);
   }
 }
