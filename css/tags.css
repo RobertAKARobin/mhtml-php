@@ -17,23 +17,22 @@
 .draggable>*{
   cursor:move;
 }
-.tags>:hover
-{
+.tags>:hover{
   background-color:#fff;
   border-color:#fff #bbb #bbb #fff;
 }
-.tags>.w
-{
+.tags>:focus{
+  box-shadow:0px 0px 10px 0 #fff;
+}
+.tags>.w{
   color:black;
   font-family:"Georgia", serif;
   font-weight:normal;
   text-transform:lowercase;
 }
-.tags>.c
-{
+.tags>.c{
   color:#994500;
 }
-.tags>.b
-{
+.tags>.b{
   color:#1a1aa6;
 }

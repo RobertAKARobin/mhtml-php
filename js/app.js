@@ -1,5 +1,13 @@
 window.onload = function(){
-  var tiles = new DraggableContainer("tiles");
+  var tileDrag = new DraggableContainer("tiles", [10, 10]);
+  var sandbox = new TileContainer("tiles");
+  sandbox.element.addEventListener('tileCreated', function(evt){
+    var newTile = sandbox.element.children[sandbox.element.children.length - 1];
+    var newDrag = tileDrag.newDraggable(newTile);
+    newDrag.position();
+    newDrag.listenForClick();
+    newDrag.element.focus();
+  });
 }
 
 /*

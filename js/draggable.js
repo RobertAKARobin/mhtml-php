@@ -1,5 +1,6 @@
-function DraggableContainer(containerID){
+function DraggableContainer(containerID, overlap){
   var container = this;
+  container.overlap = overlap || [0, 0];
   container.element = document.getElementById(containerID);
   container.children = [];
   container.topZIndex = container.element.style.zIndex || 0;
@@ -7,21 +8,29 @@ function DraggableContainer(containerID){
   (function prepareChildren(){
     var draggables = container.element.children,
         l = draggables.length,
-        p;
-    for(p = 0; p < l; p++){
-      container.children.push(new Draggable(draggables[p], container));
+        i;
+    for(i = 0; i < l; i++){
+      container.newDraggable(draggables[i]);
     }
   }());
 
   (function startChildren(){
     var draggables = container.children,
         l = draggables.length,
-        p;
-    for(p = 0; p < l; p++){
-      draggables[p].position();
-      draggables[p].listenForClick();
+        i;
+    for(i = 0; i < l; i++){
+      draggables[i].position();
+      draggables[i].listenForClick();
     }
   }());
+}
+DraggableContainer.prototype = {
+  newDraggable: function(element){
+    var container = this;
+    var draggable = new Draggable(element, container);
+    container.children.push(draggable);
+    return draggable;
+  }
 }
 
 function Draggable(element, container){
@@ -31,9 +40,10 @@ function Draggable(element, container){
 
   instance.container = container;
   instance.element = element;
+  // Have to do this here, instead of .bind in the addEventListener
+  // Otherwise can't removeEventListener
   instance.drag = instance.drag.bind(instance);
   instance.drop = instance.drop.bind(instance);
-
   instance.origin = {
     left: instance.element.offsetLeft,
     top: instance.element.offsetTop
@@ -45,13 +55,16 @@ function Draggable(element, container){
 Draggable.prototype = {
   position: function(){
     var instance = this;
+    var overlap = instance.container.overlap;
     instance.element.style.position = "absolute";
     instance.element.style.zIndex = instance.container.topZIndex;
     instance.element.style.left = instance.origin.left + "px";
     instance.element.style.top = instance.origin.top + "px";
-    instance.maxDistanceFrom = {
-      top: instance.element.offsetParent.offsetHeight - instance.element.offsetHeight,
-      left: instance.element.offsetParent.offsetWidth - instance.element.offsetWidth
+    instance.maxDistanceTo = {
+      top: 0 - overlap[0],
+      right: instance.element.offsetParent.offsetWidth - instance.element.offsetWidth + overlap[1],
+      bottom: instance.element.offsetParent.offsetHeight - instance.element.offsetHeight + overlap[0],
+      left: 0 - overlap[1]
     }
   },
   listenForClick: function(){
@@ -74,7 +87,7 @@ Draggable.prototype = {
   },
   drag: function(evt){
     var instance = this;
-    if(evt.type == "touchstart") evt = evt.touches[0];
+    if(evt.type == "touchmove") evt = evt.touches[0];
     var cursorChangeY = evt.clientY - instance.cursor.top;
     var cursorChangeX = evt.clientX - instance.cursor.left;
     var isToo = {
@@ -84,13 +97,13 @@ Draggable.prototype = {
       left: cursorChangeX < instance.distanceRemaining.left
     }
     instance.element.style.top = (function(){
-      if(isToo.top) return 0;
-      if(isToo.bottom) return instance.maxDistanceFrom.top;
+      if(isToo.top) return instance.maxDistanceTo.top;
+      if(isToo.bottom) return instance.maxDistanceTo.bottom;
       return instance.origin.top + cursorChangeY;
     }()) + "px";
     instance.element.style.left = (function(){
-      if(isToo.left) return 0;
-      if(isToo.right) return instance.maxDistanceFrom.left;
+      if(isToo.left) return instance.maxDistanceTo.left;
+      if(isToo.right) return instance.maxDistanceTo.right;
       return instance.origin.left + cursorChangeX;
     }()) + "px";
   },
@@ -111,13 +124,14 @@ Draggable.prototype = {
   },
   getDistanceRemaining: function(){
     var instance = this;
+    var overlap = instance.container.overlap;
     var el = instance.element;
     var parent = instance.element.offsetParent;
     instance.distanceRemaining = {
-      top: 0 - el.offsetTop,
-      right: parent.offsetWidth - (el.offsetWidth + el.offsetLeft),
-      bottom: parent.offsetHeight - (el.offsetHeight + el.offsetTop),
-      left: 0 - el.offsetLeft
+      top: 0 - el.offsetTop - overlap[0],
+      right: parent.offsetWidth - (el.offsetWidth + el.offsetLeft) + overlap[1],
+      bottom: parent.offsetHeight - (el.offsetHeight + el.offsetTop) + overlap[0],
+      left: 0 - el.offsetLeft - overlap[0]
     }
   },
   getCursorCoords: function(evt){

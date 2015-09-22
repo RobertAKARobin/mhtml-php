@@ -84,9 +84,9 @@ h1{
   width:100%;
   font-size:14px;
   line-height:22px;
-  z-index:0;
+  z-index:1000;
   background-color:rgba(240, 220, 255, 0.6);
-  display:flex;
+  display:none;
 }
 #controls button{
   flex-basis:50px;
