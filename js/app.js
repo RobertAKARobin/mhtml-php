@@ -1,58 +1,37 @@
 window.onload = function(){
   var tilesDiv = document.getElementById("tiles");
-  var tiles = tilesDiv.children, tile;
-  var draggables = [];
-  var i = tiles.length;
+  var i = tilesDiv.children.length;
+  var element;
+
+  tilesDiv.addEventListener("tileCreate", onCreate);
   while(i--){
-    tile = new Tile(true, tiles[i]).element;
-    tile.addEventListener("tileDelete", deleteTile);
-    new Draggable(true, tile);
+    element = tilesDiv.children[i];
+    element.Tile = new Tile(true, element);
   }
-  tilesDiv.addEventListener("tileCreate", function(){
-    var tile = tilesDiv.children[tilesDiv.children.length - 1];
-    draggables.push(new Draggable(true, tile));
-    tile.focus();
-    tile.addEventListener("tileDelete", deleteTile);
-  });
-  function deleteTile(){
-    var tile = this;
-    var parent = tile.parentElement;
-    var offsetParent = tile.offsetParent;
-    var i = draggables.length, draggable, index, element;
-    var startPosition = {};
-    var startOffset = {};
-    var endOffset = {};
-    while(i--){
-      draggable = draggables[i];
-      element = draggable.element;
-      if(element == tile){
-        draggables[i] = undefined;
-        continue;
-      }
-      draggable.index = i;
-      startPosition[i] = {
-        top: parseInt(element.style.top),
-        left: parseInt(element.style.left)
-      }
-      startOffset[i] = {
-        top: element.offsetTop,
-        left: element.offsetLeft
-      }
-    }
-    parent.removeChild(tile);
-    console.dir(draggables);
-    i = draggables.length;
-    while(i--){
-      draggable = draggables[i];
-      if(!draggable) continue;
-      index = draggable.index;
-      endOffset[index] = {
-        top: draggable.element.offsetTop,
-        left: draggable.element.offsetLeft
-      }
-      draggable.setPosition("top", startPosition[index].top + (startOffset[index].top - endOffset[index].top));
-      draggable.setPosition("left", startPosition[index].left + (startOffset[index].left - endOffset[index].left));
-    }
+
+  function onCreate(evt){
+    var element = tilesDiv.children[tilesDiv.children.length - 1];
+    element.Draggable = new Draggable(true, element);
+    activateTile(element);
+  }
+  function activateTile(element){
+    element.focus();
+    element.addEventListener("tileAppend", appendTile);
+    element.addEventListener("tileDelete", deleteTile);
+  }
+  function appendTile(evt){
+    var base = this;
+    var tile = new Tile(true);
+    var draggable;
+    tile.element.Tile = tile;
+    tile.placeInParent(tilesDiv);
+    tile.element.Draggable.placeRelativeTo(base);
+  }
+  function deleteTile(evt){
+    var element = this;
+    var parent = element.parentElement;
+    parent.removeChild(element);
+    parent.children[parent.children.length - 1].focus();
   }
 }
 

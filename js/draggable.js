@@ -4,6 +4,7 @@ function Draggable(canOverlap, element){
   instance.isAbleToBeDragged = true;
   instance.canOverlap = canOverlap;
   instance.element = element;
+  instance.element.style.position = "absolute";
   instance.parent = instance.element.parentElement;
   instance.getInitialPositions();
   // Have to do this here, instead of .bind in the addEventListener
@@ -69,8 +70,8 @@ Draggable.prototype = {
   getStartingPositions: function(evt){
     var instance = this;
     instance.startingPosition = {
-      top: parseInt(instance.element.style.top) || 0,
-      left: parseInt(instance.element.style.left) || 0
+      top: instance.element.offsetTop,
+      left: instance.element.offsetLeft
     }
     instance.startingCursor = {
       top: evt.clientY,
@@ -95,5 +96,22 @@ Draggable.prototype = {
   setPosition: function(direction, value){
     var instance = this;
     instance.element.style[direction] = value + "px";
+  },
+  placeRelativeTo: function(base){
+    var instance = this;
+    var maxPos = instance.maxPosition;
+    var startingPosition = {
+      top: base.offsetTop,
+      left: base.offsetLeft + base.offsetWidth
+    }
+    if(startingPosition.left > maxPos.left){
+      startingPosition.left = 0;
+      startingPosition.top = base.offsetTop + base.offsetHeight;
+      if(startingPosition.top > maxPos.top){
+        startingPosition.top = base.offsetTop - instance.element.offsetHeight;
+      }
+    }
+    instance.element.style.top = startingPosition.top + "px";
+    instance.element.style.left = startingPosition.left + "px";
   }
 };

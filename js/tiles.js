@@ -29,6 +29,7 @@ Tile.prototype = {
       element.type = "text";
     }else{
       tile.parent = element.parentElement;
+      tile.parent.dispatchEvent(Tile.events.create);
     }
     tile.element = element;
   },
@@ -36,12 +37,6 @@ Tile.prototype = {
     var tile = this;
     if(parent) tile.parent = parent;
     tile.parent.appendChild(tile.element);
-    tile.parent.dispatchEvent(Tile.events.create);
-  },
-  placeAfter: function(baseTile){
-    var tile = this;
-    tile.parent = baseTile.parent;
-    baseTile.parent.insertBefore(tile.element, baseTile.element.nextSibling);
     tile.parent.dispatchEvent(Tile.events.create);
   },
   onKeyDown: function(evt){
@@ -52,8 +47,7 @@ Tile.prototype = {
       tile.delete();
     }else if(evt.keyCode in Tile.spaceKeys){
       evt.preventDefault();
-      newTile = new Tile(true);
-      newTile.placeAfter(tile);
+      tile.element.dispatchEvent(Tile.events.append);
     }
   },
   delete: function(){
