@@ -1,17 +1,20 @@
 window.onload = function(){
   var tilesDiv = document.getElementById("tiles");
-  var i = tilesDiv.children.length;
-  var element;
+  // var i = tilesDiv.children.length;
+  var i = 1;
+  var tile;
 
   tilesDiv.addEventListener("tileCreate", onCreate);
   while(i--){
-    element = tilesDiv.children[i];
-    element.Tile = new Tile(true, element);
+    //element = tilesDiv.children[i];
+    tile = new Tile();
+    tile.element.Tile = tile;
+    tile.placeInParent(tilesDiv);
   }
 
   function onCreate(evt){
     var element = tilesDiv.children[tilesDiv.children.length - 1];
-    element.Draggable = new Draggable(true, element);
+    element.Draggable = new Draggable(element);
     element.addEventListener("tileAppend", appendTile);
     element.addEventListener("tileUpdate", updateTile);
   }
@@ -20,12 +23,11 @@ window.onload = function(){
     var sample = document.createElement("SPAN");
     sample.style.fontSize = tile.style.fontSize;
     sample.innerText = tile.value;
-    console.dir(sample);
     // tile.style.width = sample.clientWidth + "px";
   }
   function appendTile(evt){
     var base = this;
-    var tile = new Tile(true);
+    var tile = new Tile();
     tile.element.Tile = tile;
     tile.placeInParent(tilesDiv);
     tile.element.Draggable.placeRelativeTo(base);

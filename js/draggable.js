@@ -1,8 +1,7 @@
-function Draggable(canOverlap, element){
+function Draggable(element){
   var instance = this;
   instance.isDragging = false;
   instance.isAbleToBeDragged = true;
-  instance.canOverlap = canOverlap;
   instance.element = element;
   instance.element.style.position = "absolute";
   instance.parent = instance.element.parentElement;

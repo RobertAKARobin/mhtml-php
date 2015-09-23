@@ -1,8 +1,7 @@
-function Tile(isEditable, element){
+function Tile(element){
   var tile = this;
   tile.setElement(element);
-  tile.isEditable = isEditable;
-  tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));
+  tile.element.addEventListener("keydown", tile.onKeyDown.bind(tile));
 }
 Tile.events = (function(){
   return {
@@ -17,16 +16,12 @@ Tile.events = (function(){
     return evt;
   }
 }());
-Tile.spaceKeys = {
-  // 32: "space",
-  13: "return"
-  // 9: "tab"
-};
 Tile.prototype = {
   setElement: function(element){
     var tile = this;
     if(!element){
-
+      element = document.createElement("INPUT");
+      element.type = "input";
     }else{
       tile.parent = element.parentElement;
       tile.parent.dispatchEvent(Tile.events.create);
@@ -40,13 +35,12 @@ Tile.prototype = {
     tile.parent.dispatchEvent(Tile.events.create);
     tile.element.focus();
   },
-  onKeyUp: function(evt){
+  onKeyDown: function(evt){
     var tile = this,
         newTile;
-    if(!tile.isEditable) evt.preventDefault();
-    if(evt.keyCode == "8"){
+    if(evt.keyCode == 8){
       tile.delete();
-    }else if(evt.keyCode in Tile.spaceKeys){
+    }else if(evt.keyCode == 13){
       evt.preventDefault();
       tile.element.dispatchEvent(Tile.events.append);
     }else{
@@ -57,7 +51,7 @@ Tile.prototype = {
     var tile = this,
         element = tile.element,
         parent = tile.parent;
-    if(element.innerText.length == 0 && parent.children.length > 1){
+    if(element.value.length == 0 && parent.children.length > 1){
       parent.removeChild(element);
       parent.children[parent.children.length - 1].focus();
     }
