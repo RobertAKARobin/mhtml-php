@@ -12,26 +12,23 @@ window.onload = function(){
   function onCreate(evt){
     var element = tilesDiv.children[tilesDiv.children.length - 1];
     element.Draggable = new Draggable(true, element);
-    activateTile(element);
-  }
-  function activateTile(element){
-    element.focus();
     element.addEventListener("tileAppend", appendTile);
-    element.addEventListener("tileDelete", deleteTile);
+    element.addEventListener("tileUpdate", updateTile);
+  }
+  function updateTile(evt){
+    var tile = this;
+    var sample = document.createElement("SPAN");
+    sample.style.fontSize = tile.style.fontSize;
+    sample.innerText = tile.value;
+    console.dir(sample);
+    // tile.style.width = sample.clientWidth + "px";
   }
   function appendTile(evt){
     var base = this;
     var tile = new Tile(true);
-    var draggable;
     tile.element.Tile = tile;
     tile.placeInParent(tilesDiv);
     tile.element.Draggable.placeRelativeTo(base);
-  }
-  function deleteTile(evt){
-    var element = this;
-    var parent = element.parentElement;
-    parent.removeChild(element);
-    parent.children[parent.children.length - 1].focus();
   }
 }
 

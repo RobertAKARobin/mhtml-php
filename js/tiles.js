@@ -2,11 +2,12 @@ function Tile(isEditable, element){
   var tile = this;
   tile.setElement(element);
   tile.isEditable = isEditable;
-  tile.element.addEventListener("keydown", tile.onKeyDown.bind(tile));
+  tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));
 }
 Tile.events = (function(){
   return {
     create: defineEvent("tileCreate"),
+    update: defineEvent("tileUpdate"),
     append: defineEvent("tileAppend"),
     delete: defineEvent("tileDelete")
   }
@@ -17,7 +18,7 @@ Tile.events = (function(){
   }
 }());
 Tile.spaceKeys = {
-  32: "space",
+  // 32: "space",
   13: "return"
   // 9: "tab"
 };
@@ -25,8 +26,7 @@ Tile.prototype = {
   setElement: function(element){
     var tile = this;
     if(!element){
-      element = document.createElement("INPUT");
-      element.type = "text";
+
     }else{
       tile.parent = element.parentElement;
       tile.parent.dispatchEvent(Tile.events.create);
@@ -38,8 +38,9 @@ Tile.prototype = {
     if(parent) tile.parent = parent;
     tile.parent.appendChild(tile.element);
     tile.parent.dispatchEvent(Tile.events.create);
+    tile.element.focus();
   },
-  onKeyDown: function(evt){
+  onKeyUp: function(evt){
     var tile = this,
         newTile;
     if(!tile.isEditable) evt.preventDefault();
@@ -48,14 +49,17 @@ Tile.prototype = {
     }else if(evt.keyCode in Tile.spaceKeys){
       evt.preventDefault();
       tile.element.dispatchEvent(Tile.events.append);
+    }else{
+      tile.element.dispatchEvent(Tile.events.update);
     }
   },
   delete: function(){
     var tile = this,
         element = tile.element,
         parent = tile.parent;
-    if(element.value.length == 0 && parent.children.length > 1){
-      element.dispatchEvent(Tile.events.delete);
+    if(element.innerText.length == 0 && parent.children.length > 1){
+      parent.removeChild(element);
+      parent.children[parent.children.length - 1].focus();
     }
   }
 }
