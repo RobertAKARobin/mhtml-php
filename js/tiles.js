@@ -54,7 +54,6 @@ Tile.prototype = {
       evt.preventDefault();
       newTile = new Tile(true);
       newTile.placeAfter(tile);
-      newTile.element.focus();
     }
   },
   delete: function(){
@@ -62,8 +61,7 @@ Tile.prototype = {
         element = tile.element,
         parent = tile.parent;
     if(element.value.length == 0 && parent.children.length > 1){
-      parent.removeChild(element);
+      element.dispatchEvent(Tile.events.delete);
     }
-    parent.children[parent.children.length - 1].focus();
   }
 }

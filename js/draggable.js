@@ -84,8 +84,16 @@ Draggable.prototype = {
     var elementPos = instance.startingPosition[direction] + cursorChange;
     var maxPos = instance.maxPosition[direction];
     var minPos = instance.minPosition[direction];
-    if(elementPos > maxPos) return maxPos;
-    else if(elementPos < minPos) return minPos;
-    else return elementPos;
+    if(elementPos > maxPos){
+      return maxPos;
+    }else if(elementPos < minPos){
+      return minPos;
+    }else{
+      return elementPos;
+    }
+  },
+  setPosition: function(direction, value){
+    var instance = this;
+    instance.element.style[direction] = value + "px";
   }
 };
