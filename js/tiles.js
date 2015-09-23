@@ -1,75 +1,69 @@
 function Tile(isEditable, element){
   var tile = this;
-
-  if(element) tile.element = element;
-  else {
-    tile.element = document.createElement("INPUT");
-    tile.element.type = "text";
-  }
+  tile.setElement(element);
   tile.isEditable = isEditable;
-  tile.element.addEventListener("keydown", tile.keyDown.bind(tile));
-  if(tile.element.parentElement){
-    tile.element.parentElement.dispatchEvent(Tile.events.create);
+  tile.element.addEventListener("keydown", tile.onKeyDown.bind(tile));
+}
+Tile.events = (function(){
+  return {
+    create: defineEvent("tileCreate"),
+    append: defineEvent("tileAppend"),
+    delete: defineEvent("tileDelete")
   }
-}
-Tile.events = {
-  create: (function(){
+  function defineEvent(name){
     var evt = document.createEvent("Event");
-    evt.initEvent("tileCreate", true, true);
+    evt.initEvent(name, true, true);
     return evt;
-  }()),
-  split: (function(){
-    var evt = document.createEvent("Event");
-    evt.initEvent("tileSplit", true, true);
-    return evt;
-  }())
-}
+  }
+}());
 Tile.spaceKeys = {
   32: "space",
   13: "return"
   // 9: "tab"
-}
+};
 Tile.prototype = {
-  keyDown: function(evt){
+  setElement: function(element){
     var tile = this;
+    if(!element){
+      element = document.createElement("INPUT");
+      element.type = "text";
+    }else{
+      tile.parent = element.parentElement;
+    }
+    tile.element = element;
+  },
+  placeInParent: function(parent){
+    var tile = this;
+    if(parent) tile.parent = parent;
+    tile.parent.appendChild(tile.element);
+    tile.parent.dispatchEvent(Tile.events.create);
+  },
+  placeAfter: function(baseTile){
+    var tile = this;
+    tile.parent = baseTile.parent;
+    baseTile.parent.insertBefore(tile.element, baseTile.element.nextSibling);
+    tile.parent.dispatchEvent(Tile.events.create);
+  },
+  onKeyDown: function(evt){
+    var tile = this,
+        newTile;
     if(!tile.isEditable) evt.preventDefault();
     if(evt.keyCode == "8"){
       tile.delete();
     }else if(evt.keyCode in Tile.spaceKeys){
       evt.preventDefault();
-      tile.split();
+      newTile = new Tile(true);
+      newTile.placeAfter(tile);
+      newTile.element.focus();
     }
-  },
-  appendTo: function(parent){
-    var tile = this;
-    parent.appendChild(tile.element);
-    parent.dispatchEvent(Tile.events.create);
   },
   delete: function(){
-    var tile = this;
-    if(tile.element.value.length == 0
-    && tile.element.parentElement.children.length > 1){
-      tile.element.parentElement.removeChild(tile.element);
+    var tile = this,
+        element = tile.element,
+        parent = tile.parent;
+    if(element.value.length == 0 && parent.children.length > 1){
+      parent.removeChild(element);
     }
-  },
-  placeRelativeTo: function(baseTile){
-    var tile = this;
-    var distanceRight = baseTile.offsetWidth - (baseTile.offsetWidth + baseTile.offsetLeft);
-    var distanceBottom = baseTile.offsetHeight - (baseTile.offsetHeight + baseTile.offsetTop);
-    if(distanceRight < tile.offsetWidth){
-      tile.element.style.left = distanceRight + "px";
-      tile.element.style.top = baseTile.offsetTop + "px";
-    }else{
-      tile.element.style.left = baseTile.offsetLeft + "px";
-      tile.element.style.top = distanceBottom + "px";
-    }
-  },
-  split: function(){
-    var oldTile = this;
-    var parent = oldTile.element.parentElement;
-    var newTile = new Tile(true);
-    newTile.appendTo(parent);
-    newTile.placeRelativeTo(oldTile.element);
-    parent.dispatchEvent(Tile.events.split);
+    parent.children[parent.children.length - 1].focus();
   }
 }

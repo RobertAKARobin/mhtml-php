@@ -1,6 +1,7 @@
 .tags>*{
   color:#881280;
   display:inline-block;
+  position:relative;
   white-space:nowrap;
   font-size:12px;
   line-height:18px;
