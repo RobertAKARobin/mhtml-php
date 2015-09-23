@@ -98,6 +98,17 @@ h1{
 #controls button:hover{
   background-color:rgba(255, 255, 255, 0.6);
 }
+.draggable>*{
+  cursor:move;
+}
+.invisible{
+  display:block !important;
+  z-index:2000 !important;
+  position:fixed !important;
+  top:100px !important;
+  left:100px !important;
+  /*opacity:0.01;*/
+}
 
 /*@media screen and (max-width: 640px){
   body{

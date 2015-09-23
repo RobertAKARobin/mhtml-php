@@ -1,4 +1,4 @@
-.tags>*{
+.tiles input, .tile{
   color:#881280;
   display:inline-block;
   position:relative;
@@ -16,25 +16,22 @@
   box-shadow:0px 0px 5px 0px #554;
   z-index:100;
 }
-.draggable>*{
-  cursor:move;
-}
-.tags>:hover{
+.tiles input:hover{
   background-color:#fff;
   border-color:#fff #bbb #bbb #fff;
 }
-.tags>:focus{
+.tiles input:focus{
   box-shadow:0px 0px 10px 0 #fff;
 }
-.tags>.w{
+.tiles input.w{
   color:black;
   font-family:"Georgia", serif;
   font-weight:normal;
   text-transform:lowercase;
 }
-.tags>.c{
+.tiles input.c{
   color:#994500;
 }
-.tags>.b{
+.tiles input.b{
   color:#1a1aa6;
 }

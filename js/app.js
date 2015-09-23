@@ -1,5 +1,8 @@
 window.onload = function(){
   var tilesDiv = document.getElementById("tiles");
+  var tileWidthCalculator = document.createElement("SPAN");
+  tileWidthCalculator.className = "invisible tile";
+  document.body.appendChild(tileWidthCalculator);
   // var i = tilesDiv.children.length;
   var i = 1;
   var tile;
@@ -20,10 +23,8 @@ window.onload = function(){
   }
   function updateTile(evt){
     var tile = this;
-    var sample = document.createElement("SPAN");
-    sample.style.fontSize = tile.style.fontSize;
-    sample.innerText = tile.value;
-    // tile.style.width = sample.clientWidth + "px";
+    tileWidthCalculator.innerText = tile.value;
+    tile.style.width = tileWidthCalculator.offsetWidth + "px";
   }
   function appendTile(evt){
     var base = this;
