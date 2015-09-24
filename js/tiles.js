@@ -33,15 +33,6 @@ TileFactory.prototype = {
       bottom: parent.offsetTop + parent.offsetHeight
     }
   },
-  getTileStatuses: function(){
-    var i = Tile.all.length;
-    var output = {active: 0, inactive: 0};
-    while(i--){
-      if(Tile.all[i]) output.active++;
-      else output.inactive++;
-    }
-    return output;
-  },
   sortTilesByLocation: function(){
     var factory = this;
     var tiles = Array.prototype.slice.call(factory.element.children);
@@ -116,6 +107,7 @@ function Tile(factory){
   tile.element.addEventListener("keypress", tile.onKeyPress.bind(tile));
   tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));
   tile.element.addEventListener("mousedown", tile.onMouseDown.bind(tile));
+  tile.element.addEventListener("change", tile.onChange.bind(tile));
 }
 Tile.defineEvent = function(name){
   var evt = document.createEvent("Event");
@@ -134,7 +126,6 @@ Tile.prototype = {
     if(add) text = text + Array((add) + 1).join("_");
     factory.widthCalculator.element.className = tile.element.className;
     tile.element.style.width = factory.widthCalculator.update(text) + "px";
-    factory.element.dispatchEvent(Tile.events.update);
   },
   update: function(text){
     var tile = this;
@@ -174,6 +165,10 @@ Tile.prototype = {
       tile.calculateNewWidth();
       tile.calculateDeleteWidth = false;
     }
+  },
+  onChange: function(){
+    var tile = this;
+    tile.factory.element.dispatchEvent(Tile.events.update);
   },
   onMouseDown: function(evt){
     var tile = this;

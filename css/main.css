@@ -108,6 +108,14 @@ nav{
   left:-310px;
 }
 
+#view{
+  overflow:hidden;
+}
+#frame{
+  width:100%;
+  height:100vh;
+}
+
 /*@media screen and (max-width: 640px){
   body{
     width:190vw;
