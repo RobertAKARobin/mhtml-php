@@ -5,7 +5,7 @@ window.onload = function(){
   tileFactory.element.addEventListener("tileCreate", function(){
     new Draggable(tileFactory.latest.element);
   });
-  tileFactory.create();
+  tileFactory.create("Hi there!");
 }
 
 /*

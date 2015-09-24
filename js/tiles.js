@@ -6,20 +6,22 @@ function TileFactory(parent){
   factory.getEdges();
 }
 TileFactory.prototype = {
-  create: function(){
+  create: function(text){
     var factory = this;
     var tile = new Tile(factory);
     factory.element.appendChild(tile.element);
     factory.latest = tile;
     factory.element.dispatchEvent(Tile.events.create);
     tile.element.focus();
+    if(text) tile.update(text);
     return tile;
   },
   destroy: function(tile){
     var factory = this;
     if(factory.element.children.length <= 1) return;
     var tiles = factory.sortTilesByLocation();
-    tiles[tiles.indexOf(tile.element) - 1].focus();
+    var focuser = tiles[tiles.indexOf(tile.element) - 1];
+    (focuser || tiles[1]).focus();
     factory.element.removeChild(tile.element);
   },
   getEdges: function(){
@@ -100,8 +102,9 @@ function Tile(factory){
   tile.element.type = "input";
   tile.element.className = "tile";
   tile.element.addEventListener("keydown", tile.onKeyDown.bind(tile));
+  tile.element.addEventListener("keypress", tile.onKeyPress.bind(tile));
   tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));
-  tile.element.addEventListener("mouseup", tile.onMouseUp.bind(tile));
+  tile.element.addEventListener("mousedown", tile.onMouseDown.bind(tile));
 }
 Tile.defineEvent = function(name){
   var evt = document.createEvent("Event");
@@ -117,6 +120,11 @@ Tile.prototype = {
     length = tile.element.value.length + (add || 0);
     tile.element.style.width = tile.widthCalculator.update(length) + "px";
   },
+  update: function(text){
+    var tile = this;
+    tile.element.value = text;
+    tile.calculateNewWidth(1);
+  },
   onKeyDown: function(evt){
     var tile = this;
     var key = evt.keyCode;
@@ -125,33 +133,52 @@ Tile.prototype = {
         evt.preventDefault();
         tile.factory.destroy(tile);
       }
-      tile.calculateWidthOnKeyUp = true;
+      tile.calculateDeleteWidth = true;
     }else if(key == 13){
       evt.preventDefault();
       tile.factory.appendNewTileTo(tile.element);
-    }else if(key == 32 || (key >= 48 && key <= 90 )){
+    }
+  },
+  onKeyPress: function(evt){
+    var tile = this;
+    var element = tile.element;
+    var parent = tile.factory.element;
+    if(element.offsetWidth > parent.offsetWidth - 10){
+      evt.preventDefault();
+    }else{
       tile.calculateNewWidth(2);
+    }
+    if(tile.edge("right") > tile.factory.edge.right){
+      element.style.left = tile.factory.edge.right - element.offsetWidth + "px";
     }
   },
   onKeyUp: function(evt){
     var tile = this;
-    if(tile.calculateWidthOnKeyUp){
+    if(tile.calculateDeleteWidth){
       tile.calculateNewWidth(1);
-      tile.calculateWidthOnKeyUp = false;
-    }
-    if(tile.edge("right") > tile.factory.edge.right){
-      tile.element.style.left = "0px";
-      tile.element.style.top = tile.edge("bottom") + "px";
+      tile.calculateDeleteWidth = false;
     }
   },
-  onMouseUp: function(evt){
+  onMouseDown: function(evt){
     var tile = this;
+    tile.onMouseUp = tile.onMouseUp.bind(tile);
+    window.addEventListener("mouseup", tile.onMouseUp);
+  },
+  onMouseUp: function(){
+    var tile = this;
+    window.removeEventListener("mouseup", tile.onMouseUp);
     tile.alignToLaterals();
   },
   alignToLaterals: function(){
     var tile = this;
     var element = tile.element;
     var output = Math.round(element.offsetTop / tile.factory.height) * tile.factory.height;
+    var bottomEdge = output + element.offsetHeight;
+    if(bottomEdge > tile.factory.element.offsetHeight){
+      output = bottomEdge - (2 * element.offsetHeight);
+    }else if(output < 0){
+      output = 0;
+    }
     tile.element.style.top = output + "px";
   },
   edge: function(d){
