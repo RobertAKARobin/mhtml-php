@@ -54,11 +54,11 @@ h1{
   font-size:0;
 }
 
-#sandbox{
+body{
   display:flex;
 }
 #create, #view{
-  flex-basis:320px;
+  flex-basis:310px;
   height:100vh;
   /*overflow:hidden;*/
 }
@@ -80,24 +80,19 @@ h1{
 nav{
   display:none;
 }
-#controls{
-  position:fixed;
-  top:0;
-  left:298px;
-  font-size:12px;
-  line-height:22px;
-  z-index:1000;
-}
-#controls button{
+#htmlButton{
   display:block;
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background-color:#ddf;
-  opacity:0.8;
+  position:absolute;
+  border-radius:0 0px 10px 0;
+  padding:0;
+  top:0px;
+  left:310px;
+  width:33px;
+  height:22px;
   transition:opacity .2s;
 }
-#controls button:hover{
+#htmlButton:hover{
+  background-color:white;
   opacity:1;
 }
 
@@ -106,13 +101,11 @@ nav{
   z-index:100;
   left:0;
   top:0;
-  padding:0 5px;
-  width:320px;
-  background-color:rgba(0,0,0,0.4);
-  transition:left 1s;
+  width:310px;
+  transition:left .5s;
 }
 #html.off{
-  left:-320px;
+  left:-310px;
 }
 
 /*@media screen and (max-width: 640px){

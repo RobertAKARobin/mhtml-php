@@ -3,42 +3,37 @@
   white-space:nowrap;
   font-size:12px;
   height:22px;
+  min-width:15px;
   line-height:22px;
   vertical-align:top;
-  outline:1px solid #ddc;
-  background-color:#fcfcfc;
+  border-width:1px;
+  border-style:solid;
+  border-color:#fff #ddc #ddc #fff;
+  background-color:#fff;
   z-index:100;
   color:black;
   font-family:"Georgia", serif;
   font-weight:normal;
+  opacity:0.9;
 }
 .tile:hover{
-  background-color:#eef;
   cursor:pointer;
+  opacity:1;
 }
 .tile.draggable{
   position:absolute;
   cursor:move;
-  padding:0px 3px;
-  margin:0 2px 2px 0;
-  border-width:1px;
-  border-style:solid;
-  border-color:#fff #ddc #ddc #fff;
-  box-shadow:0px 0px 5px 0px #554;
-  min-width:15px;
-  width:15px;
-  outline:none;
-}
-.tile.draggable:hover{
   background-color:#fff;
-  border-color:#fff #bbb #bbb #fff;
+  box-shadow:0px 0px 5px 0px #554;
+  width:15px;
+  opacity:1;
 }
 .tile.draggable:focus{
-  box-shadow:0px 0px 10px 0 #fff;
+  box-shadow:0px 0px 10px 2px #fff;
 }
 .tile.t{
   color:#881280;
-  padding: 0;
+  padding:0 6.2px;
   font-family:"Andale Mono", sans-serif;
 }
 .tile.c{

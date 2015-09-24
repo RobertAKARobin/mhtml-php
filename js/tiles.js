@@ -91,8 +91,8 @@ function TileWidthCalculator(){
   var element = document.createElement("SPAN");
   element.style.width = "auto";
   element.style.position = "fixed";
-  element.style.left = "500px";
-  element.style.top = "100px";
+  element.style.left = "-500px";
+  element.style.top = "-100px";
   element.style.zIndex = "2000";
   document.body.appendChild(element);
   calculator.element = element;
@@ -123,7 +123,8 @@ Tile.defineEvent = function(name){
   return evt;
 }
 Tile.events = {
-  create: Tile.defineEvent("tileCreate")
+  create: Tile.defineEvent("tileCreate"),
+  update: Tile.defineEvent("tileUpdate")
 }
 Tile.prototype = {
   calculateNewWidth: function(add){
@@ -133,6 +134,7 @@ Tile.prototype = {
     if(add) text = text + Array((add) + 1).join("_");
     factory.widthCalculator.element.className = tile.element.className;
     tile.element.style.width = factory.widthCalculator.update(text) + "px";
+    factory.element.dispatchEvent(Tile.events.update);
   },
   update: function(text){
     var tile = this;
@@ -181,19 +183,7 @@ Tile.prototype = {
   onMouseUp: function(){
     var tile = this;
     window.removeEventListener("mouseup", tile.onMouseUp);
-    tile.alignToLaterals();
-  },
-  alignToLaterals: function(){
-    var tile = this;
-    var element = tile.element;
-    var output = Math.round(element.offsetTop / tile.factory.height) * tile.factory.height;
-    var bottomEdge = output + element.offsetHeight;
-    if(bottomEdge > tile.factory.element.offsetHeight){
-      output = bottomEdge - (2 * element.offsetHeight);
-    }else if(output < 0){
-      output = 0;
-    }
-    tile.element.style.top = output + "px";
+    tile.factory.element.dispatchEvent(Tile.events.update);
   },
   edge: function(d){
     var tile = this, element = tile.element;

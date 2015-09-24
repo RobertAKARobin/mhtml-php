@@ -1,23 +1,24 @@
 var tileFactory = {};
 window.onload = function(){
+  var frame = el("frame");
   var tilesDiv = el("tiles");
   new TileFactory(tilesDiv, function(factory){
     tileFactory = factory;
     factory.element.addEventListener("tileCreate", makeTileDraggable);
+    factory.element.addEventListener("tileUpdate", submitTiles);
     function makeTileDraggable(){
       var draggable = new Draggable(tileFactory.latest.element);
       draggable.element.className += " tile draggable";
     }
+    function submitTiles(){
+      var text = factory.getTilesText();
+      frame.src = "data:text/html;charset=utf-8," + escape(text.join(""));
+    }
   });
-  tileFactory.create();
-  var foo = "data:text/html;charset=utf-8," + escape("<h1>Harpoon</h1>");
-  el("frame").src = foo;
 
   htmlFactory = new HTMLFactory(el("html"), el("htmlButton"));
   ajax("GET", "./assets/tiles.txt", function(data){
     htmlFactory.bulkCreate(data, formatNewTag);
-    htmlFactory.toggle();
-
     function formatNewTag(tag){
       tag.addEventListener("click", function(){
         var tile = tileFactory.create();
@@ -59,7 +60,7 @@ HTMLFactory.prototype = {
     var factory = this;
     var tag = document.createElement("SPAN");
     tag.className = "tile t";
-    tag.innerText = "\xa0" + input + "\xa0";
+    tag.innerText = input;
     factory.element.appendChild(tag);
     return tag;
   },
@@ -76,9 +77,8 @@ HTMLFactory.prototype = {
   toggle: function(){
     var factory = this;
     var element = factory.element;
-    var hideClass = "static off";
-    var showClass = "static";
-    if(element.className == hideClass) element.className = showClass;
+    var hideClass = "off";
+    if(element.className == hideClass) element.className = "";
     else element.className = hideClass;
   }
 }

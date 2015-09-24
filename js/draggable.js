@@ -1,7 +1,6 @@
 function Draggable(element){
   var instance = this;
   instance.isDragging = false;
-  instance.isAbleToBeDragged = true;
   instance.element = element;
   instance.element.style.position = "absolute";
   instance.parent = instance.element.parentElement;
@@ -19,7 +18,7 @@ Draggable.prototype = {
   startDragging: function(evt){
     var instance = this, startEvent, endEvent;
     var isTouchy = evt.type == "touchstart";
-    if(instance.isDragging || !instance.isAbleToBeDragged){
+    if(instance.isDragging){
       return;
     }else{
       instance.isDragging = true;
@@ -46,6 +45,7 @@ Draggable.prototype = {
     window.removeEventListener("touchend", instance.drop);
     window.removeEventListener("mousemove", instance.drag);
     window.removeEventListener("mouseup", instance.drop);
+    instance.snapToGrid();
   },
   getInitialPositions: function(){
     var instance = this;
@@ -92,8 +92,18 @@ Draggable.prototype = {
       return elementPos;
     }
   },
-  setPosition: function(direction, value){
+  snapToGrid: function(){
     var instance = this;
-    instance.element.style[direction] = value + "px";
-  }
+    var element = instance.element;
+    var parent = instance.parent;
+    var proportion = element.offsetTop / element.offsetHeight;
+    var output = Math.round(proportion) * element.offsetHeight;
+    var bottomEdge = output + element.offsetHeight;
+    if(bottomEdge > parent.offsetHeight){
+      output = bottomEdge - (2 * element.offsetHeight);
+    }else if(output < 0){
+      output = 0;
+    }
+    element.style.top = output + "px";
+  },
 };
