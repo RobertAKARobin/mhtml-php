@@ -95,22 +95,5 @@ Draggable.prototype = {
   setPosition: function(direction, value){
     var instance = this;
     instance.element.style[direction] = value + "px";
-  },
-  placeRelativeTo: function(base){
-    var instance = this;
-    var maxPos = instance.maxPosition;
-    var startingPosition = {
-      top: base.offsetTop,
-      left: base.offsetLeft + base.offsetWidth
-    }
-    if(startingPosition.left > maxPos.left){
-      startingPosition.left = 0;
-      startingPosition.top = base.offsetTop + base.offsetHeight;
-      if(startingPosition.top > maxPos.top){
-        startingPosition.top = base.offsetTop - instance.element.offsetHeight;
-      }
-    }
-    instance.element.style.top = startingPosition.top + "px";
-    instance.element.style.left = startingPosition.left + "px";
   }
 };

@@ -1,13 +1,15 @@
-.tiles input, .tile{
+.tile{
   color:#881280;
   display:inline-block;
   position:relative;
   white-space:nowrap;
   font-size:12px;
-  height:18px;
-  line-height:18px;
+  min-width:15px;
+  width:15px;
+  height:22px;
+  line-height:22px;
   vertical-align:top;
-  padding:1px 2px;
+  padding:0px 2px;
   margin:0 2px 2px 0;
   border-width:1px;
   border-style:solid;
@@ -16,22 +18,22 @@
   box-shadow:0px 0px 5px 0px #554;
   z-index:100;
 }
-.tiles input:hover{
+.tile:hover{
   background-color:#fff;
   border-color:#fff #bbb #bbb #fff;
 }
-.tiles input:focus{
+.tile:focus{
   box-shadow:0px 0px 10px 0 #fff;
 }
-.tiles input.w{
+.tile.w{
   color:black;
   font-family:"Georgia", serif;
   font-weight:normal;
   text-transform:lowercase;
 }
-.tiles input.c{
+.tile.c{
   color:#994500;
 }
-.tiles input.b{
+.tile.b{
   color:#1a1aa6;
 }
