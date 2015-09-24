@@ -34,18 +34,17 @@
       </div>
     </main>
     <footer id="sandbox" data-ng-app="magnetic">
+      <div id="controls">
+        <button id="htmlButton" title="Show HTML tiles">&lt;/a&gt;</button>
+        <button id="saveButton" title="Save">&gt;&gt;&gt;&gt;</button>
+        <button id="saveButton" title="Copy">&lt;&lt;&lt;&lt;</button>
+        <button id="deleteButton" title="Delete all">&lt;del&gt;</button>
+      </div>
       <div id="create">
-        <div id="controls">
-          <button id="htmlButton" title="Show HTML tiles">&lt;/a&gt;</button>
-          <button id="saveButton" title="Save (or copy)">&#10004;</button>
-          <button id="deleteButton" title="Delete tiles">&#10006;</button>
-          <button id="lookupButton" title="Look up others' creations">&#128269;</button>
-          <button id="accountButton" title="Your account">Log in</button>
-        </div>
         <div id="tiles" class="draggable">
 
         </div>
-        <div id="html">
+        <div id="html" class="static">
 
         </div>
       </div>

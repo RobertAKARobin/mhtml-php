@@ -1,39 +1,48 @@
 .tile{
-  color:#881280;
   display:inline-block;
-  position:absolute;
   white-space:nowrap;
   font-size:12px;
-  min-width:15px;
-  width:15px;
   height:22px;
   line-height:22px;
   vertical-align:top;
-  padding:0px 2px;
-  margin:0 2px 2px 0;
-  border-width:1px;
-  border-style:solid;
-  border-color:#fff #ddc #ddc #fff;
+  outline:1px solid #ddc;
   background-color:#fcfcfc;
-  box-shadow:0px 0px 5px 0px #554;
   z-index:100;
+  color:black;
+  font-family:"Georgia", serif;
+  font-weight:normal;
 }
 .tile:hover{
-  background-color:#fff;
-  border-color:#fff #bbb #bbb #fff;
+  background-color:#eef;
+  cursor:pointer;
 }
 .tile:focus{
   box-shadow:0px 0px 10px 0 #fff;
 }
-.tile.w{
-  color:black;
-  font-family:"Georgia", serif;
-  font-weight:normal;
-  text-transform:lowercase;
+.tile.t{
+  color:#881280;
+  font-family:"Andale Mono", sans-serif;
 }
 .tile.c{
   color:#994500;
 }
 .tile.b{
   color:#1a1aa6;
+}
+.draggable .tile{
+  position:absolute;
+  cursor:move;
+  padding:0px 3px;
+  margin:0 2px 2px 0;
+  border-width:1px;
+  border-style:solid;
+  border-color:#fff #ddc #ddc #fff;
+  box-shadow:0px 0px 5px 0px #554;
+  min-width:15px;
+  width:15px;
+  outline:none;
+}
+.draggable .tile:hover{
+  background-color:#fff;
+  border-color:#fff #bbb #bbb #fff;
 }

@@ -6,14 +6,15 @@ function TileFactory(parent){
   factory.getEdges();
 }
 TileFactory.prototype = {
-  create: function(text){
+  create: function(content, className){
     var factory = this;
     var tile = new Tile(factory);
     factory.element.appendChild(tile.element);
     factory.latest = tile;
     factory.element.dispatchEvent(Tile.events.create);
     tile.element.focus();
-    if(text) tile.update(text);
+    if(className) tile.element.className = className;
+    if(content) tile.update(content);
     return tile;
   },
   destroy: function(tile){
@@ -53,10 +54,21 @@ TileFactory.prototype = {
     });
     return tiles;
   },
-  appendNewTileTo: function(base){
+  getTilesText: function(){
+    var factory = this;
+    var tiles = factory.sortTilesByLocation();
+    var i = -1, l = tiles.length;
+    var output = [];
+    while(++i < l){
+      output.push(tiles[i].value);
+    }
+    return output;
+  },
+  appendNewTileTo: function(base, content, className){
     var factory = this;
     var edge = {};
-    var tile = factory.create();
+    var tile = factory.create(content, className);
+    if(!base) return tile;
     edge.top = base.offsetTop;
     edge.left = base.offsetLeft + base.offsetWidth;
     edge.bottom = edge.top + tile.element.offsetHeight;
@@ -70,17 +82,17 @@ TileFactory.prototype = {
     }
     tile.element.style.top = edge.top + "px";
     tile.element.style.left = edge.left + "px";
+    return tile;
   }
 }
 
 function TileWidthCalculator(){
   var calculator = this;
   var element = document.createElement("SPAN");
-  element.className = "tile";
   element.style.width = "auto";
   element.style.position = "fixed";
-  element.style.left = "-100px";
-  element.style.top = "-100px";
+  element.style.left = "500px";
+  element.style.top = "100px";
   element.style.zIndex = "2000";
   document.body.appendChild(element);
   calculator.element = element;
@@ -97,7 +109,6 @@ TileWidthCalculator.prototype = {
 function Tile(factory){
   var tile = this;
   tile.factory = factory;
-  tile.widthCalculator = factory.widthCalculator;
   tile.element = document.createElement("INPUT");
   tile.element.type = "input";
   tile.element.className = "tile";
@@ -117,8 +128,11 @@ Tile.events = {
 Tile.prototype = {
   calculateNewWidth: function(add){
     var tile = this, length;
+    var factory = tile.factory;
+    var text = tile.element.value.length;
     length = tile.element.value.length + (add || 0);
-    tile.element.style.width = tile.widthCalculator.update(length) + "px";
+    factory.widthCalculator.element.className = tile.element.className;
+    tile.element.style.width = factory.widthCalculator.update(length) + "px";
   },
   update: function(text){
     var tile = this;

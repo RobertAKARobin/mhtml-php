@@ -1,6 +1,3 @@
-www.magneticHTML.com  <header>  </header>
-<!-Made in the USA->  <footer>  </footer>
-alert("Small parts")  <script>  </script>
 <h1>  </h1>  &ldquo;  <canvas>  </canvas>
 <h2>  </h2>  &rdquo;  <strong>  </strong>
 <h2>  </h2>  &mdash;  <button>  </button>
@@ -20,11 +17,30 @@ alert("Small parts")  <script>  </script>
 <dd>  </dd>  <p>  </p>  <table>  </table>
 <em>  </em>  <q>  </q>  <aside>  </aside>
 <tr>  </tr>  <s>  </s>  <label>  </label>
-</section>  <section>  &hellip;
-</section>  <section>  <a href="#">  </a>
-<img alt="  " src="#"/>  &lt;  &gt;  &pm;
 <textarea>  </textarea>  <!--  --->  &ne;
 
-&trade;
-<blockquote>
+<header>  </header>  &lt;  &gt;  &hellip;
+<footer>  </footer>  <section>  </section>
+
+
+<a href="  ">
+" src="  " />
 </blockquote>
+<blockquote>
+<img alt="
+</section>
+</section>
+<section>
+<section>
+</script>
+</footer>
+</header>
+<header>
+<footer>
+<script>
+&hellip;
+&trade;
+&lt;
+&gt;
+&pm;
+</a>
