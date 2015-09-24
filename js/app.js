@@ -1,30 +1,33 @@
 var tileFactory = {};
 window.onload = function(){
-  var tilesDiv = document.getElementById("tiles");
-  tileFactory = new TileFactory(tilesDiv);
-  tileFactory.element.addEventListener("tileCreate", function(){
-    new Draggable(tileFactory.latest.element);
-  });
-
-  ajax("GET", "./assets/tiles.txt", placeHTML);
-  // document.getElementById("save").addEventListener("click", submit);
-
-  function placeHTML(rawText){
-    var tagsDiv = document.getElementById("html");
-    var tags = rawText.trim().split(/  |\n/);
-    var tag;
-    var i = -1, l = tags.length;
-    while(++i < l){
-      tag = document.createElement("SPAN");
-      tag.className = "tile t";
-      tag.innerText = "\xa0" + tags[i] + "\xa0";
-      tagsDiv.appendChild(tag);
+  var tilesDiv = el("tiles");
+  new TileFactory(tilesDiv, function(factory){
+    tileFactory = factory;
+    factory.element.addEventListener("tileCreate", makeTileDraggable);
+    function makeTileDraggable(){
+      var draggable = new Draggable(tileFactory.latest.element);
+      draggable.element.className += " tile draggable";
     }
-  }
-  function submit(){
-    var text = tileFactory.getTilesText();
-    console.log(text);
-  }
+  });
+  tileFactory.create();
+  var foo = "data:text/html;charset=utf-8," + escape("<h1>Harpoon</h1>");
+  el("frame").src = foo;
+
+  htmlFactory = new HTMLFactory(el("html"), el("htmlButton"));
+  ajax("GET", "./assets/tiles.txt", function(data){
+    htmlFactory.bulkCreate(data, formatNewTag);
+    htmlFactory.toggle();
+
+    function formatNewTag(tag){
+      tag.addEventListener("click", function(){
+        var tile = tileFactory.create();
+        tile.element.className += " t";
+        tile.update(tag.innerText);
+        tile.element.style.top = tag.offsetTop + "px";
+        tile.element.style.left = tag.offsetLeft + "px";
+      });
+    }
+  });
 }
 
 function ajax(method, url, callback){
@@ -41,13 +44,41 @@ function ajax(method, url, callback){
   request.send();
 }
 
-/*
+function el(id){
+  return document.getElementById(id);
+}
 
-  (function loadCaptcha(){
-    var script = document.createElement("SCRIPT");
-    script.setAttribute("type", "text/javascript");
-    script.setAttribute("src", "https://www.google.com/recaptcha/api.js");
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-
-*/
+function HTMLFactory(element, trigger){
+  var factory = this;
+  factory.element = element;
+  factory.trigger = trigger;
+  factory.trigger.addEventListener("click", factory.toggle.bind(factory));
+}
+HTMLFactory.prototype = {
+  create: function(input, callback){
+    var factory = this;
+    var tag = document.createElement("SPAN");
+    tag.className = "tile t";
+    tag.innerText = "\xa0" + input + "\xa0";
+    factory.element.appendChild(tag);
+    return tag;
+  },
+  bulkCreate: function(input, callback){
+    var factory = this;
+    var tags = input.trim().split(/  |\n/);
+    var tag;
+    var i = -1, l = tags.length;
+    while(++i < l){
+      tag = factory.create(tags[i], parent);
+      callback(tag);
+    }
+  },
+  toggle: function(){
+    var factory = this;
+    var element = factory.element;
+    var hideClass = "static off";
+    var showClass = "static";
+    if(element.className == hideClass) element.className = showClass;
+    else element.className = hideClass;
+  }
+}

@@ -95,6 +95,7 @@ nav{
   border-radius:50%;
   background-color:#ddf;
   opacity:0.8;
+  transition:opacity .2s;
 }
 #controls button:hover{
   opacity:1;
@@ -103,10 +104,15 @@ nav{
 #html{
   position:absolute;
   z-index:100;
-  left:5px;
+  left:0;
   top:0;
-  width:310px;
-  background-color:rgba(255,255,255,0.8);
+  padding:0 5px;
+  width:320px;
+  background-color:rgba(0,0,0,0.4);
+  transition:left 1s;
+}
+#html.off{
+  left:-320px;
 }
 
 /*@media screen and (max-width: 640px){

@@ -1,19 +1,19 @@
-function TileFactory(parent){
+function TileFactory(parent, callback){
   var factory = this;
   factory.element = parent;
   factory.widthCalculator = new TileWidthCalculator();
   factory.height = factory.widthCalculator.element.offsetHeight;
   factory.getEdges();
+  callback(factory);
 }
 TileFactory.prototype = {
-  create: function(content, className){
+  create: function(content){
     var factory = this;
     var tile = new Tile(factory);
     factory.element.appendChild(tile.element);
     factory.latest = tile;
     factory.element.dispatchEvent(Tile.events.create);
     tile.element.focus();
-    if(className) tile.element.className = className;
     if(content) tile.update(content);
     return tile;
   },
@@ -98,10 +98,11 @@ function TileWidthCalculator(){
   calculator.element = element;
 }
 TileWidthCalculator.prototype = {
-  update: function(length){
+  update: function(text){
     var calculator = this;
     var element = calculator.element;
-    element.innerText = Array(length).join("a");
+    console.log(text);
+    element.innerText = text.replace(" ", "_");
     return element.offsetWidth;
   }
 }
@@ -111,7 +112,6 @@ function Tile(factory){
   tile.factory = factory;
   tile.element = document.createElement("INPUT");
   tile.element.type = "input";
-  tile.element.className = "tile";
   tile.element.addEventListener("keydown", tile.onKeyDown.bind(tile));
   tile.element.addEventListener("keypress", tile.onKeyPress.bind(tile));
   tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));
@@ -129,15 +129,15 @@ Tile.prototype = {
   calculateNewWidth: function(add){
     var tile = this, length;
     var factory = tile.factory;
-    var text = tile.element.value.length;
-    length = tile.element.value.length + (add || 0);
+    var text = tile.element.value;
+    if(add) text = text + Array((add) + 1).join("_");
     factory.widthCalculator.element.className = tile.element.className;
-    tile.element.style.width = factory.widthCalculator.update(length) + "px";
+    tile.element.style.width = factory.widthCalculator.update(text) + "px";
   },
   update: function(text){
     var tile = this;
     tile.element.value = text;
-    tile.calculateNewWidth(1);
+    tile.calculateNewWidth();
   },
   onKeyDown: function(evt){
     var tile = this;
@@ -160,7 +160,7 @@ Tile.prototype = {
     if(element.offsetWidth > parent.offsetWidth - 10){
       evt.preventDefault();
     }else{
-      tile.calculateNewWidth(2);
+      tile.calculateNewWidth(1);
     }
     if(tile.edge("right") > tile.factory.edge.right){
       element.style.left = tile.factory.edge.right - element.offsetWidth + "px";
@@ -169,7 +169,7 @@ Tile.prototype = {
   onKeyUp: function(evt){
     var tile = this;
     if(tile.calculateDeleteWidth){
-      tile.calculateNewWidth(1);
+      tile.calculateNewWidth();
       tile.calculateDeleteWidth = false;
     }
   },
