@@ -1,7 +1,7 @@
 .tile{
   color:#881280;
   display:inline-block;
-  position:relative;
+  position:absolute;
   white-space:nowrap;
   font-size:12px;
   min-width:15px;

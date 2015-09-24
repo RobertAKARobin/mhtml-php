@@ -1,13 +1,11 @@
+var tileFactory = {};
 window.onload = function(){
   var tilesDiv = document.getElementById("tiles");
-  var tile;
-  tilesDiv.addEventListener("tileCreate", onCreate);
-  tile = new Tile().setInDOM(tilesDiv);
-
-  function onCreate(evt){
-    var element = tilesDiv.children[tilesDiv.children.length - 1];
-    new Draggable(element);
-  }
+  tileFactory = new TileFactory(tilesDiv);
+  tileFactory.element.addEventListener("tileCreate", function(){
+    new Draggable(tileFactory.latest.element);
+  });
+  tileFactory.create();
 }
 
 /*
