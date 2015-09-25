@@ -1,6 +1,7 @@
 function TileFactory(parent){
   var factory = this;
   factory.element = parent;
+  factory.isTouchy = "ontouchstart" in window ? true : false;
   factory.widthCalculator = new TileWidthCalculator(parent.className);
   factory.height = factory.widthCalculator.element.offsetHeight;
   factory.getEdges();
@@ -112,7 +113,11 @@ function Tile(factory){
   tile.element.addEventListener("keydown", tile.onKeyDown.bind(tile));
   tile.element.addEventListener("keypress", tile.onKeyPress.bind(tile));
   tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));
-  tile.element.addEventListener("mousedown", tile.onMouseDown.bind(tile));
+  if(tile.factory.isTouchy){
+    tile.element.addEventListener("touchstart", tile.onMouseDown.bind(tile));
+  }else{
+    tile.element.addEventListener("mousedown", tile.onMouseDown.bind(tile));
+  }
   tile.element.addEventListener("change", tile.onChange.bind(tile));
 }
 Tile.defineEvent = function(name){
@@ -178,11 +183,16 @@ Tile.prototype = {
   onMouseDown: function(evt){
     var tile = this;
     tile.onMouseUp = tile.onMouseUp.bind(tile);
-    window.addEventListener("mouseup", tile.onMouseUp);
+    if(tile.factory.isTouchy){
+      window.addEventListener("touchend", tile.onMouseUp);
+    }else{
+      window.addEventListener("mouseup", tile.onMouseUp);
+    }
   },
   onMouseUp: function(){
     var tile = this;
     window.removeEventListener("mouseup", tile.onMouseUp);
+    window.removeEventListener("touchend", tile.onMouseUp);
     tile.factory.element.dispatchEvent(Tile.events.update);
   },
   edge: function(d){

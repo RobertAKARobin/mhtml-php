@@ -31,7 +31,7 @@ body,html{
   width:100%;
   min-width:320px;
   position:relative;
-  font-family:"Andale Mono";
+  font-family:"Andale Mono", monospace;
 }
 html{
   background-image:url("../assets/background.png");

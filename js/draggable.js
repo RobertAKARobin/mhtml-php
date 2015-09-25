@@ -3,28 +3,32 @@ function Draggable(element){
   instance.isDragging = false;
   instance.element = element;
   instance.element.style.position = "absolute";
+  instance.isTouchy = "ontouchstart" in window ? true : false;
   instance.parent = instance.element.parentElement;
   // Have to do this here, instead of .bind in the addEventListener
   // Otherwise can't removeEventListener
   instance.drag = instance.drag.bind(instance);
   instance.drop = instance.drop.bind(instance);
-  instance.element.addEventListener("mousedown",
+  if(instance.isTouchy){
+    instance.element.addEventListener("touchstart",
     instance.startDragging.bind(instance));
-  instance.element.addEventListener("touchstart",
+  }else{
+    instance.element.addEventListener("mousedown",
     instance.startDragging.bind(instance));
+  }
 };
 Draggable.prototype = {
   startDragging: function(evt){
     var instance = this, startEvent, endEvent;
-    var isTouchy = evt.type == "touchstart";
     if(instance.isDragging){
       return;
     }else{
       instance.isDragging = true;
     }
+    var evt = instance.isTouchy ? evt.touches[0] : evt;
     instance.getStartingPositions(evt);
-    startEvent = isTouchy ? "touchmove" : "mousemove";
-    endEvent = isTouchy ? "touchend" : "mouseup";
+    startEvent = instance.isTouchy ? "touchmove" : "mousemove";
+    endEvent = instance.isTouchy ? "touchend" : "mouseup";
     window.addEventListener(startEvent, instance.drag);
     window.addEventListener(endEvent, instance.drop);
   },
@@ -55,6 +59,7 @@ Draggable.prototype = {
       top: element.offsetTop,
       left: element.offsetLeft
     }
+    console.dir(evt);
     instance.startingCursor = {
       top: evt.clientY,
       left: evt.clientX
