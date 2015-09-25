@@ -10,12 +10,24 @@ window.onload = function(){
     var draggable = new Draggable(tileFactory.latest.element);
   });
   tileFactory.element.addEventListener("tileUpdate", refreshFrame);
-  ajax("GET", source, function(data, url){
+  ajax("GET", source, function(rawText, url){
     var horribleRegEx = /(&[#a-z0-9]+;)|(<!--)|(-->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z0-9\_\.\,\:\;\/\-\'\$\?\=\%]+)/g;
-    var tags = data.trim().match(horribleRegEx), tag;
-    var i = -1, l = tags.length;
+    var byLine = rawText.split("\n");
+    var i = -1, l = byLine.length;
+    var tile, numInLine, indent;
     while(++i < l){
-      tag = tileFactory.appendNewTileTo(tag, tags[i]);
+      numInLine = 0;
+      indent = byLine[i].match(/^\s*/)[0].length;
+      byLine[i].trim().replace(horribleRegEx, function(match){
+        var element;
+        tile = tileFactory.appendNewTileTo(tile, match);
+        element = tile.element;
+        if(numInLine === 0 && element.offsetLeft > 0){
+          tile.element.style.left = (indent * 7.81) + "px";
+          tile.element.style.top = element.offsetTop + element.offsetHeight + "px";
+        }
+        numInLine++;
+      });
     }
     refreshFrame();
   });
