@@ -11,7 +11,7 @@ window.onload = function(){
   });
   tileFactory.element.addEventListener("tileUpdate", refreshFrame);
   ajax("GET", source, function(data, url){
-    var horribleRegEx = /(&[#a-z0-9]+;)|(<!--)|(-->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z0-9\_\.\,\:\;\/\-\'\$\?\=]+)/g;
+    var horribleRegEx = /(&[#a-z0-9]+;)|(<!--)|(-->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z0-9\_\.\,\:\;\/\-\'\$\?\=\%]+)/g;
     var tags = data.trim().match(horribleRegEx), tag;
     var i = -1, l = tags.length;
     while(++i < l){
@@ -57,7 +57,7 @@ function queryString(){
   while(++i < l){
     pair = pairs[i];
     split = pair.indexOf("=");
-    params[pair.substring(0,split)] = pair.substring(split + 1);
+    params[pair.substring(0,split)] = decodeURIComponent(pair.substring(split + 1));
   }
   return params;
 }
