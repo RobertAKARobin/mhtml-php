@@ -4,7 +4,6 @@ function Draggable(element){
   instance.element = element;
   instance.element.style.position = "absolute";
   instance.parent = instance.element.parentElement;
-  instance.getInitialPositions();
   // Have to do this here, instead of .bind in the addEventListener
   // Otherwise can't removeEventListener
   instance.drag = instance.drag.bind(instance);
@@ -31,12 +30,11 @@ Draggable.prototype = {
   },
   drag: function(evt){
     var instance = this;
-    var element = instance.element;
     var evt = evt.type == "touchmove" ? evt.touches[0] : evt;
     var newTop = instance.getNewPosition("top", evt);
     var newLeft = instance.getNewPosition("left", evt);
-    element.style.top = newTop + "px";
-    element.style.left = newLeft + "px";
+    instance.element.style.top = newTop + "px";
+    instance.element.style.left = newLeft + "px";
   },
   drop: function(evt){
     var instance = this;
@@ -47,34 +45,27 @@ Draggable.prototype = {
     window.removeEventListener("mouseup", instance.drop);
     instance.snapToGrid();
   },
-  getInitialPositions: function(){
+  getStartingPositions: function(evt){
     var instance = this;
     var element = instance.element;
     var offsetParent = element.offsetParent;
     var overlapX = (element.offsetWidth / 2);
     var overlapY = (element.offsetHeight / 2);
-    instance.originPosition = {
+    instance.startingPosition = {
       top: element.offsetTop,
       left: element.offsetLeft
-    }
-    instance.maxPosition = {
-      top: offsetParent.offsetHeight - (element.offsetHeight + element.offsetTop) + overlapY,
-      left: offsetParent.offsetWidth - (element.offsetWidth + element.offsetLeft) + overlapX
-    }
-    instance.minPosition = {
-      top: 0 - (element.offsetTop + overlapY),
-      left: 0 - (element.offsetLeft + overlapX)
-    }
-  },
-  getStartingPositions: function(evt){
-    var instance = this;
-    instance.startingPosition = {
-      top: instance.element.offsetTop,
-      left: instance.element.offsetLeft
     }
     instance.startingCursor = {
       top: evt.clientY,
       left: evt.clientX
+    }
+    instance.maxPosition = {
+      top: offsetParent.offsetHeight - element.offsetHeight + overlapY,
+      left: offsetParent.offsetWidth - element.offsetWidth + overlapX
+    }
+    instance.minPosition = {
+      top: 0 - overlapY,
+      left: 0 - overlapX
     }
   },
   getNewPosition: function(direction, evt){
@@ -84,6 +75,7 @@ Draggable.prototype = {
     var elementPos = instance.startingPosition[direction] + cursorChange;
     var maxPos = instance.maxPosition[direction];
     var minPos = instance.minPosition[direction];
+    // console.log(direction, elementPos, maxPos)
     if(elementPos > maxPos){
       return maxPos;
     }else if(elementPos < minPos){

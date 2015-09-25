@@ -1,33 +1,39 @@
-var tileFactory = {};
 window.onload = function(){
   var frame = el("frame");
   var tilesDiv = el("tiles");
-  new TileFactory(tilesDiv, function(factory){
-    tileFactory = factory;
-    factory.element.addEventListener("tileCreate", makeTileDraggable);
-    factory.element.addEventListener("tileUpdate", submitTiles);
+  var tileFactory = new TileFactory(tilesDiv);
+  (function(){
+    tileFactory.element.addEventListener("tileCreate", makeTileDraggable);
+    tileFactory.element.addEventListener("tileUpdate", submitTiles);
     function makeTileDraggable(){
       var draggable = new Draggable(tileFactory.latest.element);
-      draggable.element.className += " tile draggable";
+      draggable.element.className += " draggable";
     }
     function submitTiles(){
-      var text = factory.getTilesText();
+      var text = tileFactory.getTilesText();
       frame.src = "data:text/html;charset=utf-8," + escape(text.join(""));
     }
+    tileFactory.create("I like bananas.");
+  }())
+
+  var htmlFactory = new HTMLFactory(el("html"));
+  el("htmlButton").addEventListener("click", htmlFactory.toggle.bind(htmlFactory));
+  ajax("GET", "./assets/tiles.txt", function(data){
+    // htmlFactory.bulkCreate(data, function(tag){
+    //   tag.addEventListener("click", function(){
+    //     var tile = tileFactory.create("", " t");
+    //     tile.update(tag.innerText);
+    //     tile.element.style.top = tag.offsetTop + "px";
+    //     tile.element.style.left = tag.offsetLeft + "px";
+    //   });
+    // });
   });
 
-  htmlFactory = new HTMLFactory(el("html"), el("htmlButton"));
-  ajax("GET", "./assets/tiles.txt", function(data){
-    htmlFactory.bulkCreate(data, formatNewTag);
-    function formatNewTag(tag){
-      tag.addEventListener("click", function(){
-        var tile = tileFactory.create();
-        tile.element.className += " t";
-        tile.update(tag.innerText);
-        tile.element.style.top = tag.offsetTop + "px";
-        tile.element.style.left = tag.offsetLeft + "px";
-      });
-    }
+  var defaultFactory = new HTMLFactory(el("tiles"));
+  ajax("GET", "./assets/default.html", function(data){
+    // defaultFactory.bulkCreate(data, function(tag){
+    //
+    // });
   });
 }
 
@@ -49,11 +55,9 @@ function el(id){
   return document.getElementById(id);
 }
 
-function HTMLFactory(element, trigger){
+function HTMLFactory(element){
   var factory = this;
   factory.element = element;
-  factory.trigger = trigger;
-  factory.trigger.addEventListener("click", factory.toggle.bind(factory));
 }
 HTMLFactory.prototype = {
   create: function(input, callback){
@@ -66,7 +70,8 @@ HTMLFactory.prototype = {
   },
   bulkCreate: function(input, callback){
     var factory = this;
-    var tags = input.trim().split(/  |\n/);
+    var horribleRegEx = /(&[#a-z0-9]+;)|(<!-)|(->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z:\/\.\,\&\;]+)/g;
+    var tags = input.trim().match(horribleRegEx);
     var tag;
     var i = -1, l = tags.length;
     while(++i < l){

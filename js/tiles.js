@@ -1,17 +1,17 @@
-function TileFactory(parent, callback){
+function TileFactory(parent){
   var factory = this;
   factory.element = parent;
   factory.widthCalculator = new TileWidthCalculator();
   factory.height = factory.widthCalculator.element.offsetHeight;
   factory.getEdges();
-  callback(factory);
 }
 TileFactory.prototype = {
-  create: function(content){
+  create: function(content, className){
     var factory = this;
     var tile = new Tile(factory);
-    factory.element.appendChild(tile.element);
     factory.latest = tile;
+    if(className) tile.element.className += className;
+    factory.element.appendChild(tile.element);
     factory.element.dispatchEvent(Tile.events.create);
     tile.element.focus();
     if(content) tile.update(content);
@@ -92,7 +92,6 @@ TileWidthCalculator.prototype = {
   update: function(text){
     var calculator = this;
     var element = calculator.element;
-    console.log(text);
     element.innerText = text.replace(" ", "_");
     return element.offsetWidth;
   }
@@ -103,6 +102,7 @@ function Tile(factory){
   tile.factory = factory;
   tile.element = document.createElement("INPUT");
   tile.element.type = "input";
+  tile.element.className = "tile";
   tile.element.addEventListener("keydown", tile.onKeyDown.bind(tile));
   tile.element.addEventListener("keypress", tile.onKeyPress.bind(tile));
   tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));

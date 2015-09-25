@@ -58,9 +58,8 @@ body{
   display:flex;
 }
 #create, #view{
-  flex-basis:310px;
+  flex-basis:320px;
   height:100vh;
-  /*overflow:hidden;*/
 }
 #create{
   flex-shrink:0;
@@ -86,9 +85,11 @@ nav{
   border-radius:0 0px 10px 0;
   padding:0;
   top:0px;
-  left:310px;
+  left:320px;
   width:33px;
   height:22px;
+  outline:none;
+  z-index:99;
   transition:opacity .2s;
 }
 #htmlButton:hover{
@@ -101,11 +102,11 @@ nav{
   z-index:100;
   left:0;
   top:0;
-  width:310px;
+  width:320px;
   transition:left .5s;
 }
 #html.off{
-  left:-310px;
+  left:-321px;
 }
 
 #view{

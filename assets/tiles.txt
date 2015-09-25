@@ -1,26 +1,14 @@
-www.magneticHTML.com  <header>  </header>
-<!-Made in the USA->  <footer>  </footer>
-alert("Small parts")  <script>  </script>
-<h1>  </h1>  &ldquo;  <canvas>  </canvas>
-<h2>  </h2>  &rdquo;  <strong>  </strong>
-<h2>  </h2>  &mdash;  <button>  </button>
-<h3>  </h3>  </html>  <html>  <tr>  </tr>
-<h3>  </h3>  </head>  <head>  <tr>  </tr>
-<h4>  </h4>  </body>  <body>  <th>  </th>
-<ol>  </ol>  </main>  <main>  <th>  </th>
-<ul>  </ul>  </span>  <span>  <td>  </td>
-<li>  </li>  </form>  <form>  <td>  </td>
-<li>  </li>  </code>  <code>  <td>  </td>
-<li>  </li>  <!DOCTYPE html>  <td>  </td>
-<dl>  </dl>  <div>  </div>  <div>  </div>
-<dt>  </dt>  <pre>  </pre>  &shy;  &nbsp;
-<dt>  </dt>  <dfn>  </dfn>  &amp;  &copy;
-<dd>  </dd>  <p>  </p>  <title>  </title>
-<dd>  </dd>  <p>  </p>  <style>  </style>
-<dd>  </dd>  <p>  </p>  <table>  </table>
-<em>  </em>  <q>  </q>  <aside>  </aside>
-<tr>  </tr>  <s>  </s>  <label>  </label>
-</section>  <section>  &hellip;  &tradem;
-</section>  <section>  <a href="#">  </a>
-<img alt="  " src="#"/>  &lt;  &gt;  &pm;
-<textarea>  </textarea>  <!--  --->  &ne;
+<!DOCTYPE html><html></html><head></head>
+<link rel='stylesheet' href=""/><em></em>
+<title></title><body></body><main></main>
+<header></header><footer></footer>&trade;
+<style></style><img alt="" src="" /><!-->
+<h1></h1><h2></h2><h3></h3><h4></h4>&shy;
+<ol></ol><ul></ul><p></p>&leq;<pre></pre>
+<li></li><dl></dl><q></q>&geq;<div></div>
+<dt></dt><dd></dd><s></s>&amp;<del></del>
+<table></table><tr></tr><th></th>&hellip;
+<td></td><button></button><a href=""></a>
+<strong></strong>&nbsp;&copy;&lt;&gt;&pm;
+<blockquote></blockquote>&ldquo;<h5></h5>
+<code></code><section></section><h6></h6>

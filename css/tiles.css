@@ -1,14 +1,12 @@
 .tile{
   display:inline-block;
+  position:relative;
   white-space:nowrap;
-  font-size:12px;
+  font-size:13px;
   height:22px;
-  min-width:15px;
   line-height:22px;
   vertical-align:top;
-  border-width:1px;
-  border-style:solid;
-  border-color:#fff #ddc #ddc #fff;
+  outline:1px solid #ddd;
   background-color:#fff;
   z-index:100;
   color:black;
@@ -23,17 +21,18 @@
 .tile.draggable{
   position:absolute;
   cursor:move;
+  min-width:15px;
+  width:15px;
   background-color:#fff;
   box-shadow:0px 0px 5px 0px #554;
-  width:15px;
   opacity:1;
 }
 .tile.draggable:focus{
+  outline:none;
   box-shadow:0px 0px 10px 2px #fff;
 }
 .tile.t{
   color:#881280;
-  padding:0 6.2px;
   font-family:"Andale Mono", sans-serif;
 }
 .tile.c{
