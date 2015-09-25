@@ -17,9 +17,10 @@
   box-sizing:border-box;
 }
 body{
-  background-image:url('background.png');
+  background-image:url('bg/canvas.png');
   overflow-x:hidden;
   color:#444;
+  padding:20px 0 100px 0;
 }
 header{
   font-family:"Architects Daughter", Helvetica, sans-serif;
@@ -30,7 +31,7 @@ h1{
   line-height:120px;
   background-color:rgba(255,255,255,0.4);
   border-width:1px 0;
-  margin:20px 0;
+  margin-bottom:20px;
   border-style:solid;
   border-color:#ccc;
   text-align:center;

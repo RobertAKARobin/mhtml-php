@@ -1,12 +1,38 @@
 function TileFactory(parent){
   var factory = this;
   factory.element = parent;
+  factory.getLetterDimensions();
   factory.isTouchy = "ontouchstart" in window ? true : false;
-  factory.widthCalculator = new TileWidthCalculator(parent.className);
-  factory.height = factory.widthCalculator.element.offsetHeight;
   factory.getEdges();
 }
 TileFactory.prototype = {
+  getLetterDimensions: function(){
+    var factory = this;
+    var tester = document.createElement("SPAN");
+    var styles;
+    tester.style.minWidth = "initial";
+    tester.style.width = "auto";
+    tester.style.padding = "0";
+    tester.textContent = "A";
+    factory.element.appendChild(tester);
+    styles = window.getComputedStyle(tester);
+    factory.letter = {
+      width: parseFloat(styles.width),
+      height: parseFloat(styles.height)
+    }
+    factory.element.removeChild(tester);
+  },
+  addBlurListeners: function(){
+    var factory = this;
+    var tiles = factory.element.children, tile;
+    var i = -1, l = tiles.length;
+    while(++i < l){
+      tile = tiles[i];
+      tile.addEventListener("blur", function(){
+        factory.element.dispatchEvent(Tile.events.update);
+      });
+    }
+  },
   create: function(content){
     var factory = this;
     var tile = new Tile(factory);
@@ -81,31 +107,6 @@ TileFactory.prototype = {
   }
 }
 
-function TileWidthCalculator(className){
-  var calculator = this;
-  var container = document.createElement("DIV");
-  var element = document.createElement("SPAN");
-  container.style.width = "auto";
-  container.style.position = "absolute";
-  container.style.left = "-500px";
-  container.style.top = "-100px";
-  container.style.zIndex = "2000";
-  container.className = className;
-  element.style.width = "auto";
-  element.style.maxWidth = "none";
-  container.appendChild(element);
-  document.body.appendChild(container);
-  calculator.element = element;
-}
-TileWidthCalculator.prototype = {
-  update: function(text){
-    var calculator = this;
-    var element = calculator.element;
-    element.textContent = text.replace(" ", "_");
-    return element.offsetWidth;
-  }
-}
-
 function Tile(factory){
   var tile = this;
   tile.factory = factory;
@@ -113,12 +114,6 @@ function Tile(factory){
   tile.element.addEventListener("keydown", tile.onKeyDown.bind(tile));
   tile.element.addEventListener("keypress", tile.onKeyPress.bind(tile));
   tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));
-  if(tile.factory.isTouchy){
-    tile.element.addEventListener("touchstart", tile.onMouseDown.bind(tile));
-  }else{
-    tile.element.addEventListener("mousedown", tile.onMouseDown.bind(tile));
-  }
-  tile.element.addEventListener("change", tile.onChange.bind(tile));
 }
 Tile.defineEvent = function(name){
   var evt = document.createEvent("Event");
@@ -135,7 +130,9 @@ Tile.prototype = {
     var factory = tile.factory;
     var text = tile.element.value;
     if(add) text = text + Array((add) + 1).join("_");
-    tile.element.style.width = factory.widthCalculator.update(text) + "px";
+    tile.element.style.paddingLeft = factory.letter.width + "px";
+    tile.element.style.paddingRight = factory.letter.width + "px";
+    tile.element.style.width = (factory.letter.width * text.length) + "px";
   },
   update: function(text){
     var tile = this;
@@ -175,25 +172,6 @@ Tile.prototype = {
       tile.calculateNewWidth();
       tile.calculateDeleteWidth = false;
     }
-  },
-  onChange: function(){
-    var tile = this;
-    tile.factory.element.dispatchEvent(Tile.events.update);
-  },
-  onMouseDown: function(evt){
-    var tile = this;
-    tile.onMouseUp = tile.onMouseUp.bind(tile);
-    if(tile.factory.isTouchy){
-      window.addEventListener("touchend", tile.onMouseUp);
-    }else{
-      window.addEventListener("mouseup", tile.onMouseUp);
-    }
-  },
-  onMouseUp: function(){
-    var tile = this;
-    window.removeEventListener("mouseup", tile.onMouseUp);
-    window.removeEventListener("touchend", tile.onMouseUp);
-    tile.factory.element.dispatchEvent(Tile.events.update);
   },
   edge: function(d){
     var tile = this, element = tile.element;

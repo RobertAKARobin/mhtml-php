@@ -5,8 +5,6 @@ window.onload = function(){
   var tileFactory = new TileFactory(tilesDiv);
   var source = (queryString().url || "./assets/default.html");
   tileFactory.element.addEventListener("tileCreate", function(){
-    tileFactory.latest.element.addEventListener("blur", function(){
-    });
     var draggable = new Draggable(tileFactory.latest.element);
   });
   tileFactory.element.addEventListener("tileUpdate", refreshFrame);
@@ -22,14 +20,17 @@ window.onload = function(){
         var element;
         tile = tileFactory.appendNewTileTo(tile, match);
         element = tile.element;
-        if(numInLine === 0 && element.offsetLeft > 0){
-          tile.element.style.left = (indent * 7.81) + "px";
-          tile.element.style.top = element.offsetTop + element.offsetHeight + "px";
+        if(numInLine === 0){
+          if(element.offsetLeft > 0){
+            tile.element.style.top = element.offsetTop + element.offsetHeight + "px";
+          }
+          tile.element.style.left = (indent * tileFactory.letter.width) + "px";
         }
         numInLine++;
       });
     }
     refreshFrame();
+    tileFactory.addBlurListeners();
   });
   function refreshFrame(){
     var urlRegex = /(?:href=" |src=" )(?!http)([^ "]+)/g;
@@ -40,6 +41,7 @@ window.onload = function(){
       return rel + url + "/" + $p1;
     });
     frame.srcdoc = text;
+    console.dir(frame);
   }
 }
 

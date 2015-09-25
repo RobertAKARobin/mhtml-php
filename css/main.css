@@ -22,22 +22,18 @@
   color:inherit;
   background-color:transparent;
   list-style-type:none;
-  box-sizing:border-box;
 }
 *:focus{
   outline:0
 }
+html{
+  background-image:url("../assets/bg/slate.png");
+}
 body,html{
-  width:100%;
-  min-width:420px;
   position:relative;
   font-family:"Andale Mono", monospace;
 }
-html{
-  background-image:url("../assets/background.png");
-}
 body{
-  min-height:400px;
   height:100vh;
 }
 div{
@@ -55,43 +51,29 @@ h1{
 }
 
 body{
-  display:flex;
-  display:-webkit-flex;
   height:100vh;
   overflow-y:hidden;
-  flex-direction:row;
 }
 body>div{
-  flex-basis:420px;
-  -webkit-flex-basis:420px;
   height:100vh;
 }
 body>:nth-of-type(1){
-  flex-shrink:0;
-  -webkit-flex-shrink:0;
-  direction:rtl;
   overflow-y:scroll;
-  border-right:1px solid #bbb;
 }
 body>:nth-of-type(2){
-  flex-grow:1;
-  -webkit-flex-grow:1;
 }
 #create{
-  width:100%;
   min-height:100vh;
-  direction:ltr;
 }
 #view{
   z-index:2;
+  box-shadow:0px 0px 50px 0px #333;
 }
 #frame{
   position:relative;
   display:block;
   z-index:2000;
-  width:100%;
   height:100vh;
-  min-width:420px;
   background-color:white;
 }
 
@@ -106,7 +88,6 @@ body>:nth-of-type(2){
   line-height:22px;
   min-width:15px;
   width:15px;
-  padding:0 7.81px;
   vertical-align:top;
 
   cursor:move;
@@ -116,7 +97,7 @@ body>:nth-of-type(2){
   font-family:"Andale Mono", monospace;
   font-weight:normal;
 
-  opacity:0.7;
+  opacity:0.9;
 }
 .tiles>:hover,
 .tiles>:focus{
@@ -127,4 +108,47 @@ body>:nth-of-type(2){
   outline:none;
   z-index:200;
   box-shadow:0px 0px 10px 2px #fff;
+}
+
+body, html{
+  width:100vw;
+}
+body{
+  display:flex;
+  display:-webkit-flex;
+  flex-direction:row;
+}
+body>div{
+  flex-basis:420px;
+  -webkit-flex-basis:420px;
+}
+#createWrap{
+  flex-shrink:0;
+  -webkit-flex-shrink:0;
+  direction:rtl;
+}
+#viewWrap{
+  flex-grow:1;
+  -webkit-flex-grow:1;
+}
+#create, #frame{
+  width:100%;
+}
+#create{
+  direction:ltr;
+}
+#frame{
+  min-width:320px;
+}
+@media (max-width:420px){
+  body{
+    width:200vw;
+  }
+  body>div{
+    flex-basis:100vw;
+    -webkit-flex-basis:100vw;
+  }
+  #frame{
+    min-width:none;
+  }
 }

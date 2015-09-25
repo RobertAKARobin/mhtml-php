@@ -34,6 +34,7 @@ Draggable.prototype = {
   },
   drag: function(evt){
     var instance = this;
+    evt.preventDefault();
     var evt = evt.type == "touchmove" ? evt.touches[0] : evt;
     var newTop = instance.getNewPosition("top", evt);
     var newLeft = instance.getNewPosition("left", evt);
@@ -59,7 +60,6 @@ Draggable.prototype = {
       top: element.offsetTop,
       left: element.offsetLeft
     }
-    console.dir(evt);
     instance.startingCursor = {
       top: evt.clientY,
       left: evt.clientX
