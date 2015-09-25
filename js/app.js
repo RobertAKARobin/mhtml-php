@@ -1,40 +1,34 @@
+"use strict";
 window.onload = function(){
   var frame = el("frame");
-  var tilesDiv = el("tiles");
+  var tilesDiv = el("create");
   var tileFactory = new TileFactory(tilesDiv);
-  (function(){
-    tileFactory.element.addEventListener("tileCreate", makeTileDraggable);
-    tileFactory.element.addEventListener("tileUpdate", submitTiles);
-    function makeTileDraggable(){
-      var draggable = new Draggable(tileFactory.latest.element);
-      draggable.element.className += " draggable";
-    }
-    function submitTiles(){
-      var text = tileFactory.getTilesText();
-      frame.src = "data:text/html;charset=utf-8," + escape(text.join(""));
-    }
-    tileFactory.create("I like bananas.");
-  }())
-
-  var htmlFactory = new HTMLFactory(el("html"));
-  el("htmlButton").addEventListener("click", htmlFactory.toggle.bind(htmlFactory));
-  ajax("GET", "./assets/tiles.txt", function(data){
-    // htmlFactory.bulkCreate(data, function(tag){
-    //   tag.addEventListener("click", function(){
-    //     var tile = tileFactory.create("", " t");
-    //     tile.update(tag.innerText);
-    //     tile.element.style.top = tag.offsetTop + "px";
-    //     tile.element.style.left = tag.offsetLeft + "px";
-    //   });
-    // });
+  var source = (queryString().url || "./assets/default.html");
+  tileFactory.element.addEventListener("tileCreate", function(){
+    tileFactory.latest.element.addEventListener("blur", function(){
+    });
+    var draggable = new Draggable(tileFactory.latest.element);
   });
-
-  var defaultFactory = new HTMLFactory(el("tiles"));
-  ajax("GET", "./assets/default.html", function(data){
-    // defaultFactory.bulkCreate(data, function(tag){
-    //
-    // });
+  tileFactory.element.addEventListener("tileUpdate", refreshFrame);
+  ajax("GET", source, function(data, url){
+    var horribleRegEx = /(&[#a-z0-9]+;)|(<!--)|(-->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z0-9\_\.\,\:\;\/\-\'\$\?\=]+)/g;
+    var tags = data.trim().match(horribleRegEx), tag;
+    var i = -1, l = tags.length;
+    while(++i < l){
+      tag = tileFactory.appendNewTileTo(tag, tags[i]);
+    }
+    refreshFrame();
   });
+  function refreshFrame(){
+    var urlRegex = /(?:href=" |src=" )(?!http)([^ "]+)/g;
+    var text = tileFactory.getTilesText().join(" ");
+    text = text.replace(urlRegex, function(match, $p1){
+      var rel = match.substring(0, match.indexOf($p1));
+      var url = source.substring(0, source.lastIndexOf("/"));
+      return rel + url + "/" + $p1;
+    });
+    frame.srcdoc = text;
+  }
 }
 
 function ajax(method, url, callback){
@@ -46,7 +40,7 @@ function ajax(method, url, callback){
     var state = request.readyState;
     var code = request.status;
     var data = request.responseText;
-    if(state == 4 && code >= 200 && code < 400) callback(data, code);
+    if(state == 4 && code >= 200 && code < 400) callback(data, url, code);
   }
   request.send();
 }
@@ -55,35 +49,15 @@ function el(id){
   return document.getElementById(id);
 }
 
-function HTMLFactory(element){
-  var factory = this;
-  factory.element = element;
-}
-HTMLFactory.prototype = {
-  create: function(input, callback){
-    var factory = this;
-    var tag = document.createElement("SPAN");
-    tag.className = "tile t";
-    tag.innerText = input;
-    factory.element.appendChild(tag);
-    return tag;
-  },
-  bulkCreate: function(input, callback){
-    var factory = this;
-    var horribleRegEx = /(&[#a-z0-9]+;)|(<!-)|(->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z:\/\.\,\&\;]+)/g;
-    var tags = input.trim().match(horribleRegEx);
-    var tag;
-    var i = -1, l = tags.length;
-    while(++i < l){
-      tag = factory.create(tags[i], parent);
-      callback(tag);
-    }
-  },
-  toggle: function(){
-    var factory = this;
-    var element = factory.element;
-    var hideClass = "off";
-    if(element.className == hideClass) element.className = "";
-    else element.className = hideClass;
+function queryString(){
+  var params = {};
+  var pairs = location.search.substring(1).split("&"), pair;
+  var split;
+  var i = -1, l = pairs.length;
+  while(++i < l){
+    pair = pairs[i];
+    split = pair.indexOf("=");
+    params[pair.substring(0,split)] = pair.substring(split + 1);
   }
+  return params;
 }

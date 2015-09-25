@@ -29,16 +29,16 @@
 }
 body,html{
   width:100%;
-  min-width:640px;
-  min-height:600px;
+  min-width:320px;
   position:relative;
   font-family:"Andale Mono";
 }
 html{
-  height:100%;
+  background-image:url("../assets/background.png");
 }
 body{
-  min-height:100%;
+  min-height:400px;
+  height:100vh;
 }
 div{
   position:relative;
@@ -56,72 +56,75 @@ h1{
 
 body{
   display:flex;
+  display:-webkit-flex;
+  height:100vh;
+  overflow-y:hidden;
+  flex-direction:row;
 }
-#create, #view{
+body>div{
   flex-basis:320px;
+  -webkit-flex-basis:320px;
   height:100vh;
 }
-#create{
+body>:nth-of-type(1){
   flex-shrink:0;
+  -webkit-flex-shrink:0;
+  direction:rtl;
+  overflow-y:scroll;
+  border-right:1px solid #bbb;
 }
-#view{
+body>:nth-of-type(2){
   flex-grow:1;
-  box-shadow:0px 0px 50px 0px #333;
+  -webkit-flex-grow:1;
 }
 #create{
-  background-image:url("../assets/grey_wash_wall.png");
+  width:100%;
+  min-height:100vh;
+  direction:ltr;
 }
-#tiles{
-  height:100%;
-  z-index:100;
-}
-
-nav{
-  display:none;
-}
-#htmlButton{
-  display:block;
-  position:absolute;
-  border-radius:0 0px 10px 0;
-  padding:0;
-  top:0px;
-  left:320px;
-  width:33px;
-  height:22px;
-  outline:none;
-  z-index:99;
-  transition:opacity .2s;
-}
-#htmlButton:hover{
-  background-color:white;
-  opacity:1;
-}
-
-#html{
-  position:absolute;
-  z-index:100;
-  left:0;
-  top:0;
-  width:320px;
-  transition:left .5s;
-}
-#html.off{
-  left:-321px;
-}
-
 #view{
-  overflow:hidden;
+  z-index:2;
 }
 #frame{
+  position:relative;
+  display:block;
+  z-index:2000;
   width:100%;
   height:100vh;
+  min-width:320px;
+  background-color:white;
 }
 
-/*@media screen and (max-width: 640px){
-  body{
-    width:190vw;
-  }
-  #create, #view{
-    width:95vw;
-  }
-}*/
+
+.tiles>*{
+  display:inline-block;
+  position:absolute;
+  z-index:100;
+  white-space:nowrap;
+  font-size:13px;
+  height:22px;
+  line-height:22px;
+  min-width:15px;
+  width:15px;
+  padding:0 7.81px;
+  vertical-align:top;
+
+  cursor:move;
+  outline:1px solid #ddd;
+  color:#202;
+  background-color:#fff;
+  font-family:"Andale Mono", sans-serif;
+  font-weight:normal;
+
+  opacity:0.7;
+}
+.tiles>:hover,
+.tiles>:focus{
+  opacity:1;
+  background-color:#fff;
+}
+.tiles>:focus{
+  outline:none;
+  z-index:200;
+  box-shadow:0px 0px 10px 2px #fff;
+}

@@ -75,7 +75,6 @@ Draggable.prototype = {
     var elementPos = instance.startingPosition[direction] + cursorChange;
     var maxPos = instance.maxPosition[direction];
     var minPos = instance.minPosition[direction];
-    // console.log(direction, elementPos, maxPos)
     if(elementPos > maxPos){
       return maxPos;
     }else if(elementPos < minPos){
