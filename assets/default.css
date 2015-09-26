@@ -1,4 +1,9 @@
-@import url(https://fonts.googleapis.com/css?family=Architects+Daughter);
+@font-face{
+  font-family:"Andale Mono";
+  src: url("andale.eot?") format("embedded-opentype"),
+       local("Andale Mono"),
+       url("andale.ttf") format("truetype");
+}
 *{
   margin:0;
   border:0;
@@ -21,9 +26,7 @@ body{
   overflow-x:hidden;
   color:#444;
   padding:20px 0 100px 0;
-}
-header{
-  font-family:"Architects Daughter", Helvetica, sans-serif;
+  font-family:"Times New Roman", serif;
 }
 h1{
   text-shadow:0 0 1px #444;
@@ -35,6 +38,7 @@ h1{
   border-style:solid;
   border-color:#ccc;
   text-align:center;
+  font-family:"Andale Mono", monospace;
 }
 h2{
   text-align:center;
@@ -79,7 +83,6 @@ nav a:hover{
 }
 section{
   background-color:#fff;
-  font-family:"Times New Roman", serif;
   width:90%;
   margin:20px auto;
   padding:20px;

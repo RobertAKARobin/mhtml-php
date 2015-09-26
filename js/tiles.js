@@ -22,14 +22,25 @@ TileFactory.prototype = {
     }
     factory.element.removeChild(tester);
   },
-  addBlurListeners: function(){
+  bulkCreate: function(inputHTML){
     var factory = this;
-    var tiles = factory.element.children, tile;
-    var i = -1, l = tiles.length;
+    var i = -1, l = inputHTML.length;
+    var tile, numInLine, indent;
+    var horribleRegEx = /(&[#a-z0-9]+;)|(<!--)|(-->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z0-9\_\.\,\:\;\/\-\'\$\?\=\%]+)/g;
     while(++i < l){
-      tile = tiles[i];
-      tile.addEventListener("blur", function(){
-        factory.element.dispatchEvent(Tile.events.update);
+      numInLine = 0;
+      indent = inputHTML[i].match(/^\s*/)[0].length;
+      inputHTML[i].trim().replace(horribleRegEx, function(match){
+        var element;
+        tile = factory.appendNewTileTo(tile, match);
+        element = tile.element;
+        if(numInLine === 0){
+          if(element.offsetLeft > 0){
+            tile.element.style.top = element.offsetTop + element.offsetHeight + "px";
+          }
+          tile.element.style.left = (indent * factory.letter.width) + "px";
+        }
+        numInLine++;
       });
     }
   },
@@ -111,9 +122,14 @@ function Tile(factory){
   var tile = this;
   tile.factory = factory;
   tile.element = document.createElement("INPUT");
+  tile.element.addEventListener("mousedown", tile.toggleFocus.bind(tile));
+  tile.element.addEventListener("touchstart", tile.toggleFocus.bind(tile));
   tile.element.addEventListener("keydown", tile.onKeyDown.bind(tile));
   tile.element.addEventListener("keypress", tile.onKeyPress.bind(tile));
   tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));
+  tile.element.addEventListener("change", function(){
+    tile.factory.element.dispatchEvent(Tile.events.update);
+  });
 }
 Tile.defineEvent = function(name){
   var evt = document.createEvent("Event");
@@ -138,6 +154,19 @@ Tile.prototype = {
     var tile = this;
     tile.element.value = text;
     tile.calculateNewWidth();
+  },
+  toggleFocus: function(evt){
+    var tile = this;
+    evt.preventDefault();
+    if(!tile.tapped){
+      tile.tapped = setTimeout(function(){
+        tile.tapped = null;
+      }, 300);
+    }else{
+      tile.element.focus();
+      clearTimeout(tile.tapped);
+      tile.tapped = null;
+    }
   },
   onKeyDown: function(evt){
     var tile = this;

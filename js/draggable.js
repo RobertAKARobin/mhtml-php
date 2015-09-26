@@ -17,6 +17,14 @@ function Draggable(element){
     instance.startDragging.bind(instance));
   }
 };
+Draggable.defineEvent = function(name){
+  var evt = document.createEvent("Event");
+  evt.initEvent(name, true, true);
+  return evt;
+}
+Draggable.events = {
+  drop: Draggable.defineEvent("drop")
+}
 Draggable.prototype = {
   startDragging: function(evt){
     var instance = this, startEvent, endEvent;
@@ -49,6 +57,10 @@ Draggable.prototype = {
     window.removeEventListener("mousemove", instance.drag);
     window.removeEventListener("mouseup", instance.drop);
     instance.snapToGrid();
+    if(instance.startingCursor.left != evt.clientX
+    || instance.startingCursor.top != evt.clientY){
+      instance.element.dispatchEvent(Draggable.events.drop);
+    }
   },
   getStartingPositions: function(evt){
     var instance = this;

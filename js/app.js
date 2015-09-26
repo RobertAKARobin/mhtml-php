@@ -1,47 +1,30 @@
 "use strict";
 window.onload = function(){
   var frame = el("frame");
-  var tilesDiv = el("create");
-  var tileFactory = new TileFactory(tilesDiv);
-  var source = (queryString().url || "./assets/default.html");
+  var frameSource = (queryString().url || "./assets/default.html");
+  var tileFactory = new TileFactory(el("create"));
   tileFactory.element.addEventListener("tileCreate", function(){
     var draggable = new Draggable(tileFactory.latest.element);
+    draggable.element.addEventListener("drop", refreshFrame);
   });
-  tileFactory.element.addEventListener("tileUpdate", refreshFrame);
-  ajax("GET", source, function(rawText, url){
-    var horribleRegEx = /(&[#a-z0-9]+;)|(<!--)|(-->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z0-9\_\.\,\:\;\/\-\'\$\?\=\%]+)/g;
-    var byLine = rawText.split("\n");
-    var i = -1, l = byLine.length;
-    var tile, numInLine, indent;
-    while(++i < l){
-      numInLine = 0;
-      indent = byLine[i].match(/^\s*/)[0].length;
-      byLine[i].trim().replace(horribleRegEx, function(match){
-        var element;
-        tile = tileFactory.appendNewTileTo(tile, match);
-        element = tile.element;
-        if(numInLine === 0){
-          if(element.offsetLeft > 0){
-            tile.element.style.top = element.offsetTop + element.offsetHeight + "px";
-          }
-          tile.element.style.left = (indent * tileFactory.letter.width) + "px";
-        }
-        numInLine++;
-      });
-    }
+
+  ajax("GET", frameSource, function(data){
+    var frameSourceHTML = data;
+    var byLine = frameSourceHTML.split("\n");
+    tileFactory.bulkCreate(byLine);
+    tileFactory.element.addEventListener("tileUpdate", refreshFrame);
     refreshFrame();
-    tileFactory.addBlurListeners();
   });
+
   function refreshFrame(){
     var urlRegex = /(?:href=" |src=" )(?!http)([^ "]+)/g;
     var text = tileFactory.getTilesText().join(" ");
     text = text.replace(urlRegex, function(match, $p1){
       var rel = match.substring(0, match.indexOf($p1));
-      var url = source.substring(0, source.lastIndexOf("/"));
+      var url = frameSource.substring(0, frameSource.lastIndexOf("/"));
       return rel + url + "/" + $p1;
     });
     frame.srcdoc = text;
-    console.dir(frame);
   }
 }
 
@@ -54,7 +37,7 @@ function ajax(method, url, callback){
     var state = request.readyState;
     var code = request.status;
     var data = request.responseText;
-    if(state == 4 && code >= 200 && code < 400) callback(data, url, code);
+    if(state == 4 && code >= 200 && code < 400) callback(data);
   }
   request.send();
 }
