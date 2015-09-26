@@ -1,12 +1,3 @@
-@font-face
-{
-  font-family:"Andale Mono";
-  src: url("andale.eot?") format("embedded-opentype"),
-       local("Andale Mono"),
-       url("andale.ttf") format("truetype");
-}
-
-
 *{
   margin:0;
   border:0;
@@ -94,7 +85,6 @@ body>:nth-of-type(2){
   outline:1px solid #ddd;
   color:#000;
   background-color:#fff;
-  font-family:"Andale Mono", monospace;
   font-weight:normal;
 
   opacity:0.9;
@@ -119,7 +109,27 @@ body>:nth-of-type(2){
   z-index:2000;
 }
 #controls a{
-  color:black;
+  display:block;
+  float:right;
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background-color:#fff;
+  background-repeat:no-repeat;
+  background-image:url("controls.png");
+  opacity:0.5;
+}
+#controls .view{
+  background-position:0px 0px;
+}
+#controls .home{
+  background-position:0px -30px;
+}
+#controls .blank{
+  background-position:0px -60px;
+}
+#controls a:hover{
+  opacity:1;
 }
 
 body, html{
