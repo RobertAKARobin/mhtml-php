@@ -128,6 +128,7 @@ function Tile(factory){
   tile.element.addEventListener("keypress", tile.onKeyPress.bind(tile));
   tile.element.addEventListener("keyup", tile.onKeyUp.bind(tile));
   tile.element.addEventListener("change", function(){
+    tile.checkIfHTML();
     tile.factory.element.dispatchEvent(Tile.events.update);
   });
 }
@@ -153,6 +154,7 @@ Tile.prototype = {
   update: function(text){
     var tile = this;
     tile.element.value = text;
+    tile.checkIfHTML();
     tile.calculateNewWidth();
   },
   toggleFocus: function(evt){
@@ -200,6 +202,16 @@ Tile.prototype = {
     if(tile.calculateDeleteWidth){
       tile.calculateNewWidth();
       tile.calculateDeleteWidth = false;
+    }
+  },
+  checkIfHTML: function(){
+    var tile = this;
+    var text = tile.element.value;
+    var rx = /(<[^>\n]+>)|(<[^>\n]+")|("[^>\n]+")|("[^\/>]*\/*\s*>)|(&[^;\s]+;)/;
+    if(rx.test(text)){
+      tile.element.className += " htmlTag";
+    }else{
+      tile.element.className = tile.element.className.replace("htmlTag", "");
     }
   },
   edge: function(d){
