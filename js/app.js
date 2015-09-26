@@ -8,6 +8,8 @@ window.onload = function(){
     draggable.element.addEventListener("drop", refreshFrame);
   });
 
+  el("viewURL").href = frameSource;
+
   ajax("GET", frameSource, function(data){
     var frameSourceHTML = data;
     var byLine = frameSourceHTML.split("\n");
