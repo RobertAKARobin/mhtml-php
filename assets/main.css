@@ -151,6 +151,7 @@ body>div{
   flex-shrink:0;
   -webkit-flex-shrink:0;
   direction:rtl;
+  overflow-x:hidden;
 }
 #viewWrap{
   flex-grow:1;

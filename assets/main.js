@@ -163,8 +163,8 @@ Draggable.prototype = {
       left: evt.clientX
     }
     instance.maxPosition = {
-      top: offsetParent.offsetHeight - element.offsetHeight + overlapY,
-      left: offsetParent.offsetWidth - element.offsetWidth + overlapX
+      top: offsetParent.scrollHeight - element.offsetHeight + overlapY,
+      left: offsetParent.scrollWidth - element.offsetWidth + overlapX
     }
     instance.minPosition = {
       top: 0 - overlapY,
@@ -189,11 +189,10 @@ Draggable.prototype = {
   snapToGrid: function(){
     var instance = this;
     var element = instance.element;
-    var parent = instance.parent;
     var proportion = element.offsetTop / element.offsetHeight;
     var output = Math.round(proportion) * element.offsetHeight;
     var bottomEdge = output + element.offsetHeight;
-    if(bottomEdge > parent.offsetHeight){
+    if(bottomEdge > instance.parent.scrollHeight){
       output = bottomEdge - (2 * element.offsetHeight);
     }else if(output < 0){
       output = 0;
@@ -271,8 +270,8 @@ TileFactory.prototype = {
     var factory = this;
     var parent = factory.element;
     factory.edge = {
-      right: parent.offsetLeft + parent.offsetWidth,
-      bottom: parent.offsetTop + parent.offsetHeight
+      right: parent.scrollLeft + parent.scrollWidth,
+      bottom: parent.scrollTop + parent.scrollHeight
     }
   },
   sortTilesByLocation: function(){
@@ -387,8 +386,7 @@ Tile.prototype = {
   onKeyPress: function(evt){
     var tile = this;
     var element = tile.element;
-    var parent = tile.factory.element;
-    if(element.offsetWidth > parent.offsetWidth - 10){
+    if(element.offsetWidth > instance.parent.scrollWidth - 10){
       evt.preventDefault();
     }else{
       tile.calculateNewWidth(1);
