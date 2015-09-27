@@ -19,7 +19,6 @@
 }
 html{
   background-image:url("../assets/bg/slate.png");
-  /*background-color:#222;*/
 }
 body,html{
   position:relative;
@@ -59,6 +58,7 @@ body>:nth-of-type(2){
 }
 #view{
   z-index:2;
+  box-shadow:0px 0px 50px 0px #333;
 }
 #frame{
   position:relative;
@@ -77,10 +77,13 @@ body>:nth-of-type(2){
   height:22px;
   line-height:22px;
   vertical-align:top;
-  border-radius:5px;
-  color:#fff;
-  background-color:transparent;
+
+  outline:1px solid #ddd;
+  color:#000;
+  background-color:#fff;
   font-weight:normal;
+
+  opacity:0.9;
 }
 .tiles>input{
   position:absolute;
@@ -94,14 +97,16 @@ body>:nth-of-type(2){
 .tiles>input:hover,
 .tiles>a[href]:hover,
 .tiles>:focus{
-  background-color:#000;
+  opacity:1;
+  background-color:#fff;
 }
 .tiles>:focus{
+  outline:none;
   z-index:200;
-  box-shadow:0px 0px 0px 1px #090;
+  box-shadow:0px 0px 10px 2px #fff;
 }
 .htmlTag{
-  color:#f6f;
+  color:#a0a;
 }
 #controls{
   display:flex;
@@ -197,6 +202,7 @@ body>div{
   background-color:white;
   border:10px solid white;
   border-radius:10px;
+  box-shadow:0px 0px 50px 5px #222;
   transition: left 0.5s;
 }
 #contactOff{
