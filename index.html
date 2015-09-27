@@ -5,20 +5,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Drag and drop to create your own webpage!" />
-    <script src="./assets/main.js"></script>
     <link rel="stylesheet" href="./assets/main.css" />
+    <script src="./assets/main.js"></script>
   </head>
   <body>
     <div id="createWrap">
-      <div id="controls">
-        <a href="./index.html" target="_top" class="home" title="Magnetic HTML home"></a>
-        <a href="#" id="viewURL" target="_blank" class="view" title="See this page by itself"></a>
-        <a href="./index.html?url=./assets/blank.html" target="_blank" class="blank" title="New blank page"></a>
-        <a href="#" id="contactOn" class="email" title="Say hello!"></a>
+      <div id="controls" class="tiles">
+        <a href="./index.html" target="_top" class="home" title="Main Magnetic HTML page">Main Magnetic HTML page</a>
+        <a href="http://amzn.to/1G66iB5" class="amazon" title="Get real-life Magnetic HTML tiles on Amazon">Buy on Amazon</a>
+        <a href="#" id="contactOn" class="email" title="Say hello!">Contact me</a>
+        <a href="./index.html?url=./assets/blank.html" target="_blank" class="blank" title="New blank page">New blank page</a>
+        <a href="#" id="saveButton" class="save" title="Save your page!">Save</a>
+        <div><span id="createdAmount">0</span> created</div>
       </div>
-      <div id="create" class="draggable tiles">
-
-      </div>
+      <div id="create" class="draggable tiles"></div>
     </div>
     <div id="viewWrap">
       <div id="view">
