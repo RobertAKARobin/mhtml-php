@@ -386,7 +386,7 @@ Tile.prototype = {
   onKeyPress: function(evt){
     var tile = this;
     var element = tile.element;
-    if(element.offsetWidth > instance.parent.scrollWidth - 10){
+    if(element.offsetWidth > tile.factory.element.scrollWidth - 10){
       evt.preventDefault();
     }else{
       tile.calculateNewWidth(1);
