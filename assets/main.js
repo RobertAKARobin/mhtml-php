@@ -9,7 +9,6 @@ window.onload = function(){
   });
 
   el("viewURL").href = frameSource;
-
   ajax("GET", frameSource, function(data){
     var frameSourceHTML = data;
     var byLine = frameSourceHTML.split("\n");
@@ -17,6 +16,24 @@ window.onload = function(){
     tileFactory.element.addEventListener("tileUpdate", refreshFrame);
     refreshFrame();
   });
+
+  var contact = {
+    el: el("contactModal"),
+    on: el("contactOn"),
+    off: el("contactOff")
+  }
+  contact.on.addEventListener("click", toggleContact);
+  contact.off.addEventListener("click", toggleContact);
+  function toggleContact(){
+    toggleClass(contact.el, "off");
+  }
+
+  (function loadCaptcha(){
+    var script = document.createElement("SCRIPT");
+    script.setAttribute("type", "text/javascript");
+    script.setAttribute("src", "https://www.google.com/recaptcha/api.js");
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
 
   function refreshFrame(){
     var urlRegex = /(?:href=" |src=" )(?!http)([^ "]+)/g;
@@ -65,6 +82,11 @@ function defineEvent(name){
   var evt = document.createEvent("Event");
   evt.initEvent(name, true, true);
   return evt;
+}
+
+function toggleClass(element, clazz){
+  if(element.className.indexOf(clazz) < 0) element.className += clazz;
+  else element.className = element.className.replace(clazz, "");
 }
 
 function Draggable(element){
@@ -209,7 +231,7 @@ TileFactory.prototype = {
     var factory = this;
     var i = -1, l = inputHTML.length;
     var tile, numInLine, indent;
-    var horribleRegEx = /(&[#a-z0-9]+;)|(<!--)|(-->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z0-9\_\.\,\:\;\/\-\'\$\?\=\%]+)/g;
+    var horribleRegEx = /(&[#a-z0-9]+;)|(<!--)|(-->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z0-9\_\.\,\:\;\/\-\'\$\?\=\%\@\!]+)/g;
     while(++i < l){
       numInLine = 0;
       indent = inputHTML[i].match(/^\s*/)[0].length;

@@ -19,8 +19,11 @@ body{
   background-image:url('bg/canvas.png');
   overflow-x:hidden;
   color:#444;
-  padding:20px 0 100px 0;
   font-family:"Times New Roman", serif;
+}
+a{
+  color:blue;
+  text-decoration:underline;
 }
 h1{
   text-shadow:0 0 1px #444;
@@ -33,6 +36,14 @@ h1{
   border-color:#ccc;
   text-align:center;
   font-family:"Andale Mono", monospace;
+}
+sup{
+  display:inline-block;
+  width:0px;
+  overflow:visible;
+  font-size:24px;
+  line-height:24px;
+  vertical-align:middle;
 }
 h2{
   text-align:center;
@@ -52,12 +63,14 @@ main section:nth-child(odd){
   transform:rotate(1deg);
 }
 nav>:nth-child(even),
-main section:nth-child(even){
+main section:nth-child(even),
+footer>:nth-child(odd){
   transform:rotate(-1deg);
 }
 nav>*{
   display:inline-block;
   background-color:#fd0;
+  color:black;
   width:100px;
   height:100px;
   font-size:14px;
@@ -85,26 +98,21 @@ section{
   padding:20px;
   box-shadow:0px 2px 10px 0px #bbb;
 }
+main>*,
+section{
+  margin-top:30px;
+}
 main p{
   margin-top:10px;
-}
-main a{
-  color:blue;
-  text-decoration:underline;
-}
-footer section{
-  padding:0;
-  width:300px;
 }
 iframe{
   display:block;
   width:100%;
 }
-footer{
-  margin-top:50px;
+.links{
   text-align:center;
 }
-footer>*{
+.links>*{
   display:inline-block;
   box-sizing:content-box;
   border:10px solid white;
