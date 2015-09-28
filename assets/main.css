@@ -57,7 +57,7 @@ body>:nth-of-type(1){
 body>:nth-of-type(2){
 }
 #create{
-  padding-top:23px;
+  padding-top:22px;
   min-height:100vh;
 }
 #view{
@@ -116,12 +116,16 @@ nav *{
 }
 #main-nav{
   display:flex;
+  display:-webkit-flex;
   flex-direction:row;
+  -webkit-flex-direction:row;
   align-content:stretch;
 }
 #main-nav>*{
   flex-basis:20px;
+  -webkit-flex-basis:20px;
   flex-shrink:1;
+  -webkit-flex-shrink:1;
   border:1px solid transparent;
   border-width:0 10px;
   padding:0 10px;
@@ -133,7 +137,9 @@ nav *{
 }
 nav .expand{
   flex-grow:1;
+  -webkit-flex-grow:1;
   flex-shrink:0;
+  -webkit-flex-shrink:0;
 }
 nav .view{
   background-position:0px 0px;
