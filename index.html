@@ -10,24 +10,43 @@
   </head>
   <body>
     <div id="createWrap">
-      <div id="controls" class="tiles">
-        <a href="./index.html" target="_top" class="home" title="Main Magnetic HTML page">Main Magnetic HTML page</a>
-        <a href="http://amzn.to/1G66iB5" class="amazon" title="Get real-life Magnetic HTML tiles on Amazon">Buy on Amazon</a>
-        <a href="#" id="contactOn" class="email" title="Say hello!">Contact me</a>
-        <a href="./index.html?url=./assets/blank.html" target="_blank" class="blank" title="New blank page">New blank page</a>
-        <a href="#" id="saveButton" class="save" title="Save your page!">Save</a>
-        <div><span id="createdAmount">0</span> created</div>
-      </div>
+      <nav>
+        <div id="main-nav" class="tiles">
+          <a href="./index.html" target="_top" class="home" title="Main Magnetic HTML page">Main Magnetic HTML page</a>
+          <a href="http://amzn.to/1G66iB5" class="amazon" title="Get real-life Magnetic HTML tiles on Amazon">Buy on Amazon</a>
+          <a href="#contact" id="toggleContact" class="email" title="Say hello!">Contact me</a>
+          <a href="./index.html?url=./assets/blank.html" target="_blank" class="blank" title="New blank page">New blank page</a>
+          <!-- <a href="#save" id="toggleSave" class="save" title="Save your page!">Save</a> -->
+          <span class="expand"><span id="createdAmount">0</span> sites assembled</span>
+        </div>
+        <div id="sub-nav">
+          <!-- <div id="save" class="tile">
+            <input type="text" placeholder="Pick a name for your site" />
+            <input type="text" placeholder="Pick a password to edit it" />
+            <button type="button">Save</button>
+            <a href="#" class="button">Close</a>
+          </div> -->
+          <div id="contact" class="tile">
+            <form method="post" action="http://dev.robertgfthomas.com/mail/index.php" target="_blank">
+              <textarea name="body" placeholder="Say hello!"></textarea>
+              <input type="hidden" name="emailMe" value="robin@magnetichtml.com" />
+              <input type="hidden" name="render" value="html" />
+              <input type="hidden" name="subject" value="Thanks for your message!" />
+              <input type="text" name="emailThem" placeholder="hello@email.com" />
+              <input name="emailList" id="emailList" type="checkbox" /><label for="emailList">Go on the email list</label>
+              <div class="g-recaptcha" data-theme="light" data-sitekey="6LfQiAcTAAAAAGLPo6q0xMh1S42WUp4H1fd9cJQT"></div>
+              <button type="submit">Send to robin@magnetichtml.com</button>
+              <a href="#" class="button">Close</a>
+            </form>
+          </div>
+        </div>
+      </nav>
       <div id="create" class="draggable tiles"></div>
     </div>
     <div id="viewWrap">
       <div id="view">
         <iframe id="frame"></iframe>
       </div>
-    </div>
-    <div id="contactModal" class="off">
-      <a id="contactOff" href="#">&cross;</a>
-      <iframe src="assets/contact.html"></iframe>
     </div>
   </body>
 </html>

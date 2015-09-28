@@ -17,17 +17,6 @@ window.onload = function(){
     refreshFrame();
   });
 
-  var contact = {
-    el: el("contactModal"),
-    on: el("contactOn"),
-    off: el("contactOff")
-  }
-  contact.on.addEventListener("click", toggleContact);
-  contact.off.addEventListener("click", toggleContact);
-  function toggleContact(){
-    toggleClass(contact.el, "off");
-  }
-
   (function loadCaptcha(){
     var script = document.createElement("SCRIPT");
     script.setAttribute("type", "text/javascript");
@@ -84,9 +73,15 @@ function defineEvent(name){
   return evt;
 }
 
-function toggleClass(element, clazz){
-  if(element.className.indexOf(clazz) < 0) element.className += clazz;
-  else element.className = element.className.replace(clazz, "");
+function toggleClass(element, className){
+  if(element.className.indexOf(clazz) < 0) addClass(element, className);
+  else removeClass(element, className);
+}
+function removeClass(element, className){
+  element.className = element.className.replace(className, "");
+}
+function addClass(element, className){
+  element.className += " " + className;
 }
 
 function Draggable(element){
@@ -214,7 +209,7 @@ TileFactory.prototype = {
     var factory = this;
     var tester = document.createElement("SPAN");
     var styles;
-    tester.style.minWidth = "initial";
+    tester.style.minWidth = "0";
     tester.style.width = "auto";
     tester.style.padding = "0";
     tester.textContent = "A";

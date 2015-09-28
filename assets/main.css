@@ -36,6 +36,9 @@ input, textarea{
 a, button, label{
   cursor:pointer;
 }
+button, .button{
+  text-align:center;
+}
 
 h1{
   font-size:0;
@@ -54,36 +57,32 @@ body>:nth-of-type(1){
 body>:nth-of-type(2){
 }
 #create{
+  padding-top:23px;
   min-height:100vh;
 }
 #view{
-  z-index:2;
   box-shadow:0px 0px 50px 0px #333;
 }
 #frame{
   position:relative;
   display:block;
-  z-index:2000;
   height:100vh;
   background-color:white;
 }
 
-
+.tile,
+.tiles>*{
+  font-size:13px;
+  outline:1px solid #ddd;
+  color:#000;
+  background-color:#eee;
+}
 .tiles>*{
   display:inline-block;
-  z-index:100;
   white-space:nowrap;
-  font-size:13px;
   height:22px;
   line-height:22px;
   vertical-align:top;
-
-  outline:1px solid #ddd;
-  color:#000;
-  background-color:#fff;
-  font-weight:normal;
-
-  opacity:0.9;
 }
 .tiles>input{
   position:absolute;
@@ -97,57 +96,146 @@ body>:nth-of-type(2){
 .tiles>input:hover,
 .tiles>a[href]:hover,
 .tiles>:focus{
-  opacity:1;
   background-color:#fff;
 }
 .tiles>:focus{
   outline:none;
-  z-index:200;
   box-shadow:0px 0px 10px 2px #fff;
 }
 .htmlTag{
   color:#a0a;
 }
-#controls{
+nav{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+}
+nav *{
+  box-sizing:border-box;
+}
+#main-nav{
   display:flex;
   flex-direction:row;
   align-content:stretch;
 }
-#controls>*{
+#main-nav>*{
   flex-basis:20px;
+  flex-shrink:1;
   border:1px solid transparent;
   border-width:0 10px;
+  padding:0 10px;
 }
-#controls>:last-child{
-  flex-grow:1;
-}
-#controls>a{
-  display:inline-block;
+#main-nav a{
   background-image:url("./controls.png");
   background-repeat:no-repeat;
   font-size:0;
 }
-#controls .view{
+nav .expand{
+  flex-grow:1;
+  flex-shrink:0;
+}
+nav .view{
   background-position:0px 0px;
 }
-#controls .home{
+nav .home{
   background-position:0px -20px;
 }
-#controls .blank{
+nav .blank{
   background-position:0px -40px;
 }
-#controls .email{
+nav .email{
   background-position:0px -60px;
 }
-#controls .save{
+nav .save{
   background-position:0px -80px;
 }
-#controls .amazon{
+nav .amazon{
   background-position:0px -100px;
 }
-#controls a:hover{
+nav a:hover{
   opacity:1;
 }
+#sub-nav{
+  position:absolute;
+  bottom:100%;
+  left:0;
+  width:100%;
+  height:0px;
+  background-color:blue;
+}
+#sub-nav>*{
+  position:absolute;
+  top:-500px;
+  width:100%;
+  transition:top 0.5s;
+  padding:10px;
+  box-shadow:0px 0px 50px 0px #111;
+}
+#sub-nav>:target{
+  top:0;
+}
+#sub-nav input[type=text],
+#sub-nav textarea,
+#sub-nav button,
+#sub-nav .button,
+#sub-nav label,
+#sub-nav .g-recaptcha{
+  display:block;
+  width:100%;
+  line-height:18px;
+  background-color:#ddd;
+  margin-top:10px;
+  padding:5px;
+  border-radius:5px;
+}
+#sub-nav input[type=text]:focus,
+#sub-nav textarea:focus,
+#sub-nav button:hover,
+#sub-nav .button:hover,
+#sub-nav input:checked + label{
+  background-color:#fff;
+}
+#sub-nav .g-recaptcha{
+  background-color:#fff;
+}
+.g-recaptcha div{
+  margin:0 auto;
+}
+input[type=checkbox]{
+  display:block;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  position:absolute;
+  opacity:0.01;
+}
+input+label:after{
+  content:"?";
+}
+input:checked+label:after{
+  content:"!";
+}
+
+.tiles>*{
+  z-index:1;
+}
+.tiles>:focus{
+  z-index:2;
+}
+#view{
+  z-index:3;
+}
+#frame{
+  z-index:4;
+}
+#main-nav{
+  z-index:5;
+}
+#sub-nav{
+  z-index:6;
+}
+
 
 body, html{
   width:100vw;
@@ -189,32 +277,6 @@ body>div{
     -webkit-flex-basis:100vw;
   }
   #frame{
-    min-width:none;
+    min-width:0;
   }
-}
-
-#contactModal{
-  position:fixed;
-  top:0;
-  left:0;
-  height:240px;
-  z-index:3000;
-  background-color:white;
-  border:10px solid white;
-  border-radius:10px;
-  box-shadow:0px 0px 50px 5px #222;
-  transition: left 0.5s;
-}
-#contactOff{
-  color:#c33;
-  position:absolute;
-  top:0;
-  right:0;
-}
-#contactModal iframe{
-  width:300px;
-  height:100%;
-}
-#contactModal.off{
-  left:-500px;
 }
