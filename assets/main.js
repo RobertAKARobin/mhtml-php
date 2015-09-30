@@ -11,8 +11,10 @@ window.onload = function(){
 
   // el("viewURL").href = frameSource;
   ajax("GET", frameSource, {}, function(frameSourceHTML){
-    var lines = tileFactory.parseHTMLString(frameSourceHTML);
-    tileFactory.element.addEventListener("tileUpdate", refreshFrame);
+    var tiles = tileFactory.parseHTMLString(frameSourceHTML);
+    each(tiles, function(tile){
+      tile = tileFactory.create(tile.value);
+    });
     refreshFrame();
   });
 
@@ -62,7 +64,6 @@ function ajax(method, url, input, callback){
   }
   request.send(input);
 }
-
 function objectToQuery(input){
   var output = [];
   var key;
@@ -71,18 +72,15 @@ function objectToQuery(input){
   }
   return output.join("&");
 }
-
 function el(id){
   return document.getElementById(id);
 }
-
 function each(object, callback){
   var i = -1, l = object.length;
   while(++i < l){
-    callback(object[i]);
+    callback(object[i], i);
   }
 }
-
 function queryString(){
   var params = {};
   var pairs = location.search.substring(1).split("&"), pair;
@@ -92,13 +90,11 @@ function queryString(){
   });
   return params;
 }
-
 function defineEvent(name){
   var evt = document.createEvent("Event");
   evt.initEvent(name, true, true);
   return evt;
 }
-
 function toggleClass(element, className){
   if(element.className.indexOf(clazz) < 0) addClass(element, className);
   else removeClass(element, className);
@@ -235,16 +231,27 @@ TileFactory.prototype = {
   parseHTMLString: function(html){
     var factory = this;
     var output = [];
-    var html = html
+    var lines = html
       .replace(/ (?=[^\n\r])/g, " @@@")
       .replace(/>(?=[^\n\r])/g, ">@@@")
       .replace(/;(?=[^\n\r])/g, ";@@@")
       .replace(/<!--(?=[^\n\r])/g, "<!--@@@")
-      .replace(/=(?=")/g, '=@@@');
-    var lines = html.split(/\n|\r/);
-    each(lines, function(line){
-      var splitter = /(?= )|(?=<)|(?=\/\s?>)|(?=-->)|@@@/;
-      line = line.trim().split(splitter);
+      .replace(/=(?=")/g, '=@@@')
+      .split(/[\n\r]/);
+    var splitter = /(?= )|(?=<)|(?=\/\s?>)|(?=-->)|@@@/;
+    each(lines, function(line, lineNum){
+      var chunks = line.trim().split(splitter);
+      var charLen = 0;
+      each(chunks, function(chunk){
+        if(chunk.trim() !== ""){
+          output.push({
+            value: chunk,
+            top: lineNum,
+            left: charLen
+          });
+        }
+        charLen += Math.max(chunk.length, 1);
+      });
     });
     return output;
   },
@@ -264,32 +271,9 @@ TileFactory.prototype = {
     }
     factory.element.removeChild(tester);
   },
-  bulkCreate: function(inputHTML){
-    var factory = this;
-    var i = -1, l = inputHTML.length;
-    var tile, numInLine, indent;
-    var horribleRegEx = /(&[#a-z0-9]+;)|(<!--)|(-->)|(<[^">]+[>"])|("[^=<>"]+=")|("[ \/]*>)|([a-zA-Z0-9\_\.\,\:\;\/\-\'\$\?\=\%\@\!]+)/g;
-    while(++i < l){
-      numInLine = 0;
-      indent = inputHTML[i].match(/^\s*/)[0].length;
-      inputHTML[i].trim().replace(horribleRegEx, function(match){
-        var element;
-        tile = factory.create(match).appendTo(tile);
-        element = tile.element;
-        if(numInLine === 0){
-          if(element.offsetLeft > 0){
-            tile.element.style.top = element.offsetTop + element.offsetHeight + "px";
-          }
-          tile.element.style.left = (indent * factory.letter.width) + "px";
-        }
-        numInLine++;
-      });
-    }
-  },
   create: function(content){
     var factory = this;
     var tile = new Tile(factory);
-    factory.tiles.push(tile);
     factory.element.appendChild(tile.element);
     tile.element.focus();
     if(content) tile.update(content);
