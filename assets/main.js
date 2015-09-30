@@ -2,6 +2,7 @@
 window.onload = function(){
   var frame = el("frame");
   var frameSource = (queryString().url || "./assets/default.html");
+  var frameSourceDir = frameSource.substring(0, frameSource.lastIndexOf("/"));
   var tileFactory = new TileFactory(el("create"));
   tileFactory.element.addEventListener("tileCreate", function(){
     var draggable = new Draggable(tileFactory.latest.element);
@@ -9,10 +10,8 @@ window.onload = function(){
   });
 
   // el("viewURL").href = frameSource;
-  ajax("GET", frameSource, function(data){
-    var frameSourceHTML = data;
-    var byLine = frameSourceHTML.split("\n");
-    tileFactory.bulkCreate(byLine);
+  ajax("GET", frameSource, {}, function(frameSourceHTML){
+    var lines = tileFactory.parseHTMLString(frameSourceHTML);
     tileFactory.element.addEventListener("tileUpdate", refreshFrame);
     refreshFrame();
   });
@@ -24,46 +23,73 @@ window.onload = function(){
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 
+  el("saveButton").addEventListener("click", function(){
+    var postData = {
+      sitehtml: tileFactory.getTilesText(),
+      sitename: el("sitename").value,
+      password: el("password").value
+    }
+    // console.dir(postData.sitehtml);
+    // ajax("POST", "http://localhost/magnetic_crud/index.php", postData, function(response){
+    //   console.log(response);
+    // });
+  });
+
   function refreshFrame(){
-    var urlRegex = /(?:href=" |src=" )(?!http)([^ "]+)/g;
-    var text = tileFactory.getTilesText().join(" ");
-    text = text.replace(urlRegex, function(match, $p1){
-      var rel = match.substring(0, match.indexOf($p1));
-      var url = frameSource.substring(0, frameSource.lastIndexOf("/"));
-      return rel + url + "/" + $p1;
+    var urlRegex = /(?:href="\s|src="\s)(?!http)([^ "]+)/g;
+    var text = tileFactory.getTilesText();
+    text = text.replace(urlRegex, function(match, filename){
+      var rel = match.substring(0, match.indexOf(filename));
+      var output = rel.trim() + frameSourceDir + "/" + filename.trim();
+      return output;
     });
     frame.srcdoc = text;
   }
 }
 
-function ajax(method, url, callback){
+function ajax(method, url, input, callback){
   var request = new XMLHttpRequest();
-  var contentType = "application/json";
   request.open(method, url, true);
-  request.setRequestHeader("Content-Type", contentType);
+  request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   request.onreadystatechange = function(){
     var state = request.readyState;
     var code = request.status;
     var data = request.responseText;
     if(state == 4 && code >= 200 && code < 400) callback(data);
   }
-  request.send();
+  if(input){
+    input = objectToQuery(input);
+  }
+  request.send(input);
+}
+
+function objectToQuery(input){
+  var output = [];
+  var key;
+  for(key in input){
+    output.push([key, encodeURIComponent(input[key])].join("="));
+  }
+  return output.join("&");
 }
 
 function el(id){
   return document.getElementById(id);
 }
 
+function each(object, callback){
+  var i = -1, l = object.length;
+  while(++i < l){
+    callback(object[i]);
+  }
+}
+
 function queryString(){
   var params = {};
   var pairs = location.search.substring(1).split("&"), pair;
-  var split;
-  var i = -1, l = pairs.length;
-  while(++i < l){
-    pair = pairs[i];
-    split = pair.indexOf("=");
-    params[pair.substring(0,split)] = decodeURIComponent(pair.substring(split + 1));
-  }
+  each(pairs, function(pair){
+    var split = pair.indexOf("=");
+    params[pair.substring(0, split)] = decodeURIComponent(pair.substring(split + 1));
+  });
   return params;
 }
 
@@ -199,12 +225,29 @@ Draggable.prototype = {
 
 function TileFactory(parent){
   var factory = this;
+  factory.tiles = [];
   factory.element = parent;
   factory.getLetterDimensions();
   factory.isTouchy = "ontouchstart" in window ? true : false;
   factory.getEdges();
 }
 TileFactory.prototype = {
+  parseHTMLString: function(html){
+    var factory = this;
+    var output = [];
+    var html = html
+      .replace(/ (?=[^\n\r])/g, " @@@")
+      .replace(/>(?=[^\n\r])/g, ">@@@")
+      .replace(/;(?=[^\n\r])/g, ";@@@")
+      .replace(/<!--(?=[^\n\r])/g, "<!--@@@")
+      .replace(/=(?=")/g, '=@@@');
+    var lines = html.split(/\n|\r/);
+    each(lines, function(line){
+      var splitter = /(?= )|(?=<)|(?=\/\s?>)|(?=-->)|@@@/;
+      line = line.trim().split(splitter);
+    });
+    return output;
+  },
   getLetterDimensions: function(){
     var factory = this;
     var tester = document.createElement("SPAN");
@@ -231,7 +274,7 @@ TileFactory.prototype = {
       indent = inputHTML[i].match(/^\s*/)[0].length;
       inputHTML[i].trim().replace(horribleRegEx, function(match){
         var element;
-        tile = factory.appendNewTileTo(tile, match);
+        tile = factory.create(match).appendTo(tile);
         element = tile.element;
         if(numInLine === 0){
           if(element.offsetLeft > 0){
@@ -246,6 +289,7 @@ TileFactory.prototype = {
   create: function(content){
     var factory = this;
     var tile = new Tile(factory);
+    factory.tiles.push(tile);
     factory.element.appendChild(tile.element);
     tile.element.focus();
     if(content) tile.update(content);
@@ -256,7 +300,7 @@ TileFactory.prototype = {
   destroy: function(tile){
     var factory = this;
     if(factory.element.children.length <= 1) return;
-    var tiles = factory.sortTilesByLocation();
+    var tiles = factory.getTilesSortedByLocation();
     var focuser = tiles[tiles.indexOf(tile.element) - 1];
     (focuser || tiles[1]).focus();
     factory.element.removeChild(tile.element);
@@ -269,7 +313,7 @@ TileFactory.prototype = {
       bottom: parent.scrollTop + parent.scrollHeight
     }
   },
-  sortTilesByLocation: function(){
+  getTilesSortedByLocation: function(){
     var factory = this;
     var tiles = Array.prototype.slice.call(factory.element.children);
     tiles.sort(function(a, b){
@@ -283,37 +327,24 @@ TileFactory.prototype = {
   },
   getTilesText: function(){
     var factory = this;
-    var tiles = factory.sortTilesByLocation();
-    var i = -1, l = tiles.length;
+    var tiles = factory.getTilesSortedByLocation();
+    var lines = {};
     var output = [];
+    var i = -1, l = tiles.length, tile, line;
     while(++i < l){
-      output.push(tiles[i].value);
-    }
-    return output;
-  },
-  appendNewTileTo: function(base, content){
-    var factory = this;
-    var edge = {};
-    var tile = factory.create(content);
-    if(!base){
-      return tile;
-    }else{
-      base = base.element;
-    }
-    edge.top = base.offsetTop;
-    edge.left = base.offsetLeft + base.offsetWidth;
-    edge.bottom = edge.top + tile.element.offsetHeight;
-    edge.right = edge.left + tile.element.offsetWidth;
-    if(edge.right > factory.edge.right){
-      edge.left = 0;
-      edge.top = edge.bottom;
-      if(edge.bottom > factory.edge.bottom){
-        factory.element.style.height = factory.element.offsetHeight +  tile.element.offsetHeight;
+      tile = tiles[i];
+      if(!lines[tile.offsetTop]){
+        lines[tile.offsetTop] = [];
       }
+      lines[tile.offsetTop].push(tile.value);
     }
-    tile.element.style.top = edge.top + "px";
-    tile.element.style.left = edge.left + "px";
-    return tile;
+    for(line in lines){
+      output.push(lines[line].join(" "));
+    }
+    output = output.join("\n");
+    // output.replace(//)
+    // console.log(output);
+    return output;
   }
 }
 
@@ -345,6 +376,10 @@ Tile.prototype = {
     tile.element.style.paddingRight = factory.letter.width + "px";
     tile.element.style.width = (factory.letter.width * text.length) + "px";
   },
+  destroy: function(){
+    var tile = this;
+    var factory = tile.factory;
+  },
   update: function(text){
     var tile = this;
     tile.element.value = text;
@@ -375,7 +410,7 @@ Tile.prototype = {
       tile.calculateDeleteWidth = true;
     }else if(key == 13){
       evt.preventDefault();
-      tile.factory.appendNewTileTo(tile);
+      tile.factory.create().appendTo(tile);
     }
   },
   onKeyPress: function(evt){
@@ -386,7 +421,7 @@ Tile.prototype = {
     }else{
       tile.calculateNewWidth(1);
     }
-    if(tile.edge("right") > tile.factory.edge.right){
+    if((element.offsetLeft + element.offsetWidth) > tile.factory.edge.right){
       element.style.left = tile.factory.edge.right - element.offsetWidth + "px";
     }
   },
@@ -407,9 +442,28 @@ Tile.prototype = {
       tile.element.className = tile.element.className.replace("htmlTag", "");
     }
   },
-  edge: function(d){
-    var tile = this, element = tile.element;
-    if(d == "bottom") return element.offsetTop + element.offsetHeight;
-    if(d == "right") return element.offsetLeft + element.offsetWidth;
+  appendTo: function(base){
+    var tile = this;
+    var factory = tile.factory;
+    var edge = {};
+    if(!base){
+      return tile;
+    }else{
+      base = base.element;
+    }
+    edge.top = base.offsetTop;
+    edge.left = base.offsetLeft + base.offsetWidth;
+    edge.bottom = edge.top + tile.element.offsetHeight;
+    edge.right = edge.left + tile.element.offsetWidth;
+    if(edge.right > factory.edge.right){
+      edge.left = 0;
+      edge.top = edge.bottom;
+      if(edge.bottom > factory.edge.bottom){
+        factory.element.style.height = factory.element.offsetHeight +  tile.element.offsetHeight;
+      }
+    }
+    tile.element.style.top = edge.top + "px";
+    tile.element.style.left = edge.left + "px";
+    return tile;
   }
 }
