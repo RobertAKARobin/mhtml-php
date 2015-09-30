@@ -1,7 +1,8 @@
 "use strict";
 window.onload = function(){
   var frame = el("frame");
-  var frameSource = (queryString().url || "./assets/default.html");
+  var frameSource = (queryString().url || "http://localhost/magnetic/assets/default.html");
+  var apiUrl = "http://localhost/magnetic/parser.php";
   var frameSourceDir = frameSource.substring(0, frameSource.lastIndexOf("/"));
   var tileFactory = new TileFactory(el("create"));
   tileFactory.element.addEventListener("tileCreate", function(){
@@ -10,12 +11,17 @@ window.onload = function(){
   });
 
   // el("viewURL").href = frameSource;
-  ajax("GET", frameSource, {}, function(frameSourceHTML){
-    var tiles = tileFactory.parseHTMLString(frameSourceHTML);
-    each(tiles, function(tile){
-      tile = tileFactory.create(tile.value);
+  ajax("GET", apiUrl + "?url=" + frameSource, {}, function(html){
+    var apiTilesByLine = JSON.parse(html);
+    each(apiTilesByLine, function(line, lineNum){
+      if(line.length == 0) return;
+      var tile = tileFactory.create(line[0].value);
+      tile.element.style.left = (line[0].left * tileFactory.letter.width) + "px";
+      each(line, function(apiTile, tileNum){
+        if(tileNum == 0) return;
+        tile = tileFactory.create(apiTile.value).appendTo(tile);
+      });
     });
-    refreshFrame();
   });
 
   (function loadCaptcha(){
@@ -228,33 +234,6 @@ function TileFactory(parent){
   factory.getEdges();
 }
 TileFactory.prototype = {
-  parseHTMLString: function(html){
-    var factory = this;
-    var output = [];
-    var lines = html
-      .replace(/ (?=[^\n\r])/g, " @@@")
-      .replace(/>(?=[^\n\r])/g, ">@@@")
-      .replace(/;(?=[^\n\r])/g, ";@@@")
-      .replace(/<!--(?=[^\n\r])/g, "<!--@@@")
-      .replace(/=(?=")/g, '=@@@')
-      .split(/[\n\r]/);
-    var splitter = /(?= )|(?=<)|(?=\/\s?>)|(?=-->)|@@@/;
-    each(lines, function(line, lineNum){
-      var chunks = line.trim().split(splitter);
-      var charLen = 0;
-      each(chunks, function(chunk){
-        if(chunk.trim() !== ""){
-          output.push({
-            value: chunk,
-            top: lineNum,
-            left: charLen
-          });
-        }
-        charLen += Math.max(chunk.length, 1);
-      });
-    });
-    return output;
-  },
   getLetterDimensions: function(){
     var factory = this;
     var tester = document.createElement("SPAN");
@@ -418,13 +397,17 @@ Tile.prototype = {
   },
   checkIfHTML: function(){
     var tile = this;
-    var text = tile.element.value;
-    var rx = /(<[^>\n]+>)|(<[^>\n]+")|("[^>\n]+")|("[^\/>]*\/*\s*>)|(&[^;\s]+;)/;
-    if(rx.test(text)){
-      tile.element.className += " htmlTag";
-    }else{
-      tile.element.className = tile.element.className.replace("htmlTag", "");
-    }
+    var element = tile.element;
+    var text = element.value;
+    var rx = new RegExp([
+      "(<[^>\n]+>)",
+      "(<[^>\n]+[\"\'])",
+      "(\"[^>\n]+[\"\'])",
+      "(\"[^\/>]*\/*\s*>)",
+      "(&[^;\s]+;)"
+    ].join("|"));
+    if(rx.test(text)) addClass(element, "htmlTag");
+    else removeClass(element, "htmlTag");
   },
   appendTo: function(base){
     var tile = this;
