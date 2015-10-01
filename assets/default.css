@@ -56,27 +56,32 @@ h2{
 h3{
   text-align:center;
 }
-nav{
-  text-align:center;
-}
-h1,
-nav>:nth-child(odd),
-main section:nth-child(odd){
+body>:nth-child(odd){
   transform:rotate(1deg);
+  -webkit-transform:rotate(1deg);
 }
-nav>:nth-child(even),
-main section:nth-child(even),
-footer>:nth-child(odd){
+body>:nth-child(even){
   transform:rotate(-1deg);
+  -webkit-transform:rotate(-1deg);
 }
-nav>*{
-  display:inline-block;
+#photo{
+  width:400px;
+  height:300px;
+  border:10px solid #eee;
+  background-size:contain;
+}
+#photo>a{
+  display:block;
+  position:absolute;
+  bottom:-20px;
+  right:-20px;
   background-color:#fd0;
   color:black;
-  width:100px;
-  height:100px;
-  font-size:14px;
-  line-height:18px;
+  width:150px;
+  height:150px;
+  font-size:18px;
+  line-height:24px;
+  text-decoration:underline;
   margin:0 20px;
   padding:10px;
   text-align:center;
@@ -84,20 +89,15 @@ nav>*{
   border:1px solid #dc0;
   border-width:0 2px 2px 0;
   overflow:hidden;
-}
-nav a{
-  font-size:18px;
-  line-height:24px;
-  text-decoration:underline;
-}
-nav a:hover{
-  background-color:#fe0;
+  transform:rotate(-3deg);
+  -webkit-transform:rotate(-3deg);
 }
 section{
   background-color:#fff;
   width:90%;
   margin:20px auto;
   padding:20px;
+  max-width:700px;
   box-shadow:0px 2px 10px 0px #bbb;
 }
 main>*,

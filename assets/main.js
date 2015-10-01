@@ -94,7 +94,7 @@ window.onload = function(){
   }());
 
   function refreshFrame(){
-    var urlRegex = /(?:href=\s*"|src=\s*")(?!http)([^ "]+)/g;
+    var urlRegex = /(?:href=\s*"|src=\s*"|url\()(?!http)([^ "]+)/g;
     var text = tileFactory.getTilesText();
     text = text.replace(urlRegex, function(match, filename){
       var rel = match.substring(0, match.indexOf(filename));
