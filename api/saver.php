@@ -11,6 +11,11 @@ function report($isSuccess, $message){
   )));
 }
 
+// Some rock-solid security going on here
+if(!array_key_exists("HTTP_REFERER", $_SERVER) || !preg_match("/^http:\/\/(magnetichtml.com|localhost\/magnetic)/", $_SERVER["HTTP_REFERER"])){
+  report(false, "Unauthorized access.");
+}
+
 $postKeys = ["sitehtml", "sitename", "password"];
 foreach($postKeys as $postKey){
   if(!array_key_exists($postKey, $_POST)){
