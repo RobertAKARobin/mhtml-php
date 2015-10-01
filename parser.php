@@ -3,21 +3,32 @@
 if(!array_key_exists("url", $_GET)){
   die("No url!");
 }
-$rawHtml = file_get_contents($_GET["url"]);
+$url = $_GET["url"];
+$rawHtml = file_get_contents($url);
 // $rawHtml = htmlspecialchars($rawHtml);
-$lines = preg_split("/[\n\r]/", $rawHtml);
 
+if(array_key_exists("absolutify", $_GET)){
+  $urlRegex = "/((?<=href=[\"\'])|(?<=src=[\"\']))(?!http)[^ \"]+/";
+  $rawHtml = preg_replace_callback($urlRegex, function($matches) use($url){
+    $urlToDirectory = substr($url, 0, strrpos($url, "/"));
+    return "$urlToDirectory/$matches[0]";
+  }, $rawHtml);
+}
+
+$lines = preg_split("/[\n\r]/", $rawHtml);
 $regexes = join("|", array(
   "closeTagLB" => "(?<=>)",
   "openTagLA" =>  "(?=<)",
   "spaceLB" =>    "(?<=\s)",
   "spaceLA" =>    "(?=\s)",
-  "quoteLA" =>    "(?=[\"\']\w)",
+  "quoteLA" =>    "(?=[\"\'][^\"\'\/\s>])",
   "quoteLB" =>    "(?<=\w[\"\'])",
-  "commEndLA"=>   "(?=--+>)",
-  "commOpenLB" => "(?<=--)(?=[^->])"
+  "commEndLA" =>  "(?=--+>)",
+  "commOpenLB" => "(?<=--)(?=[^->])",
+  "speCharLA" =>  "(?<=;)(?=&)"
 ));
 $regexes = "/$regexes/";
+// echo $regexes . PHP_EOL;
 
 $output = array();
 $i = -1;

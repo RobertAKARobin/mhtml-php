@@ -60,7 +60,7 @@ body>:nth-of-type(2){
   padding-top:22px;
   min-height:100vh;
 }
-#view{
+#viewWrap{
   box-shadow:0px 0px 50px 0px #333;
 }
 #frame{
@@ -87,7 +87,7 @@ body>:nth-of-type(2){
 .tiles>input{
   position:absolute;
   padding:0;
-  min-width:15px;
+  min-width:1px;
   width:15px;
 }
 .draggable>*{
@@ -105,8 +105,10 @@ body>:nth-of-type(2){
 .htmlTag{
   color:#a0a;
 }
+.specialChar{
+  color:#940;
+}
 nav{
-  display:none;
   position:absolute;
   top:0;
   left:0;
@@ -224,41 +226,41 @@ input:checked+label:after{
   content:"!";
 }
 
-.tiles>*{
+#create{
   z-index:1;
 }
-.tiles>:focus{
+#view{
   z-index:2;
 }
-#view{
+.tiles>*{
   z-index:3;
 }
-#frame{
+.tiles>:active{
   z-index:4;
 }
-#main-nav{
+#frame{
   z-index:5;
 }
-#sub-nav{
+#main-nav{
   z-index:6;
+}
+#sub-nav{
+  z-index:7;
 }
 
 
 body, html{
   width:100vw;
-}
-body{
-  display:flex;
-  display:-webkit-flex;
-  flex-direction:row;
+  min-width:640px;
+  white-space:nowrap;
+  font-size:0;
 }
 body>div{
-  flex-basis:420px;
-  -webkit-flex-basis:420px;
+  display:inline-block;
+  min-width:320px;
 }
 #createWrap{
-  flex-shrink:0;
-  -webkit-flex-shrink:0;
+  width:40vw;
   direction:rtl;
   overflow-x:hidden;
 }
@@ -266,24 +268,16 @@ body>div{
   direction:ltr;
 }
 #viewWrap{
-  flex-grow:1;
-  -webkit-flex-grow:1;
+  width:60vw;
 }
 #create, #frame{
   width:100%;
-}
-#frame{
-  min-width:320px;
 }
 @media (max-width:420px){
   body{
     width:200vw;
   }
   body>div{
-    flex-basis:100vw;
-    -webkit-flex-basis:100vw;
-  }
-  #frame{
-    min-width:0;
+    width:100vw;
   }
 }

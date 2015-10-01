@@ -1,28 +1,38 @@
 "use strict";
 window.onload = function(){
   var frame = el("frame");
-  var frameSource = (queryString().url || "http://localhost/magnetic/assets/default.html");
-  var apiUrl = "http://localhost/magnetic/parser.php";
-  var frameSourceDir = frameSource.substring(0, frameSource.lastIndexOf("/"));
-  var tileFactory = new TileFactory(el("create"));
-  tileFactory.element.addEventListener("tileCreate", function(){
-    var draggable = new Draggable(tileFactory.latest.element);
-    draggable.element.addEventListener("drop", refreshFrame);
-  });
 
-  // el("viewURL").href = frameSource;
-  ajax("GET", apiUrl + "?url=" + frameSource, {}, function(html){
-    var apiTilesByLine = JSON.parse(html);
-    each(apiTilesByLine, function(line, lineNum){
-      if(line.length == 0) return;
-      var tile = tileFactory.create(line[0].value);
-      tile.element.style.left = (line[0].left * tileFactory.letter.width) + "px";
-      each(line, function(apiTile, tileNum){
-        if(tileNum == 0) return;
-        tile = tileFactory.create(apiTile.value).appendTo(tile);
-      });
+  var tileFactory;
+  (function createTileFactory(){
+    tileFactory = new TileFactory(el("create"));
+    tileFactory.element.addEventListener("tileCreate", function(){
+      var draggable = new Draggable(tileFactory.latest.element);
+      draggable.element.addEventListener("drop", refreshFrame);
     });
-  });
+  }());
+
+  var frameSource = (queryString().url || "http://localhost/magnetic/assets/default.html");
+  var frameSourceDir = frameSource.substring(0, frameSource.lastIndexOf("/"));
+
+  (function loadTiles(){
+    var apiUrl = "http://localhost/magnetic/parser.php";
+    ajax("GET", apiUrl + "?url=" + frameSource, {}, function(html){
+      var apiTilesByLine = JSON.parse(html);
+      var offsetTop;
+      each(apiTilesByLine, function(line, lineNum){
+        var tile;
+        if(line.length == 0) return;
+        tile = tileFactory.create(line[0].value);
+        tile.setPosition("left", line[0].left * tileFactory.letter.width);
+        tile.setPosition("top", offsetTop);
+        each(line, function(apiTile, tileNum){
+          if(tileNum != 0) tile = tileFactory.create(apiTile.value).appendTo(tile);
+          if(tileNum == line.length - 1) offsetTop = tile.element.offsetTop + tile.element.offsetHeight;
+        });
+      });
+      refreshFrame();
+    });
+  }());
 
   (function loadCaptcha(){
     var script = document.createElement("SCRIPT");
@@ -32,11 +42,12 @@ window.onload = function(){
   })();
 
   el("saveButton").addEventListener("click", function(){
-    var postData = {
-      sitehtml: tileFactory.getTilesText(),
-      sitename: el("sitename").value,
-      password: el("password").value
-    }
+    console.dir(tileFactory.getTilesSortedByLocation());
+    // var postData = {
+    //   sitehtml: tileFactory.getTilesText(),
+    //   sitename: el("sitename").value,
+    //   password: el("password").value
+    // }
     // console.dir(postData.sitehtml);
     // ajax("POST", "http://localhost/magnetic_crud/index.php", postData, function(response){
     //   console.log(response);
@@ -44,7 +55,7 @@ window.onload = function(){
   });
 
   function refreshFrame(){
-    var urlRegex = /(?:href="\s|src="\s)(?!http)([^ "]+)/g;
+    var urlRegex = /(?:href="|src=")(?!http)([^ "]+)/g;
     var text = tileFactory.getTilesText();
     text = text.replace(urlRegex, function(match, filename){
       var rel = match.substring(0, match.indexOf(filename));
@@ -53,63 +64,61 @@ window.onload = function(){
     });
     frame.srcdoc = text;
   }
+
+  function queryString(){
+    var params = {};
+    var pairs = location.search.substring(1).split("&"), pair;
+    each(pairs, function(pair){
+      var split = pair.indexOf("=");
+      params[pair.substring(0, split)] = decodeURIComponent(pair.substring(split + 1));
+    });
+    return params;
+  }
+
+  function ajax(method, url, input, callback){
+    var request = new XMLHttpRequest();
+    request.open(method, url, true);
+    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function(){
+      var state = request.readyState;
+      var code = request.status;
+      var data = request.responseText;
+      if(state == 4 && code >= 200 && code < 400) callback(data);
+    }
+    if(input){
+      input = objectToQuery(input);
+    }
+    request.send(input);
+  }
+
+  function objectToQuery(input){
+    var output = [];
+    each(input, function(param, key){
+      output.push([key, encodeURIComponent(param)].join("="));
+    });
+    return output.join("&");
+  }
+  function el(id){
+    return document.getElementById(id);
+  }
 }
 
-function ajax(method, url, input, callback){
-  var request = new XMLHttpRequest();
-  request.open(method, url, true);
-  request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  request.onreadystatechange = function(){
-    var state = request.readyState;
-    var code = request.status;
-    var data = request.responseText;
-    if(state == 4 && code >= 200 && code < 400) callback(data);
-  }
-  if(input){
-    input = objectToQuery(input);
-  }
-  request.send(input);
-}
-function objectToQuery(input){
-  var output = [];
-  var key;
-  for(key in input){
-    output.push([key, encodeURIComponent(input[key])].join("="));
-  }
-  return output.join("&");
-}
-function el(id){
-  return document.getElementById(id);
-}
 function each(object, callback){
   var i = -1, l = object.length;
-  while(++i < l){
-    callback(object[i], i);
+  if(Array.isArray(object)){
+    while(++i < l){
+      callback(object[i], i);
+    }
+  }else{
+    for(i in object){
+      callback(object[i], i);
+    }
   }
-}
-function queryString(){
-  var params = {};
-  var pairs = location.search.substring(1).split("&"), pair;
-  each(pairs, function(pair){
-    var split = pair.indexOf("=");
-    params[pair.substring(0, split)] = decodeURIComponent(pair.substring(split + 1));
-  });
-  return params;
 }
 function defineEvent(name){
   var evt = document.createEvent("Event");
   evt.initEvent(name, true, true);
   return evt;
-}
-function toggleClass(element, className){
-  if(element.className.indexOf(clazz) < 0) addClass(element, className);
-  else removeClass(element, className);
-}
-function removeClass(element, className){
-  element.className = element.className.replace(className, "");
-}
-function addClass(element, className){
-  element.className += " " + className;
 }
 
 function Draggable(element){
@@ -293,20 +302,22 @@ TileFactory.prototype = {
     var tiles = factory.getTilesSortedByLocation();
     var lines = {};
     var output = [];
-    var i = -1, l = tiles.length, tile, line;
-    while(++i < l){
-      tile = tiles[i];
+    var unnecessarySpaces = /(> )|( (?=<))|(href=\s)|(src=\s)/g;
+    each(tiles, function(tile){
+      var indent;
       if(!lines[tile.offsetTop]){
-        lines[tile.offsetTop] = [];
+        indent = Math.round(tile.offsetLeft / factory.letter.width);
+        lines[tile.offsetTop] = [ [Array(indent + 1).join(" ")] ];
       }
       lines[tile.offsetTop].push(tile.value);
-    }
-    for(line in lines){
-      output.push(lines[line].join(" "));
-    }
-    output = output.join("\n");
-    // output.replace(//)
-    // console.log(output);
+    });
+    each(lines, function(line){
+      output.push(line.join(" "));
+    });
+    output = output.join("\n").replace(unnecessarySpaces, function(match){
+      var result = match.substring(0, match.length - 1);
+      return result;
+    });
     return output;
   }
 }
@@ -362,6 +373,22 @@ Tile.prototype = {
       tile.tapped = null;
     }
   },
+  toggleClass: function(className){
+    var tile = this;
+    var element = tile.element;
+    if(element.className.indexOf(clazz) < 0) tile.addClass(className);
+    else tile.removeClass(className);
+  },
+  removeClass: function(className){
+    var tile = this;
+    var element = tile.element;
+    element.className = element.className.replace(className, "");
+  },
+  addClass: function(className){
+    var tile = this;
+    var element = tile.element;
+    element.className += " " + className;
+  },
   onKeyDown: function(evt){
     var tile = this;
     var key = evt.keyCode;
@@ -397,17 +424,22 @@ Tile.prototype = {
   },
   checkIfHTML: function(){
     var tile = this;
-    var element = tile.element;
-    var text = element.value;
-    var rx = new RegExp([
-      "(<[^>\n]+>)",
-      "(<[^>\n]+[\"\'])",
-      "(\"[^>\n]+[\"\'])",
-      "(\"[^\/>]*\/*\s*>)",
-      "(&[^;\s]+;)"
+    var isTag = new RegExp([
+      "(<.*)",
+      "(.*>)",
+      "(^[a-z-]+=)"
     ].join("|"));
-    if(rx.test(text)) addClass(element, "htmlTag");
-    else removeClass(element, "htmlTag");
+    var isSpecialChar = new RegExp([
+      "(&#?[^;\s]+;)"
+    ].join("|"));
+    if(isTag.test(tile.element.value)) tile.addClass("htmlTag");
+    else tile.removeClass("htmlTag");
+    if(isSpecialChar.test(tile.element.value)) tile.addClass("specialChar");
+    else tile.removeClass("specialChar");
+  },
+  setPosition: function(direction, distance){
+    var tile = this;
+    tile.element.style[direction] = distance + "px";
   },
   appendTo: function(base){
     var tile = this;
