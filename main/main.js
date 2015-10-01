@@ -83,7 +83,6 @@ window.onload = function(){
         password: el("password").value
       }
       ajax("POST", apiDir + "save.php", postData, function(response){
-        console.log(response);
         response = JSON.parse(response);
         if(response.fail){
           return el("saveButton").textContent = response.fail;
@@ -356,7 +355,7 @@ TileFactory.prototype = {
     });
     output = output.join("\n");
     (function stripUnnecessarySpaces(){
-      var unnecessarySpaces = /(> )|( (?=<))|(href=\s)|(src=\s)/g;
+      var unnecessarySpaces = /(> (?=<))|(href=\s)|(src=\s)/g;
       output = output.replace(unnecessarySpaces, function(match){
         var result = match.substring(0, match.length - 1);
         return result;
@@ -473,9 +472,7 @@ Tile.prototype = {
       "(.*>)",
       "(^[a-z-]+=)"
     ].join("|"));
-    var isSpecialChar = new RegExp([
-      "(&#?[^;\s]+;)"
-    ].join("|"));
+    var isSpecialChar = /(&#?[^;\s]+;)/;
     if(isTag.test(tile.element.value)) tile.addClass("htmlTag");
     else tile.removeClass("htmlTag");
     if(isSpecialChar.test(tile.element.value)) tile.addClass("specialChar");

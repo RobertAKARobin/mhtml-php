@@ -26,6 +26,12 @@ foreach($postKeys as $postKey){
 }
 
 $sitename = preg_replace("/[^a-zA-Z0-9-_]/", "", $sitename);
+$defaults = json_decode(file_get_contents("defaults.json"), true);
+if(in_array("$sitename.html", $defaults)){
+  report(false, "Can't overwrite that one.");
+}
+
+
 $fileIn = fopen("sites.csv", "c+");
 $fileOut = fopen("sites_new.csv", "w");
 if(!flock($fileIn, LOCK_EX) || !flock($fileOut, LOCK_EX)){

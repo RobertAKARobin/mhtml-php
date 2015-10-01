@@ -26,7 +26,6 @@ if(preg_match("/^http\:\/\//", $url)){
   }
 }
 
-$relURLRegex = "/((?<=href=[\"\'])|(?<=src=[\"\'])|(?<=url\())(?!http)[^ \"]+/";
 if($isLocal){
   $urlToDirectory = "sites";
 }else{
@@ -37,6 +36,8 @@ if($isLocal){
     $urlToDirectory = substr($url, 0, strrpos($url, "/"));
   }
 }
+
+$relURLRegex = "/((?<=href=[\"\'])|(?<=src=[\"\'])|(?<=url\())(?!(http)|(sites))[^ \"]+/";
 $rawHtml = file_get_contents($url);
 $rawHtml = preg_replace_callback($relURLRegex, function($matches) use($urlToDirectory){
   return "$urlToDirectory/$matches[0]";
