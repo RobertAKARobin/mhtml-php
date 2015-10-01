@@ -67,7 +67,7 @@ $fileName = "sites/$sitename.html";
 file_put_contents($fileName, $sitehtml);
 
 if($shouldCreateNewRow){
-  report(true, $fileName);
+  report(true, "http://dev.robertgfthomas.com/magnetichtml/$fileName");
 }else{
   report(true, "updated");
 }

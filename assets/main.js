@@ -66,13 +66,14 @@ window.onload = function(){
 
   (function setUpSaveButton(){
     el("saveButton").addEventListener("click", function(){
+      var saveButton = el("saveButton");
+      saveButton.textContent = "Saving...";
       var postData = {
         sitehtml: tileFactory.getTilesText(),
         sitename: el("sitename").value,
         password: el("password").value
       }
       ajax("POST", apiDir + "saver.php", postData, function(response){
-        console.log(response);
         response = JSON.parse(response);
         if(response.fail){
           return el("saveButton").textContent = response.fail;
