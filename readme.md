@@ -1,17 +1,5 @@
 # Magnetic HTML
 
+See http://magnetichtml.com
 
-- Header
-  - Create tiles
-    - Plus button
-  - Delete tiles
-    - Strike button; drag to select; then click strike again
-  - Rename tiles
-    - Double-click
-  - Save arrangement of tiles
-    - Floppy disk button
-  - Log in / see profile
-- Footer
-  - Buy on Amazon
-  - Contact
-  - About
+http://dev.robertgfthomas.com/magnetichtml/parser.php is an API that accepts a URL as a parameter, gets the contents of that URL, and returns a JSON array of all that content split into tile-like chunks.
