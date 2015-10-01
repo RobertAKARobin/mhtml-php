@@ -24,16 +24,15 @@ foreach($postKeys as $postKey){
     $$postKey = $_POST[$postKey];
   }
 }
-if(!preg_match("/[a-zA-Z0-9-_\.]+/", $sitename)){
-  report(false, "Site name should be alphanumeric.");
-}
 
-$shouldCreateNewRow = true;
+$sitename = preg_replace("/[^a-zA-Z0-9-_]/", "", $sitename);
 $fileIn = fopen("sites.csv", "c+");
 $fileOut = fopen("sites_new.csv", "w");
 if(!flock($fileIn, LOCK_EX) || !flock($fileOut, LOCK_EX)){
   report(false, "Server trouble. Retry later.");
 }
+
+$shouldCreateNewRow = true;
 while(!feof($fileIn)){
   $line = fgetcsv($fileIn);
   if(!$line){
@@ -68,11 +67,14 @@ fclose($fileOut);
 unlink("sites.csv");
 rename("sites_new.csv", "sites.csv");
 
-$fileName = "sites/$sitename.html";
-file_put_contents($fileName, $sitehtml);
+$fileName = "$sitename.html";
+file_put_contents("sites/$fileName", $sitehtml);
 
+$domain = $_SERVER["REQUEST_SCHEME"] . "://" . $_SERVER["HTTP_HOST"];
+$uri = $_SERVER["REQUEST_URI"];
+$uri = substr($uri, 0, strrpos($uri, "/") + 1);
 if($shouldCreateNewRow){
-  report(true, "http://dev.robertgfthomas.com/magnetichtml/$fileName");
+  report(true, $fileName);
 }else{
   report(true, "updated");
 }

@@ -5,6 +5,7 @@ window.onload = function(){
   var frameSource;
   var frameSourceDir;
   var frameSourceFile;
+  var isLocal;
 
   (function createTileFactory(){
     tileFactory = new TileFactory(el("create"));
@@ -19,11 +20,18 @@ window.onload = function(){
 
   (function setFrame(){
     frame = el("frame");
-    frameSource = (queryString().url || baseDir + "assets/default.html");
-    var lastSlash = frameSource.lastIndexOf("/");
-    var lastDot = frameSource.lastIndexOf(".");
-    frameSourceDir = frameSource.substring(0, lastSlash);
-    frameSourceFile = frameSource.substring(lastSlash + 1, lastDot);
+    frameSource = queryString().url;
+    if(!frameSource) frameSource = "default";
+    if(!/\./.test(frameSource)){
+      isLocal = true;
+      return;
+    }
+    (function getFrameUrl(){
+      var lastSlash = frameSource.lastIndexOf("/");
+      var lastDot = frameSource.lastIndexOf(".");
+      frameSourceDir = frameSource.substring(0, lastSlash);
+      frameSourceFile = frameSource.substring(lastSlash + 1, lastDot);
+    }());
     el("sitename").value = frameSourceFile;
 
     function queryString(){
@@ -38,8 +46,9 @@ window.onload = function(){
   }());
 
   (function loadTiles(){
-    var apiUrl = apiDir + "parser.php";
-    ajax("GET", apiUrl + "?url=" + frameSource, {}, function(html){
+    var htmlSourceURL = apiDir + "parse.php?url=" + frameSource;
+    if(isLocal) htmlSourceURL = "defaults/" + frameSource + ".json";
+    ajax("GET", htmlSourceURL, {}, function(html){
       var apiTilesByLine = JSON.parse(html);
       var offsetTop;
       each(apiTilesByLine, function(line, lineNum){
@@ -73,7 +82,8 @@ window.onload = function(){
         sitename: el("sitename").value,
         password: el("password").value
       }
-      ajax("POST", apiDir + "saver.php", postData, function(response){
+      ajax("POST", apiDir + "save.php", postData, function(response){
+        console.log(response);
         response = JSON.parse(response);
         if(response.fail){
           return el("saveButton").textContent = response.fail;
@@ -98,8 +108,10 @@ window.onload = function(){
     var text = tileFactory.getTilesText();
     text = text.replace(urlRegex, function(match, filename){
       var rel = match.substring(0, match.indexOf(filename));
-      var output = rel.trim() + frameSourceDir + "/" + filename.trim();
-      return output;
+      var output = rel.trim();
+      if(isLocal) output += "defaults/";
+      else output += apiDir;
+      return output += filename.trim();
     });
     frame.srcdoc = text;
   }
@@ -331,7 +343,6 @@ TileFactory.prototype = {
     var tiles = factory.getTilesSortedByLocation();
     var lines = {};
     var output = [];
-    var unnecessarySpaces = /(> )|( (?=<))|(href=\s)|(src=\s)/g;
     each(tiles, function(tile){
       var indent;
       if(!lines[tile.offsetTop]){
@@ -343,10 +354,14 @@ TileFactory.prototype = {
     each(lines, function(line){
       output.push(line.join(" "));
     });
-    output = output.join("\n").replace(unnecessarySpaces, function(match){
-      var result = match.substring(0, match.length - 1);
-      return result;
-    });
+    output = output.join("\n");
+    (function stripUnnecessarySpaces(){
+      var unnecessarySpaces = /(> )|( (?=<))|(href=\s)|(src=\s)/g;
+      output = output.replace(unnecessarySpaces, function(match){
+        var result = match.substring(0, match.length - 1);
+        return result;
+      });
+    }());
     return output;
   }
 }

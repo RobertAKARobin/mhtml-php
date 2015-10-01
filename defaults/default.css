@@ -16,7 +16,7 @@
   box-sizing:border-box;
 }
 body{
-  background-image:url('bg/canvas.png');
+  background-image:url('canvas.png');
   overflow-x:hidden;
   color:#444;
   font-family:"Times New Roman", serif;
