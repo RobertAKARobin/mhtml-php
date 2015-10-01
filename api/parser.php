@@ -7,13 +7,13 @@ $url = $_GET["url"];
 $rawHtml = file_get_contents($url);
 // $rawHtml = htmlspecialchars($rawHtml);
 
-if(array_key_exists("absolutify", $_GET)){
+// if(array_key_exists("absolutify", $_GET)){
   $urlRegex = "/((?<=href=[\"\'])|(?<=src=[\"\']))(?!http)[^ \"]+/";
   $rawHtml = preg_replace_callback($urlRegex, function($matches) use($url){
     $urlToDirectory = substr($url, 0, strrpos($url, "/"));
     return "$urlToDirectory/$matches[0]";
   }, $rawHtml);
-}
+// }
 
 $lines = preg_split("/[\n\r]/", $rawHtml);
 $regexes = join("|", array(
