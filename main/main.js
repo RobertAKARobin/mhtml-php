@@ -1,4 +1,11 @@
 "use strict";
+if(location.host == "localhost"){
+  var baseDir = "http://localhost/magnetic/";
+  var apiDir = "http://localhost/magnetic/api/";
+}else{
+  var baseDir = "http://magnetichtml.com/";
+  var apiDir = "http://dev.robertgfthomas.com/magnetichtml/";
+}
 window.onload = function(){
   var tileFactory;
   var frame;
