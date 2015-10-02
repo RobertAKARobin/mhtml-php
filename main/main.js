@@ -355,7 +355,7 @@ TileFactory.prototype = {
     });
     output = output.join("\n");
     (function stripUnnecessarySpaces(){
-      var unnecessarySpaces = /(> (?=<))|(href=\s)|(src=\s)/g;
+      var unnecessarySpaces = /(> (?=<))|(href=\s)|(src=\s)|( (?=&))/g;
       output = output.replace(unnecessarySpaces, function(match){
         var result = match.substring(0, match.length - 1);
         return result;

@@ -18,11 +18,11 @@
   outline:0
 }
 html{
-  background-image:url("slate.png");
+  background-color:#f3f3f3;
 }
 body,html{
   position:relative;
-  font-family:"Andale Mono", monospace;
+  font-family: "Andale Mono", monospace;
 }
 body{
   height:100vh;
@@ -40,13 +40,10 @@ button, .button{
   text-align:center;
 }
 
-h1{
-  font-size:0;
-}
-
 body{
   height:100vh;
   overflow-y:hidden;
+  font-size:13px;
 }
 body>div{
   height:100vh;
@@ -57,11 +54,9 @@ body>:nth-of-type(1){
 body>:nth-of-type(2){
 }
 #create{
-  padding-top:22px;
   min-height:100vh;
 }
 #viewWrap{
-  box-shadow:0px 0px 50px 0px #333;
 }
 #frame{
   position:relative;
@@ -72,17 +67,12 @@ body>:nth-of-type(2){
 
 .tile,
 .tiles>*{
-  font-size:13px;
-  outline:1px solid #ddd;
-  color:#000;
-  background-color:#eee;
-}
-.tiles>*{
+  color:#222;
+  background-color:#fff;
   display:inline-block;
-  white-space:nowrap;
-  height:22px;
-  line-height:22px;
-  vertical-align:top;
+  height:36px;
+  line-height:36px;
+  outline:1px solid #eee;
 }
 .tiles>input{
   position:absolute;
@@ -96,23 +86,21 @@ body>:nth-of-type(2){
 .tiles>input:hover,
 .tiles>a[href]:hover,
 .tiles>:focus{
-  background-color:#fff;
+  background-color:#eee;
 }
-.tiles>:focus{
-  outline:none;
-  box-shadow:0px 0px 10px 2px #fff;
+.tiles>:active{
+  box-shadow:2px 2px 5px 0px #bbb;
 }
 .htmlTag{
-  color:#a0a;
+  color:#808;
 }
 .specialChar{
-  color:#940;
+  color:#d60;
 }
 nav{
-  position:absolute;
-  top:0;
-  left:0;
+  height:36px;
   width:100%;
+  overflow:hidden;
 }
 nav *{
   box-sizing:border-box;
@@ -131,40 +119,48 @@ nav *{
   flex-grow:1;
   -webkit-flex-grow:1;
   text-align:center;
+  height:36px;
+  line-height:36px;
+  background-color:#f3f3f3;
 }
-#main-nav a{
+#main-nav>a:hover{
+  background-color:#fff;
+}
+#main-nav>a:before{
+  content:"";
+  display:block;
+  position:relative;
+  width:20px;
+  height:20px;
+  left:50%;
+  margin-left:-10px;
+  margin-top:8px;
   background-image:url("controls.png");
   background-repeat:no-repeat;
-  font-size:0;
 }
-nav .view{
+nav .view:before{
   background-position:center 0px;
 }
-nav .home{
+nav .home:before{
   background-position:center -20px;
 }
-nav .blank{
+nav .blank:before{
   background-position:center -40px;
 }
-nav .email{
+nav .email:before{
   background-position:center -60px;
 }
-nav .save{
+nav .save:before{
   background-position:center -80px;
 }
-nav .amazon{
+nav .amazon:before{
   background-position:center -100px;
-}
-nav a:hover{
-  opacity:1;
 }
 #sub-nav{
   position:absolute;
   bottom:100%;
   left:0;
   width:100%;
-  height:0px;
-  background-color:blue;
 }
 #sub-nav>*{
   position:absolute;
@@ -172,7 +168,8 @@ nav a:hover{
   width:100%;
   transition:top 0.5s;
   padding:10px;
-  box-shadow:0px 0px 50px 0px #111;
+  box-shadow:0px 0px 20px 0px #333;
+  background-color:#eee;
 }
 #sub-nav>:target{
   top:0;
@@ -266,6 +263,7 @@ body>div{
   direction:ltr;
 }
 #viewWrap{
+  border-left:1px solid #e6e6e6;
   flex-grow:2;
   -webkit-flex-grow:2;
   flex-shrink:0;

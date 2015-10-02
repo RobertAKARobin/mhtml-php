@@ -7,44 +7,30 @@
     <meta name="description" content="Drag and drop to create your own webpage!" />
     <link rel="stylesheet" href="main/main.css" />
     <script>
-var baseDir = "http://magnetichtml.com/";
-var apiDir = "http://dev.robertgfthomas.com/magnetichtml/";
+// var baseDir = "http://magnetichtml.com/";
+// var apiDir = "http://dev.robertgfthomas.com/magnetichtml/";
 
-// var baseDir = "http://localhost/magnetic/";
-// var apiDir = "http://localhost/magnetic/api/";
+var baseDir = "http://localhost/magnetic/";
+var apiDir = "http://localhost/magnetic/api/";
     </script>
     <script src="main/main.js"></script>
   </head>
   <body>
     <div id="createWrap">
       <nav>
-        <div id="main-nav" class="tiles">
-          <a href="./index.html" target="_top" class="home" title="Main Magnetic HTML page">Main Magnetic HTML page</a>
-          <a href="http://amzn.to/1G66iB5" target="_blank" class="amazon" title="Get real-life Magnetic HTML tiles on Amazon">Buy on Amazon</a>
-          <a href="#contact" id="toggleContact" class="email" title="Say hello!">Contact me</a>
-          <a href="./index.html?url=blank" target="_blank" class="blank" title="New blank page">New blank page</a>
-          <a href="#save" id="toggleSave" class="save" title="Save your page!">Save</a>
+        <div id="main-nav">
+          <a href="./index.html" target="_top" class="home" title="Main Magnetic HTML page"></a>
+          <a href="./index.html?url=blank" target="_blank" class="blank" title="New blank page"></a>
+          <a href="#save" id="toggleSave" class="save" title="Save your page!"></a>
           <span id="createdAmount" title="Number of sites assembled so far"></span>
+          <a href="http://amzn.to/1G66iB5" target="_blank" class="amazon" title="Get real-life Magnetic HTML tiles on Amazon"></a>
         </div>
         <div id="sub-nav">
-          <div id="save" class="tile">
+          <div id="save">
             <input id="sitename" type="text" placeholder="Pick a name for your site" />
             <input id="password" type="text" placeholder="Pick or enter a password" />
             <button id="saveButton" type="button">Save</button>
             <a href="#" class="button">Close</a>
-          </div>
-          <div id="contact" class="tile">
-            <form method="post" action="http://dev.robertgfthomas.com/mail/index.php" target="_blank">
-              <textarea name="body" placeholder="Say hello!"></textarea>
-              <input type="hidden" name="emailMe" value="robin@magnetichtml.com" />
-              <input type="hidden" name="render" value="html" />
-              <input type="hidden" name="subject" value="Thanks for your message!" />
-              <input type="text" name="emailThem" placeholder="hello@email.com" />
-              <input name="emailList" id="emailList" type="checkbox" /><label for="emailList">Go on the email list</label>
-              <div class="g-recaptcha" data-theme="light" data-sitekey="6LfQiAcTAAAAAGLPo6q0xMh1S42WUp4H1fd9cJQT"></div>
-              <button type="submit">Send to robin@magnetichtml.com</button>
-              <a href="#" class="button">Close</a>
-            </form>
           </div>
         </div>
       </nav>
