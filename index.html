@@ -13,17 +13,17 @@
       <header>
         <div id="title">
           <h1>Magnetic HTML&trade;</h1>
-          <p>Click and drag. Double-click to type.</p>
+          <p id="message">Click and drag. Double-click to type.</p>
         </div>
         <nav>
           <div>
-            <input id="sitename" type="text" placeholder="Pick a name for your site" />
-            <input id="password" type="text" placeholder="Pick or enter a password" />
+            <input id="sitename" type="text" autocomplete="off" placeholder="Pick a name for your site" />
+            <input id="password" type="text" autocomplete="off" placeholder="Pick or enter a password" />
           </div>
-          <a href="#save" id="saveButton" class="save" title="Save your page!"></a>
+          <a id="saveButton" class="save" title="Save your page!"></a>
           <a href="./index.html" target="_top" class="home" title="Main Magnetic HTML page"></a>
           <a href="./index.html?url=blank" target="_top" class="blank" title="New blank page"></a>
-          <a class="view" id="popout" target="_blank" title="View the current page by itself"></a>
+          <a href="#" class="view" id="popout" target="_blank" title="View the current page by itself"></a>
           <a href="http://amzn.to/1G66iB5" target="_blank" class="amazon" title="Get real-life Magnetic HTML tiles on Amazon"></a>
         </nav>
       </header>

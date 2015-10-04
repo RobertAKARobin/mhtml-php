@@ -52,9 +52,9 @@ a, button, label{
 }
 h1,h2,h3,h4,h5,h6,
 button, .button, .buttons>*{
-  font-family:Helvetica, Arial, sans-serif;
+  font-family:Verdana, sans-serif;
 }
-h1{ font-size:64px; }
+h1{ font-size:48px; }
 h2{ font-size:24px; }
 h1,h2,h3,h4,h5,h6{
   margin-top:20px;
@@ -63,6 +63,9 @@ h1,h2,h3,h4,h5,h6{
 p, img{
   margin-top:10px;
   margin-bottom:10px;
+}
+p.important{
+  text-align:center;
 }
 
 button, .button, .buttons>*{
@@ -74,16 +77,16 @@ button, .button, .buttons>*{
   letter-spacing:2px;
   font-size:12px;
   font-weight:bold;
-  transition: 0.05s background-color, 0.05s color;
+  transition: 0.1s background-color, 0.1s color;
 }
 button, .button, .buttons>*,
 button.primary:hover, .button.primary:hover, .buttons>.primary:hover{
   background-color:white;
-  color:#5af;
+  color:#808;
 }
 button:hover, .button:hover, .buttons>*:hover,
 button.primary, .button.primary, .buttons>.primary{
-  background-color:#5af;
+  background-color:#808;
   color:#fff;
 }
 .full-width,
@@ -105,9 +108,8 @@ header{
 }
 section{
   border-radius:0;
-  border-top:1px solid #eee;
-  margin-top:40px;
+  border-bottom:1px solid #eee;
   margin-bottom:40px;
-  padding-top:20px;
+  padding-top:10px;
   padding-bottom:20px;
 }

@@ -48,7 +48,7 @@ window.onload = function(){
       jsonSourceURL = "defaults/" + frameSource + ".json";
     }else{
       isLocal = false;
-      htmlSourceURL = apiDir + "/sites/" + frameSource + ".html";
+      htmlSourceURL = apiDir + "sites/" + frameSource;
       jsonSourceURL = apiDir + "parse.php?url=" + frameSource;
     }
     el("popout").href = htmlSourceURL;
@@ -96,9 +96,9 @@ window.onload = function(){
   })();
 
   (function setUpSaveButton(){
-    el("saveButton").addEventListener("click", function(){
-      var saveButton = el("saveButton");
-      saveButton.textContent = "Saving...";
+    var saveButton = el("saveButton");
+    saveButton.addEventListener("click", function(){
+      updateMessage("Saving...");
       var postData = {
         sitehtml: tileFactory.getTilesText(),
         sitename: el("sitename").value,
@@ -107,15 +107,23 @@ window.onload = function(){
       ajax("POST", apiDir + "save.php", postData, function(response){
         response = JSON.parse(response);
         if(response.fail){
-          return el("saveButton").textContent = response.fail;
-        }
-        if(response.success == "updated"){
-          return el("saveButton").textContent = "Updated!";
+          updateMessage(response.fail);
+        }else if(response.success == "updated"){
+          updateMessage("Updated!");
         }else{
           window.location.replace(location.origin + location.pathname + "?url=" + response.success);
         }
       });
     });
+
+    function updateMessage(content){
+      var message = el("message");
+      message.textContent = content;
+      addClass(message, "err");
+      setTimeout(function(){
+        removeClass(message, "err");
+      }, 2000);
+    }
   }());
 
   (function getCounter(){
@@ -165,6 +173,16 @@ window.onload = function(){
   }
 }
 
+function toggleClass(element, className){
+  if(element.className.indexOf(clazz) < 0) element.addClass(className);
+  else element.removeClass(className);
+}
+function removeClass(element, className){
+  element.className = element.className.replace(className, "");
+}
+function addClass(element, className){
+  element.className += " " + className;
+}
 function each(object, callback){
   var i = -1, l = object.length;
   if(Array.isArray(object)){
@@ -438,22 +456,6 @@ Tile.prototype = {
       tile.tapped = null;
     }
   },
-  toggleClass: function(className){
-    var tile = this;
-    var element = tile.element;
-    if(element.className.indexOf(clazz) < 0) tile.addClass(className);
-    else tile.removeClass(className);
-  },
-  removeClass: function(className){
-    var tile = this;
-    var element = tile.element;
-    element.className = element.className.replace(className, "");
-  },
-  addClass: function(className){
-    var tile = this;
-    var element = tile.element;
-    element.className += " " + className;
-  },
   onKeyDown: function(evt){
     var tile = this;
     var key = evt.keyCode;
@@ -495,10 +497,10 @@ Tile.prototype = {
       "(^[a-z-]+=)"
     ].join("|"));
     var isSpecialChar = /(&#?[^;\s]+;)/;
-    if(isTag.test(tile.element.value)) tile.addClass("htmlTag");
-    else tile.removeClass("htmlTag");
-    if(isSpecialChar.test(tile.element.value)) tile.addClass("specialChar");
-    else tile.removeClass("specialChar");
+    if(isTag.test(tile.element.value)) addClass(tile.element, "htmlTag");
+    else removeClass(tile.element, "htmlTag");
+    if(isSpecialChar.test(tile.element.value)) addClass(tile.element, "specialChar");
+    else removeClass(tile.element, "specialChar");
   },
   setPosition: function(direction, distance){
     var tile = this;

@@ -106,6 +106,17 @@ header{
   text-align:center;
   line-height:18px;
   color:black;
+  font-family:"Verdana", sans-serif;
+  background-color:rgba(255,255,255,0.2);
+}
+#message{
+  transition:0.2s color;
+}
+.err{
+  color:#fff;
+}
+h1{
+  font-weight:bold;
 }
 nav{
   font-size:0;
@@ -128,7 +139,7 @@ nav input{
 }
 nav input:focus,
 nav a:hover{
-  background-color:rgba(255,255,255,0.3);
+  background-color:rgba(0,0,0,0.1);
 }
 nav a{
   height:36px;
