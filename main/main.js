@@ -1,6 +1,6 @@
 "use strict";
+var tileFactory;
 window.onload = function(){
-  var tileFactory;
   var frame = el("frame");
   var frameSource;
   var htmlSourceURL;
