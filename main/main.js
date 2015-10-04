@@ -135,6 +135,8 @@ window.onload = function(){
   function refreshFrame(){
     var urlRegex = /(?:href=\s*"|src=\s*"|url\()(?!http)([^ "]+)/g;
     var text = tileFactory.getTilesText();
+    text = text.replace(/[\n\r]/g, " ");
+    text = text.replace(/\s{2,}/g, " ");
     text = text.replace(urlRegex, function(match, filename){
       var rel = match.substring(0, match.indexOf(filename));
       var output = rel.trim();
