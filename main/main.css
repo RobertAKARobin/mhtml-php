@@ -15,10 +15,12 @@
   list-style-type:none;
 }
 *:focus{
-  outline:0
+  outline:0;
+  outline-offset:0;
 }
 html{
-  background-color:#f3f3f3;
+  background-color:#666;
+  background-image:url("slate.png");
 }
 body,html{
   position:relative;
@@ -39,11 +41,12 @@ a, button, label{
 button, .button{
   text-align:center;
 }
-
+html, body{
+  font-size:14px;
+}
 body{
   height:100vh;
   overflow-y:hidden;
-  font-size:13px;
 }
 body>div{
   height:100vh;
@@ -57,6 +60,7 @@ body>:nth-of-type(2){
   min-height:100vh;
 }
 #viewWrap{
+  box-shadow:0px 0px 50px 0px black;
 }
 #frame{
   position:relative;
@@ -65,16 +69,15 @@ body>:nth-of-type(2){
   background-color:white;
 }
 
-.tile,
 .tiles>*{
   color:#222;
-  background-color:#fff;
-  display:inline-block;
+  background-color:rgba(255, 255, 255, 0.9);
   height:36px;
+  outline:1px solid #ddd;
+  display:inline-block;
   line-height:36px;
-  outline:1px solid #eee;
 }
-.tiles>input{
+#create input{
   position:absolute;
   padding:0;
   min-width:1px;
@@ -83,13 +86,14 @@ body>:nth-of-type(2){
 .draggable>*{
   cursor:move;
 }
-.tiles>input:hover,
+#create input:hover,
 .tiles>a[href]:hover,
-.tiles>:focus{
-  background-color:#eee;
+.tiles>:focus,
+.tile:focus{
+  background-color:#fff;
 }
-.tiles>:active{
-  box-shadow:2px 2px 5px 0px #bbb;
+#create.tiles>:active{
+  box-shadow:2px 2px 5px 0px #000;
 }
 .htmlTag{
   color:#808;
@@ -97,123 +101,65 @@ body>:nth-of-type(2){
 .specialChar{
   color:#d60;
 }
-nav{
-  height:36px;
-  width:100%;
-  overflow:hidden;
+
+header{
+  text-align:center;
+  line-height:18px;
+  color:black;
 }
-nav *{
+nav{
+  font-size:0;
+}
+nav>*{
+  display:inline-block;
+  width:25%;
+  vertical-align:bottom;
+}
+nav>div{
+  width:75%;
+}
+nav input{
+  display:block;
+  width:100%;
+  padding:0 5px;
+  line-height:18px;
+  font-size:1rem;
   box-sizing:border-box;
 }
-#main-nav{
-  display:flex;
-  display:-webkit-flex;
-  flex-direction:row;
-  -webkit-flex-direction:row;
-  align-content:stretch;
-  -webkit-align-content:stretch;
+nav input:focus,
+nav a:hover{
+  background-color:rgba(255,255,255,0.3);
 }
-#main-nav>*{
-  flex-basis:20px;
-  -webkit-flex-basis:20px;
-  flex-grow:1;
-  -webkit-flex-grow:1;
-  text-align:center;
+nav a{
   height:36px;
-  line-height:36px;
-  background-color:#f3f3f3;
 }
-#main-nav>a:hover{
-  background-color:#fff;
-}
-#main-nav>a:before{
+nav a:before{
   content:"";
-  display:block;
-  position:relative;
-  width:20px;
+  display:inline-block;
   height:20px;
-  left:50%;
-  margin-left:-10px;
+  width:20px;
   margin-top:8px;
   background-image:url("controls.png");
   background-repeat:no-repeat;
 }
-nav .view:before{
+
+.view:before{
   background-position:center 0px;
 }
-nav .home:before{
+.home:before{
   background-position:center -20px;
 }
-nav .blank:before{
+.blank:before{
   background-position:center -40px;
 }
-nav .email:before{
+.email:before{
   background-position:center -60px;
 }
-nav .save:before{
+.save:before{
   background-position:center -80px;
 }
-nav .amazon:before{
+.amazon:before{
   background-position:center -100px;
-}
-#sub-nav{
-  position:absolute;
-  bottom:100%;
-  left:0;
-  width:100%;
-}
-#sub-nav>*{
-  position:absolute;
-  top:-500px;
-  width:100%;
-  transition:top 0.5s;
-  padding:10px;
-  box-shadow:0px 0px 20px 0px #333;
-  background-color:#eee;
-}
-#sub-nav>:target{
-  top:0;
-}
-#sub-nav input[type=text],
-#sub-nav textarea,
-#sub-nav button,
-#sub-nav .button,
-#sub-nav label,
-#sub-nav .g-recaptcha{
-  display:block;
-  width:100%;
-  line-height:18px;
-  background-color:#ddd;
-  margin-top:10px;
-  padding:5px;
-  border-radius:5px;
-}
-#sub-nav input[type=text]:focus,
-#sub-nav textarea:focus,
-#sub-nav button:hover,
-#sub-nav .button:hover,
-#sub-nav input:checked + label{
-  background-color:#fff;
-}
-#sub-nav .g-recaptcha{
-  background-color:#fff;
-}
-.g-recaptcha div{
-  margin:0 auto;
-}
-input[type=checkbox]{
-  display:block;
-  width:1px;
-  height:1px;
-  overflow:hidden;
-  position:absolute;
-  opacity:0.01;
-}
-input+label:after{
-  content:"?";
-}
-input:checked+label:after{
-  content:"!";
 }
 
 #create{
@@ -222,16 +168,16 @@ input:checked+label:after{
 #view{
   z-index:2;
 }
-.tiles>*{
+#main-nav{
   z-index:3;
 }
-.tiles>:active{
+#create .tiles>*{
   z-index:4;
 }
-#frame{
+#create .tiles>:active{
   z-index:5;
 }
-#main-nav{
+#frame{
   z-index:6;
 }
 #sub-nav{
@@ -263,7 +209,6 @@ body>div{
   direction:ltr;
 }
 #viewWrap{
-  border-left:1px solid #e6e6e6;
   flex-grow:2;
   -webkit-flex-grow:2;
   flex-shrink:0;

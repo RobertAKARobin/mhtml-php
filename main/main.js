@@ -1,18 +1,23 @@
 "use strict";
-if(location.host == "localhost"){
-  var baseDir = "http://localhost/magnetic/";
-  var apiDir = "http://localhost/magnetic/api/";
-}else{
-  var baseDir = "http://magnetichtml.com/";
-  var apiDir = "http://dev.robertgfthomas.com/magnetichtml/";
-}
 window.onload = function(){
   var tileFactory;
-  var frame;
+  var frame = el("frame");
   var frameSource;
-  var frameSourceDir;
-  var frameSourceFile;
+  var htmlSourceURL;
+  var jsonSourceURL;
   var isLocal;
+  var baseDir;
+  var apiDir;
+
+  (function isLocalHost(){
+    if(location.host == "localhost"){
+      baseDir = "http://localhost/magnetic/";
+      apiDir = "http://localhost/magnetic/api/";
+    }else{
+      baseDir = "http://magnetichtml.com/";
+      apiDir = "http://dev.robertgfthomas.com/magnetichtml/";
+    }
+  }());
 
   (function createTileFactory(){
     tileFactory = new TileFactory(el("create"));
@@ -25,52 +30,62 @@ window.onload = function(){
     });
   }());
 
-  (function setFrame(){
-    frame = el("frame");
-    frameSource = queryString().url;
+  (function parseQueryString(){
+    var params = {};
+    var pairs = location.search.substring(1).split("&"), pair;
+    each(pairs, function(pair){
+      var split = pair.indexOf("=");
+      params[pair.substring(0, split)] = decodeURIComponent(pair.substring(split + 1));
+    });
+    frameSource = params.url;
+  }());
+
+  (function getSource(){
     if(!frameSource) frameSource = "default";
     if(!/\./.test(frameSource)){
       isLocal = true;
-      return;
+      htmlSourceURL = "defaults/" + frameSource + ".html";
+      jsonSourceURL = "defaults/" + frameSource + ".json";
+    }else{
+      isLocal = false;
+      htmlSourceURL = apiDir + "/sites/" + frameSource + ".html";
+      jsonSourceURL = apiDir + "parse.php?url=" + frameSource;
     }
-    (function getFrameUrl(){
-      var lastSlash = frameSource.lastIndexOf("/");
-      var lastDot = frameSource.lastIndexOf(".");
-      frameSourceDir = frameSource.substring(0, lastSlash);
-      frameSourceFile = frameSource.substring(lastSlash + 1, lastDot);
-    }());
-    el("sitename").value = frameSourceFile;
+    el("popout").href = htmlSourceURL;
+  }());
 
-    function queryString(){
-      var params = {};
-      var pairs = location.search.substring(1).split("&"), pair;
-      each(pairs, function(pair){
-        var split = pair.indexOf("=");
-        params[pair.substring(0, split)] = decodeURIComponent(pair.substring(split + 1));
-      });
-      return params;
-    }
+  (function getSiteName(){
+    var lastSlash = frameSource.lastIndexOf("/");
+    var lastDot = frameSource.lastIndexOf(".");
+    var output = frameSource.substring(lastSlash + 1, lastDot);
+    el("sitename").value = output;
   }());
 
   (function loadTiles(){
-    var htmlSourceURL = apiDir + "parse.php?url=" + frameSource;
-    if(isLocal) htmlSourceURL = "defaults/" + frameSource + ".json";
-    ajax("GET", htmlSourceURL, {}, function(html){
+    var offsetTop;
+    var tile;
+    var lineLength;
+    ajax("GET", jsonSourceURL, {}, function(html){
       var apiTilesByLine = JSON.parse(html);
-      var offsetTop;
-      each(apiTilesByLine, function(line, lineNum){
-        var tile;
-        if(line.length == 0) return;
-        tile = tileFactory.create(line[0].value);
-        tile.setPosition("left", line[0].left * tileFactory.letter.width);
-        tile.setPosition("top", offsetTop);
-        each(line, function(apiTile, tileNum){
-          if(tileNum != 0) tile = tileFactory.create(apiTile.value).appendTo(tile);
-          if(tileNum == line.length - 1) offsetTop = tile.element.offsetTop + tile.element.offsetHeight;
-        });
-      });
+      each(apiTilesByLine, createLineWithIndent);
       refreshFrame();
     });
+    function createLineWithIndent(line, lineNum){
+      lineLength = line.length;
+      if(lineLength == 0) return;
+      tile = tileFactory.create(line[0].value);
+      tile.setPosition("left", line[0].left * tileFactory.letter.width);
+      tile.setPosition("top", offsetTop);
+      each(line, placeLinesTiles);
+    }
+    function placeLinesTiles(apiTile, tileNum){
+      if(tileNum != 0){
+        tile = tileFactory.create(apiTile.value).appendTo(tile);
+      }
+      if(tileNum == lineLength - 1){
+        offsetTop = tile.element.offsetTop + tile.element.offsetHeight;
+      }
+    }
   }());
 
   (function loadCaptcha(){
@@ -105,7 +120,7 @@ window.onload = function(){
 
   (function getCounter(){
     ajax("GET", apiDir + "counter.txt", {}, function(count){
-      el("createdAmount").textContent = count;
+      el("sitename").placeholder = "Give site #" + count + " a name";
     });
   }());
 
