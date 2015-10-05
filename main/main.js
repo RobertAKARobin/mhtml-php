@@ -1,4 +1,7 @@
 "use strict";
+/*
+This content is copyright 2015 by Robert Thomas. Please do not copy or re-use any portion of it without express permission. (Not to be a grump.)
+*/
 var tileFactory;
 window.onload = function(){
   var frame = el("frame");
