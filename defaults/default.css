@@ -74,6 +74,7 @@ button, .button, .buttons>*{
   margin-top:1px;
   padding:10px;
   text-transform:uppercase;
+  text-decoration:none;
   letter-spacing:2px;
   font-size:12px;
   font-weight:bold;
@@ -102,7 +103,7 @@ img{
 }
 header{
   background-color:#fff;
-  padding:10px 0;
+  padding:10px 10px;
   color:#666;
   text-align:center;
 }
@@ -112,4 +113,47 @@ section{
   margin-bottom:40px;
   padding-top:10px;
   padding-bottom:20px;
+}
+a{
+  color:#6699cc;
+  text-decoration:underline;
+}
+a:hover{
+  color:#4477aa;
+}
+
+.photoSwap{
+  position:relative;
+  width:100%;
+  margin:0 auto;
+}
+.photoSwap img{
+  margin:0;
+  cursor:pointer;
+}
+.photoSwap img:nth-child(2){
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:100;
+  opacity:0;
+  transition:opacity 0.2s;
+}
+.photoSwap:hover img:nth-child(2){
+  opacity:1;
+}
+figcaption{
+  margin:10px auto;
+  font-size:14px;
+  font-style:italic;
+  text-align:center;
+}
+code{
+  font-style:normal;
+  font-size:0.8em;
+  font-family:"Andale Mono", monospace;
+  background-color:#fff;
+  padding:2px;
+  margin:2px;
+  border:1px solid #ddd;
 }
