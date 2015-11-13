@@ -47,7 +47,7 @@ a, button, label{
 
 
 .container{
-  max-width:800px;
+  max-width:500px;
   padding:20px 40px;
 }
 h1,h2,h3,h4,h5,h6,
@@ -60,16 +60,19 @@ h1,h2,h3,h4,h5,h6{
   margin-top:20px;
   margin-bottom:20px;
 }
-p, img{
-  margin-top:10px;
-  margin-bottom:10px;
+img{
+  margin:10px 0;
+}
+p{
+  margin:30px 0;
 }
 p.important{
   text-align:center;
 }
 
 button, .button, .buttons>*{
-  display:inline-block;
+  display:block;
+  width:100%;
   text-align:center;
   margin-top:1px;
   padding:10px;
@@ -89,11 +92,6 @@ button:hover, .button:hover, .buttons>*:hover,
 button.primary, .button.primary, .buttons>.primary{
   background-color:#808;
   color:#fff;
-}
-.full-width,
-.full-widths>*{
-  display:block;
-  width:100%;
 }
 
 img{
