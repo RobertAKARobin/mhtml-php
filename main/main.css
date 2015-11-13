@@ -123,11 +123,11 @@ nav{
 }
 nav>*{
   display:inline-block;
-  width:25%;
+  width:20%;
   vertical-align:bottom;
 }
 nav>div{
-  width:75%;
+  width:80%;
 }
 nav input{
   display:block;
