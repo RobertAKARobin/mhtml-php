@@ -119,6 +119,9 @@ a{
 a:hover{
   color:#4477aa;
 }
+strong{
+  font-weight:bold;
+}
 
 .photoSwap{
   position:relative;
